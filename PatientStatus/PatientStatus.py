@@ -18,7 +18,7 @@ class PatientStatus(object):
         # register the service to the catalog
         config = json.dumps(self.conf["information"][0])
         # post the configuration to the catalog
-        config = requests.post(f"{self.urlRegistrySystem}/service",data=config)
+        config = requests.post(f"{self.urlRegistrySystem}/service",json=config)
         ps_conf["information"][0] = config.json()
         # save the new configuration file 
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
@@ -56,7 +56,7 @@ class PatientStatus(object):
             response_oxim = requests.get(f"{self.Database}/oximeter/patient{pat}?range={range}")
             response_ECG = requests.get(f"{self.Database}/ECG/patient{pat}?range={range}")
             response_termo = requests.get(f"{self.Database}/temperature/patient{pat}?range={range}")
-            data = {"gluco": response_gluco.json()["measure"], "bps": response_bps.json()["measure"], "oxim": response_oxim.json()["measure"], "ECG": response_ECG.json()["measure"], "termo": response_termo.json()["measure"], "condition": condition[patID.index(pat)]}
+            data = {"gluco": response_gluco.json()["e"][0]["v"], "bps": response_bps.json()["e"][0]["v"], "oxim": response_oxim.json()["e"][0]["v"], "ECG": response_ECG.json()["e"][0]["v"], "termo": response_termo.json()["e"][0]["v"], "condition": condition[patID.index(pat)]}
             s = self.calculate_status(data)
             s = "good" # da togliere
             stat = {"patientID": pat, "status": s, "timestamp": time.time()}
@@ -134,7 +134,7 @@ class PatientStatus(object):
     def update_service(self):
         # update the service in the catalog
         config = json.dumps(self.conf["information"][0])
-        config = requests.put(f"{self.urlRegistrySystem}/service",data=config)
+        config = requests.put(f"{self.urlRegistrySystem}/service",json=config)
         self.conf["information"][0] = config.json()
         # save the new configuration file 
         json.dump(self.conf, open("PatientStatus_config.json", "w"), indent=4)
