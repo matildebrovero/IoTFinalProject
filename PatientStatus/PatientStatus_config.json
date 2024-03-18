@@ -1,0 +1,14 @@
+{
+    "RegistrySystem": "http://localhost:8080",
+    "information": [
+        {
+            "serviceID": 45,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": "/status"
+        }
+    ]
+}

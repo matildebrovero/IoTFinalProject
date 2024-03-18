@@ -1,0 +1,14 @@
+{
+    "RegistrySystem": "../RegistrySystem/catalog.json",    
+    "serviceName": "ECG_Analysis",
+    "information":[{
+        "serviceID": "",
+        "availableServices": [
+            "MQTT",
+            "REST"
+            ],
+        "subscribe_topic": "Patient1/ECG",
+        "sampling_frequency": 250
+        }
+    ]
+}
