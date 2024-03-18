@@ -41,7 +41,7 @@
         "bucket": "SmartHospital308"
     },
     "ServiceInformation": {
-        "serviceID": "23",
+        "serviceID": "",
         "serviceName": "DB_adaptor",
         "availableServices": [
             "MQTT",
