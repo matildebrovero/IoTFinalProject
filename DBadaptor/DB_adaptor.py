@@ -154,6 +154,7 @@ class rest_API(object):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     # Open configuration file to read InfluxDB token, org and url and MQTT clientID, broker, port and base topic
     config_file = json.load(open('DBadaptor_config.json'))
     # load the registry system
@@ -214,6 +215,16 @@ if __name__ == "__main__":
     try:
         while True:
             time.sleep(0.5)
+            #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
+            current_time = time.time()
+            if current_time - start_time > 5*60:
+                config_file = json.load(open('DBadaptor_config.json'))
+                config = requests.put(f"{urlCatalog}/service", data=config_file["ServiceInformation"])
+                config_file["ServiceInformation"] = config.json()
+                json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
+                start_time = current_time
+            else:
+                pass
     except KeyboardInterrupt:
         subscriber.StopSim()
         cherrypy.engine.stop()
