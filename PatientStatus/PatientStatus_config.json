@@ -2,13 +2,14 @@
     "RegistrySystem": "http://localhost:8080",
     "information": [
         {
-            "serviceID": 45,
+            "serviceID": "",
             "serviceName": "PatientStatus",
             "serviceType": [
                 "MQTT",
                 "REST"
             ],
-            "pubish_topic": "/status"
+            "pubish_topic": "/status",
+            "lastUpdated": "2019-12-12T12:12:12Z"
         }
     ]
 }
