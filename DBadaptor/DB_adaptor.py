@@ -90,8 +90,7 @@ class SensorSubscriber:
             # Write to InfluxDB
             point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value))
             print("Writing to InfluxDB")
-            InfluxDBwrite(bucket,point)
-    
+            InfluxDBwrite(bucket,point)   
         else:
             pass
 
@@ -135,7 +134,7 @@ class rest_API(object):
             if current_bucket["data"] == uri[0]:
                 bucket = current_bucket["token"]
         # Read data from InfluxDB and return them as a JSON
-        if uri[0] in ["ECG", "glucometer", "temperature", "blood_pressure", "pulse", "oximeter","status"]:
+        if uri[0] in ["ECG", "glucometer", "temperature", "blood_pressure", "pulse", "oximeter", "RR", "status"]:
             patientID = uri[1]
             range = params["range"]
             query = f"""from(bucket: "{bucket}")
@@ -158,24 +157,19 @@ if __name__ == "__main__":
     # Open configuration file to read InfluxDB token, org and url and MQTT clientID, broker, port and base topic
     config_file = json.load(open('DBadaptor_config.json'))
     # load the registry system
-    # TODO: DELETE THE FOLLOWING LINES
-    RegistrySystem = json.load(open(config_file["RegistrySystem"]))
-    urlCatalog = RegistrySystem["catalogURL"]
-    # TODO: use the following line instead of the previous ones
-    #### urlCatalog = config_file["RegistrySystem"]
+    ### LINES USED TO TEST THE CODE WITHOUT THE CATALOG
+    """RegistrySystem = json.load(open(config_file["RegistrySystem"]))
+    urlCatalog = RegistrySystem["catalogURL"]"""
+    urlCatalog = config_file["RegistrySystem"]
 
     # read information from the configuration file and POST the information to the catalog
     config = config_file["ServiceInformation"]
-    # TODO: use the following line instead of the previous one
-    """ config = requests.post(f"{urlCatalog}/service", data=config)"""
-    """config_file["ServiceInformation"] = config.json()"""
+    config = requests.post(f"{urlCatalog}/service", data=config)
+    config_file["ServiceInformation"] = config.json()
     # save the new configuration file
     json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
 
-    # Read InfluxDB configuration
-    """os.environ["INFLUXDB_TOKEN"] = config_file["InfluxInformation"]["INFLUXDB_TOKEN"]
-    token = os.environ.get("INFLUXDB_TOKEN")"""
-    # TODO: use the PREVIOUS lines instead of the FOLLOWING ones
+    # Read InfluxDB configuration from the configuration file
     token = config_file["InfluxInformation"]["INFLUXDB_TOKEN"]
     url = config_file["InfluxInformation"]["INFLUXDB_URL"]
     org = config_file["InfluxInformation"]["INFLUXDB_ORG"]
@@ -183,22 +177,22 @@ if __name__ == "__main__":
     client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
     # get the information about the MQTT broker from the catalog using get requests
-    """MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topics = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["subscribe_topic"]
-    clientID = config_file['serviceName'] + config_file["ServiceInformation"]['serviceID']"""
-    # TODO: use the PREVIOUS lines instead of the FOLLOWING ones
-    clientID = config_file["ServiceInformation"]['serviceName'] + config_file["ServiceInformation"]['serviceID']
+    clientID = config_file['serviceName'] + config_file["ServiceInformation"]['serviceID']
+    ### LINES USED TO TEST THE CODE WITHOUT THE CATALOG
+    """clientID = config_file["ServiceInformation"]['serviceName'] + config_file["ServiceInformation"]['serviceID']
     broker = RegistrySystem["broker"]["IP"]
     port = RegistrySystem["broker"]["port"]
-    topics =  ["Monitoring/+/ECG", "Monitoring/+/sensorsData", "Monitoring/+/status"]
-    print(topics)
+    topics =  ["Monitoring/+/ECG", "Monitoring/+/sensorsData", "Monitoring/+/status"]"""
+    #print(topics)
 
     # Create an instance of the SensorSubscriber
     subscriber = SensorSubscriber(clientID, broker, port)
     for topic in topics:
-        final_topic = RegistrySystem["broker"]["main_topic"] + topic
+        final_topic = MQTTinfo["main_topic"] + topic
         subscriber.startSim(final_topic)
     
     # Start the REST API
