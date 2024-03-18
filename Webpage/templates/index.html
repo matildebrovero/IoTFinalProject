@@ -9,36 +9,90 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://github.com/matildebrovero/IoTLabs/blob/Webpage_classic/MATI/Final_Project/Webpage/images/sphynx.png" alt="sphynx" class="logo">
-        <div class="background-image"></div>
+        <div id="page1">
 
+            <h1>Patient Monitoring</h1>
+            <h2>Welcome to the website for Hospital to Monitor your patients' data in real-time</h2>
 
-        <h1>Patient Monitoring</h1>
-        <h2>Welcome to the website for Hospital to Monitor your patients' data in real-time</h2>
+            <!-- Add button to navigate to the new patient form -->
+            <button onclick="showNewPatientForm()" class="btn">Add New Patient</button>
 
-        <div class="form-group">
-            <label for="patientSelect">Select a Patient:</label>
-            <select id="patientSelect" class="select-box">
-                <!-- Options will be populated dynamically with JavaScript -->
-            </select>
+            <br><br>
+
+            <div class="form-group">
+                <label for="patientSelect">Select a Patient:</label>
+                <select id="patientSelect" class="select-box">
+                    <!-- Options will be populated dynamically with JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dataSelect">Select Data to Monitor:</label>
+                <select id="dataSelect" class="select-box">
+                    <!-- Options will be populated dynamically with JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="timeRange">Time Range (minutes):</label>
+                <input type="number" id="timeRange" class="input-box" min="1" value="60">
+            </div>
+
+            <button onclick="getData()" class="btn">Get Data</button>
+
+            <div class="chart-container">
+                <canvas id="chartCanvas"></canvas>
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label for="dataSelect">Select Data to Monitor:</label>
-            <select id="dataSelect" class="select-box">
-                <!-- Options will be populated dynamically with JavaScript -->
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="timeRange">Time Range (minutes):</label>
-            <input type="number" id="timeRange" class="input-box" min="1" value="60">
-        </div>
-
-        <button onclick="getData()" class="btn">Get Data</button>
-
-        <div class="chart-container">
-            <canvas id="chartCanvas"></canvas>
+        <div id="page2" style="display: none;">
+            <!-- Page 2: New Patient Form -->
+            <h1>Add New Patient</h1>
+            <form id="newPatientForm">
+                <div>
+                    <label for="firstName" >First Name:</label>
+                    <input type="text" id="firstName" name="firstName" class="input-box">
+                </div>
+                <div>
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" class="input-box">
+                </div>
+                <div>
+                    <label for="birthdate">Date of Birth:</label>
+                    <input type="date" id="birthdate" name="birthdate" class="input-box">
+                </div>
+                <div>
+                    <label for="residence">Place of Residence:</label>
+                    <input type="text" id="residence" name="residence" class="input-box">
+                </div>
+                <div>
+                    <!-- use the deviceconnector ids from above-->
+                    <label for="deviceconnector">Select Data to Monitor:</label>
+                    <select id="deviceConnector" class="select-box">
+                        <!-- Options will be populated dynamically with JavaScript -->
+                    </select>
+                </div>
+                <div class="checkbox-container">
+                    <label for="conditions">Conditions:</label><br>
+                    <label class="custom-checkbox-label" for="diabetes">
+                        <input type="checkbox" id="diabetes" name="conditions" value="diabetes" class="custom-checkbox">
+                        Diabetes
+                    </label><br>
+                    <label class="custom-checkbox-label" for="hypertension">
+                        <input type="checkbox" id="hypertension" name="conditions" value="hypertension" class="custom-checkbox">
+                        Hypertension
+                    </label><br>
+                    <label class="custom-checkbox-label" for="heartDisease">
+                        <input type="checkbox" id="heartDisease" name="conditions" value="heartDisease" class="custom-checkbox">
+                        Heart Disease
+                    </label><br>
+                    <label class="custom-checkbox-label" for="none">
+                        <input type="checkbox" id="none" name="conditions" value="none" class="custom-checkbox">
+                        None
+                    </label>
+                <button type="submit" class="btn" onclick="AddPatient()">Submit</button>
+            </form>
         </div>
 
     <script>
@@ -46,7 +100,8 @@
         // TODO: Replace with actual data from the server
         const config = {
             "patientsID": ["patient1", "patient2", "patient3"], // Sample patient IDs
-            "data": ["ECG", "data2", "data3"] // Sample data to monitor
+            "data": ["ECG", "data2", "data3"], // Sample data to monitor
+            "deviceConnectors":["device1", "device2", "device3"]
         };
 
         // Function to populate patient select dropdown
@@ -67,6 +122,17 @@
                 const option = document.createElement("option");
                 option.text = data;
                 option.value = data;
+                select.add(option);
+            });
+        }
+
+        // Function to populate device connector select dropdown
+        function populateDeviceConnectors() {
+            const select = document.getElementById("deviceConnector");
+            config.deviceConnectors.forEach(deviceConnector => {
+                const option = document.createElement("option");
+                option.text = deviceConnector;
+                option.value = deviceConnector;
                 select.add(option);
             });
         }
@@ -145,7 +211,57 @@
         window.onload = function() {
             populatePatients();
             populateData();
+            populateDeviceConnectors();
         };
+    
+        // Function to show the new patient form
+        function showNewPatientForm() {
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'block';
+        }
+
+        document.getElementById('newPatientForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            // Get form data
+            const formData = new FormData(event.target);
+            const patientData = {};
+            for (const [key, value] of formData.entries()) {
+                patientData[key] = value;
+            }
+            console.log('New Patient Data:', patientData);
+            // Reset form
+            event.target.reset();
+            // Hide form and show patient monitoring page
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page1').style.display = 'block';
+        });
+
+        // Function to add a new patient
+        function AddPatient() {
+            const firstName = document.getElementById("firstName").value;
+            const lastName = document.getElementById("lastName").value;
+            const birthdate = document.getElementById("birthdate").value;
+            const residence = document.getElementById("residence").value;
+            const deviceConnector = document.getElementById("deviceConnector").value;
+            const conditions = document.querySelector('input[name="conditions"]:checked').value;
+
+            fetch('/addPatient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `firstName=${firstName}&lastName=${lastName}&birthdate=${birthdate}&residence=${residence}&deviceConnector=${deviceConnector}&conditions=${conditions}`,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+        }
 
     </script>
 </body>

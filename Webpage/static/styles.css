@@ -49,9 +49,37 @@ label {
     background-color: #004080;
 }
 
-.background-image {
-    background-image: url('../images/sphynx.png');
-    background-size: cover;
-    width: 6000px;
-    height: 100px;
+.checkbox-container {
+    margin-bottom: 10px;
+}
+.checkbox-container label {
+    margin-left: 5px;
+}
+.checkbox-container input[type="checkbox"] {
+    display: none; /* Nasconde la checkbox predefinita */
+}
+.custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%; /* Rende la checkbox tondeggiante */
+    border: 2px solid #ccc;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+.custom-checkbox.checked {
+    background-color: #4caf50; /* Colore di sfondo quando è selezionata */
+}
+.custom-checkbox.checked:after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 7px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    display: block;
 }
