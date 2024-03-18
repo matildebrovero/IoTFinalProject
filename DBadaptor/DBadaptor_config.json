@@ -1,0 +1,59 @@
+{
+    "RegistrySystem": "http://localhost:8080", 
+    "InfluxInformation": {
+        "INFLUXDB_TOKEN": "8lbSLwSZOUIQD4fga6VbHd6RpEQ_BGFhkgpAswTNQJ1oKI-G3DUmNZj75znn6H6s_lVoyvh97W-jbggz-nrmaA==",
+        "INFLUXDB_ORG": "SPHYNX",
+        "INFLUXDB_URL": "http://localhost:8086",
+        "buckets": [
+            {
+                "data": "ECG",
+                "token": "SmartHospital308_ECGdata"
+            },
+            {
+                "data": "glucometer",
+                "token": "SmartHospital308_GLUCOData"
+            },
+            {
+                "data": "blood_pressure",
+                "token": "SmartHospital308_BPSdata"
+            },
+            {
+                "data": "oximeter",
+                "token": "SmartHospital308_OXIData"
+            },
+            {
+                "data": "Pulse",
+                "token": "SmartHospital308_PULSEData"
+            },
+            {
+                "data": "temperature",
+                "token": "SmartHospital308_TERMOData"
+            },
+            {
+                "data": "status",
+                "token": "SmartHospital308_STATUSData"
+            },
+            {
+                "data": "RR",
+                "token": "SmartHospital308_RRData"
+            }
+        ],
+        "bucket": "SmartHospital308"
+    },
+    "ServiceInformation": {
+        "serviceID": "23",
+        "serviceName": "DB_adaptor",
+        "availableServices": [
+            "MQTT",
+            "REST"
+        ],
+        "serviceHost": "0.0.0.0",
+        "servicePort": 8081,
+        "subscribe_topic": [
+            "Monitoring/+/status",
+            "Monitoring/+/ECG",
+            "Monitoring/+/sensorsData"
+        ],
+        "lastUpdate": "2021-06-01T12:00:00"
+    }
+}

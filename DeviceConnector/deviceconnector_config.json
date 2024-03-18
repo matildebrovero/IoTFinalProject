@@ -1,0 +1,87 @@
+{
+    "RegistrySystem": "../RegistrySystem/catalog.json",  
+    "catalogURL": "http://localhost:8080",
+    "serviceName": "DeviceConnector",
+    "information":[{
+        "deviceConnectorID": "",
+        "measureType": [
+            "temperature",
+            "glucose",
+            "blood_pressure",
+            "heart_rate",
+            "oxygen_saturation",
+            "ECG"
+        ],
+        "availableServices": [
+            "MQTT",
+            "REST"
+            ],
+        "pubish_topic": [{
+            "base_topic": "/Monitoring/patient",
+            "sensors": "/sensorsData",
+            "ecg": "/ECG"
+        }],
+        "resources":{
+            "sensors":[{
+                "sensorName": "MLX90614",
+                "sensorID": "s1",
+                "pin": 1,
+                "measurementType": [
+                    "Temperature"
+                ],
+                "units": [
+                    "°C"
+                ]
+            },
+            {
+                "sensorName": "MAX30102",
+                "sensorID": "s2",
+                "pin": 2,
+                "measurementType": [
+                    "glucose"
+                ],
+                "units": [
+                    "mg/dL"
+                ]
+            },
+            {
+                "sensorName": "MPX5100DP",
+                "sensorID": "s3",
+                "pin": 3,
+                "measurementType": [
+                    "blood_pressure"
+                ],
+                "units": [
+                    "mmHg"
+                ]
+            },
+            {
+                "sensorName": "PULSE_SENSOR",
+                "sensorID": "s4",
+                "pin": 4,
+                "measurementType": [
+                    "pulse",
+                    "ECG"
+                ],
+                "units": [
+                    "bpm",
+                    "mV"
+                ]
+            },
+            {
+                "sensorName": "MAX30100",
+                "sensorID": "s5",
+                "pin": 5,
+                "measurementType": [
+                    "oxygen_saturation"
+                ],
+                "units": [
+                    "%"
+                ]
+            }
+            ]
+        },
+        "lastUpdate": "2020-03-30"
+        } 
+    ] 
+}

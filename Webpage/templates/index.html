@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Monitoring</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://github.com/matildebrovero/IoTLabs/blob/Webpage_classic/MATI/Final_Project/Webpage/images/sphynx.png" alt="sphynx" class="logo">
+        <div class="background-image"></div>
+
+
+        <h1>Patient Monitoring</h1>
+        <h2>Welcome to the website for Hospital to Monitor your patients' data in real-time</h2>
+
+        <div class="form-group">
+            <label for="patientSelect">Select a Patient:</label>
+            <select id="patientSelect" class="select-box">
+                <!-- Options will be populated dynamically with JavaScript -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="dataSelect">Select Data to Monitor:</label>
+            <select id="dataSelect" class="select-box">
+                <!-- Options will be populated dynamically with JavaScript -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="timeRange">Time Range (minutes):</label>
+            <input type="number" id="timeRange" class="input-box" min="1" value="60">
+        </div>
+
+        <button onclick="getData()" class="btn">Get Data</button>
+
+        <div class="chart-container">
+            <canvas id="chartCanvas"></canvas>
+        </div>
+
+    <script>
+        // Sample configuration data
+        // TODO: Replace with actual data from the server
+        const config = {
+            "patientsID": ["patient1", "patient2", "patient3"], // Sample patient IDs
+            "data": ["ECG", "data2", "data3"] // Sample data to monitor
+        };
+
+        // Function to populate patient select dropdown
+        function populatePatients() {
+            const select = document.getElementById("patientSelect");
+            config.patientsID.forEach(patient => {
+                const option = document.createElement("option");
+                option.text = patient;
+                option.value = patient;
+                select.add(option);
+            });
+        }
+
+        // Function to populate data select dropdown
+        function populateData() {
+            const select = document.getElementById("dataSelect");
+            config.data.forEach(data => {
+                const option = document.createElement("option");
+                option.text = data;
+                option.value = data;
+                select.add(option);
+            });
+        }
+
+        // Function to handle GET request
+        function getData() {
+            const patientSelected = document.getElementById("patientSelect").value;
+            const dataSelected = document.getElementById("dataSelect").value;
+            const timeRange = document.getElementById("timeRange").value;
+
+            fetch('/getData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `patientSelect=${patientSelected}&dataSelect=${dataSelected}&timeRange=${timeRange}`,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Vettori per i dati suddivisi
+                let patients = [];
+                let dataTypes = [];
+                let values = [];
+                let dataa = JSON.parse(data);
+                let xaxis = [];
+
+                // Itera attraverso i dati e inserisci i valori nei vettori appropriati
+                for (let i = 0; i < dataa.length; i++) {
+                    let rowData = dataa[i];
+                    let patient = rowData[0];
+                    let dataType = rowData[1];
+                    let value = rowData[2];
+
+                    // Aggiungi i valori ai vettori
+                    patients.push(patient);
+                    dataTypes.push(dataType);
+                    values.push(value);
+                    xaxis.push(i);
+                }
+
+                /*console.log("Patients:", patients);
+                console.log("Data Types:", dataTypes);
+                console.log("Values:", values);*/
+                
+                createChart(xaxis, values, patientSelected, dataSelected);
+            })
+        
+            // Function to create a line chart
+            function createChart(labels, data, patient, dataType) {
+                var ctx = document.getElementById('chartCanvas').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `${patient} - ${dataType}`,
+                            data: data,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    }
+                });
+                
+            };
+
+            // Display the container with the chart
+            document.getElementById('chartCanvas').style.display = 'block';
+        }    
+
+        // Populate dropdowns when the page loads
+        window.onload = function() {
+            populatePatients();
+            populateData();
+        };
+
+    </script>
+</body>
+</html>
