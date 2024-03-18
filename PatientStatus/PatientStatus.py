@@ -8,7 +8,6 @@ import time
 import numpy as np
 import copy
 
-# TODO mettere aggiornamento automatico del 'ci sono esisto' nel catalogo
 
 class PatientStatus(object):
     def __init__(self):
@@ -96,7 +95,7 @@ class PatientStatus(object):
         # h = hypertention
         # c = cardiatic desease
 
-        stat_vett = np.array([0, 0, 0, 0, 0]) 
+        stat_vett = np.array([0, 0, 0, 0, 0, 0]) 
         # Rules
         if condition == "d":
             if gluco_mean < 70 or gluco_mean > 200:
@@ -132,11 +131,19 @@ class PatientStatus(object):
 
         return status
     
-
+    def update_service(self):
+        # update the service in the catalog
+        config = json.dumps(self.conf["information"][0])
+        config = requests.put(f"{self.urlRegistrySystem}/service",data=config)
+        self.conf["information"][0] = config.json()
+        # save the new configuration file 
+        json.dump(self.conf, open("PatientStatus_config.json", "w"), indent=4)
+        print("Service updated in the catalog")
     
 if __name__ == "__main__":
     status = PatientStatus()
     while True:
         status.get_status_and_publish()
+        status.update_service()
         time.sleep(300) # ogni 5 minuti calcolo lo status e lo pubblico
 
