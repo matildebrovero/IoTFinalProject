@@ -49,7 +49,6 @@ class PatientStatus(object):
             response_termo = requests.get(f"{self.Database}/temperature/patient{pat}?range={range}")
             data = {"gluco": response_gluco.json()["e"][0]["v"], "bps": response_bps.json()["e"][0]["v"], "oxim": response_oxim.json()["e"][0]["v"], "ECG": response_ECG.json()["e"][0]["v"], "termo": response_termo.json()["e"][0]["v"], "condition": condition[patID.index(pat)]}
             s = self.calculate_status(data)
-            s = "good" # da togliere
             stat = {"patientID": pat, "status": s, "timestamp": time.time()}
             topic = self.broker["main_topic"]+"patient"+str(pat)+self.conf["information"][0]["pubish_topic"]
             self.status_client.publish(topic, stat) 
@@ -79,12 +78,12 @@ class PatientStatus(object):
         stat_vett = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
         # Regole fuzzy
-        if condition == "d":
+        if "d" in condition:
             stat_vett[0] = max(0, 1 - (gluco_mean - 70) / 130)  # fuzzification per la glicemia
         else:
             stat_vett[0] = max(0, 1 - abs(gluco_mean - 105) / 35)
 
-        if condition == "n" or condition == "c":
+        if condition == "n" or "c" in condition:
             stat_vett[1] = max(0, (bps_mean - 100) / 40)  # fuzzification per la pressione sanguigna
         else:
             stat_vett[1] = max(0, (bps_mean - 120) / 50)
@@ -105,12 +104,12 @@ class PatientStatus(object):
 
         # Definizione dello stato in base al grado di appartenenza aggregato pesato
         if weighted_aggregated_status >= 0.7:
-            status = "good"
+            status = "very good"
         elif weighted_aggregated_status >= 0.4:
-            status = "fair"
+            status = "regular"
         else:
             status = "bad"
-
+            
         return status
 
     
