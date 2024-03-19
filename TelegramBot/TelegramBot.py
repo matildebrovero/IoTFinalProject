@@ -14,7 +14,7 @@ class HospitalBot:
         self.tokenBot = token
         self.chatIDs = []
         self.bot = telepot.Bot(self.tokenBot)
-
+        self.previousStatus = ""
         self.topic = topic
         MessageLoop(self.bot, {'chat': self.on_chat_message}).run_as_thread()
 
@@ -45,9 +45,20 @@ class HospitalBot:
         print("Message: %s" % msg)
         # get the patientID from the topic which is SmartHospital308/Monitoring/PatientID/status
         patientID = topic.split("/")[2] 
+        onlyID = patientID.split("t")[2]
+        # request the patient name via get request to the catalog
+        patientName = requests.get(f"{urlCatalog}/patientInfo/{patientID}").json()["firstName"]
+        patientSurname = requests.get(f"{urlCatalog}/patientInfo/{patientID}").json()["lastName"]
         # check the message received from the topic and send an alert message to the chat
-        if msg["status"] == "alert":
-            self.bot.sendMessage(self.chat_ID, text="ALERT MESSAGE: Patient " + patientID + " is in danger")
+        if msg["status"] == "bad":
+            self.bot.sendMessage(self.chat_ID, text=f"ALERT MESSAGE: {patientName} {patientSurname} with ID {onlyID} is in danger")
+        elif msg["status"] == "regular" and self.previousStatus == "regular":
+            self.bot.sendMessage(self.chat_ID, text=f"{patientName} {patientSurname} with ID {onlyID} may be in a critical status. MAY REQUIRE ATTENTION")
+        elif msg["status"] == "regular" and self.previousStatus == "bad":
+            self.bot.sendMessage(self.chat_ID, text=f"{patientName} {patientSurname} with ID {onlyID} is now in a regular status")
+        else:
+            pass
+        self.previousStatus = msg["status"]
         
 if __name__ == "__main__":
     # load the configuration file of the TelegramBot
