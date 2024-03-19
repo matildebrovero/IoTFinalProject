@@ -23,31 +23,22 @@ class PatientStatus(object):
         # save the new configuration file 
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
         print("Service registered to the catalog")
-        
-        response = requests.get(f"{self.urlRegistrySystem}/catalog") # get the catalog
-        self.Catalog = response.json()
-        # print(f"Service ID: {self.conf['information']['serviceID']}")
-        # get the database information (IP perchè devo fare delle rest request sempre) from the catalog
-        DB = requests.get(f"{self.urlRegistrySystem}/DBadapter")
+        # get the database information from the catalog
+        DB = requests.get(f"{self.urlRegistrySystem}/DBadaptor")
         self.Database = DB.json()["urlDB"]
         # get the mqtt information from the catalog
-        self.broker = self.Catalog["broker"]
+        b = requests.get(f"{self.urlRegistrySystem}/broker")
+        self.broker = b.json()
         self.clientID = self.conf["information"][0]["serviceName"]+str(self.conf["information"][0]["serviceID"])
         self.status_client = StatusManager(self.clientID, self.broker["IP"],self.broker["port"] )
         # start the mqtt publisher
         self.status_client.startSim()
 
     def get_status_and_publish(self):
-        # ipotizzo di dover calcolare lo status di tutti i pazienti
-        # quindi devo ottenere la lista di tutti i pazienti
-        # è giusto che la prenda dal catalog? secondo me si
-        devID = []
-        patID = []
-        condition = []
-        for p in self.Catalog["patientsList"]:
-            patID.append(p["patientID"])
-            condition.append(p["patientcondition"])
-            devID.append(p["deviceConnectorID"])
+
+        patientList = requests.get(f"{self.urlRegistrySystem}/patientAndCondition")
+        patID = patientList.json()["patientID"]
+        condition = patientList.json()["condition"]
         
         for pat in patID:
             range = 300
@@ -67,69 +58,61 @@ class PatientStatus(object):
         gluco_mean = np.mean(data["gluco"])
         bps_mean = np.mean(data["bps"])
         oxim_mean = np.mean(data["oxim"])
-        ECG_mean = np.mean(data["ECG"]) #per ECG
-        RR = data["RR"] 
+        ECG_mean = np.mean(data["ECG"])  # per ECG
+        RR = data["RR"]
         RR_count = 0
         for i in range(len(RR)):
-            if RR[i] < 20 or RR[i] > 100: #TODO mettere la soglia giusta
-                RR_count =+1
-        
+            if RR[i] < 20 or RR[i] > 100:  # TODO mettere la soglia giusta
+                RR_count += 1
+
         termo_mean = np.mean(data["termo"])
         condition = data["condition"]
-        condition = "n"
 
-        #vector of status each posizion represent a measure,
+        # vettore di status, ogni posizione rappresenta una misurazione
         # 0 -> gluco
         # 1 -> bps
         # 2 -> oxim
         # 3 -> ECG
         # 4 -> RR
         # 5 -> termo
-        # the value is the condition,
-        # 0 -> good
-        # 1 -> bad
+        # il valore rappresenta il grado di appartenenza alla condizione good/bad
+        stat_vett = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
-        # possiamo implementare le categorie di pazienti
-        # n = no patologies
-        # d = diabetic 
-        # h = hypertention
-        # c = cardiatic desease
-
-        stat_vett = np.array([0, 0, 0, 0, 0, 0]) 
-        # Rules
+        # Regole fuzzy
         if condition == "d":
-            if gluco_mean < 70 or gluco_mean > 200:
-                stat_vett[0] = 1
+            stat_vett[0] = max(0, 1 - (gluco_mean - 70) / 130)  # fuzzification per la glicemia
         else:
-            if gluco_mean < 70 or gluco_mean > 140:
-                stat_vett[0] = 1
+            stat_vett[0] = max(0, 1 - abs(gluco_mean - 105) / 35)
 
         if condition == "n" or condition == "c":
-            if bps_mean > 100:
-                stat_vett[1] = 1
+            stat_vett[1] = max(0, (bps_mean - 100) / 40)  # fuzzification per la pressione sanguigna
         else:
-            if bps_mean > 140:
-                stat_vett[1] = 1
+            stat_vett[1] = max(0, (bps_mean - 120) / 50)
 
-        if oxim_mean < 97: # in percentuale
-            stat_vett[2] = 1
-        
-        if ECG_mean > 100: #TODO mettere la soglia giusta e capire se cambia per le patologie
-            stat_vett[3] = 1
+        stat_vett[2] = max(0, (97 - oxim_mean) / 10)  # fuzzification per la saturazione di ossigeno
 
-        if RR_count > 2:
-            stat_vett[4] = 1
-        
-        if termo_mean < 35 or termo_mean > 37:
-            stat_vett[5] = 1
-        
-        status = "good"
+        stat_vett[3] = max(0, (ECG_mean - 80) / 20)  # fuzzification per l'ECG
 
-        # se ho i battiti alti o se ho l'ossigeno basso o entrambi sono bad oppure se più di due condizioni superano il limite.
-        if stat_vett[0] == 1 or stat_vett[2] == 1 or  np.sum(stat_vett) > 3:  
+        stat_vett[4] = max(0, 1 - RR_count / 10)  # fuzzification per la frequenza respiratoria
+
+        stat_vett[5] = max(0, 1 - abs(termo_mean - 36) / 2)  # fuzzification per la temperatura
+
+        # Definizione dei pesi per le diverse misurazioni
+        weights = np.array([1.5, 2.0, 2.5, 2.0, 1.5, 1.0])  # Maggiore peso per oxim, bps, ECG, RR
+
+        # Aggregazione pesata delle condizioni
+        weighted_aggregated_status = np.dot(stat_vett, weights) / np.sum(weights)
+
+        # Definizione dello stato in base al grado di appartenenza aggregato pesato
+        if weighted_aggregated_status >= 0.7:
+            status = "good"
+        elif weighted_aggregated_status >= 0.4:
+            status = "fair"
+        else:
             status = "bad"
 
         return status
+
     
     def update_service(self):
         # update the service in the catalog
