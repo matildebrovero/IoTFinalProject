@@ -1,12 +1,24 @@
 from flask import Flask, render_template, request, jsonify
 import requests
+import json
 
 app = Flask(__name__)
 
 # Initial page
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # load the configuration file using a get request to 0.0.0.0:8080/configwebpage
+    uri = "http://localhost:8080/configwebpage"
+    try:
+        response = requests.get(uri)
+        print(response)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        data = response.json()
+        print(data)
+        return render_template('index.html', config=data)
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': str(e)})
+    #return render_template('index.html')
 
 # Function to get the data from the server (GET REQUEST)
 @app.route('/getData', methods=['POST'])

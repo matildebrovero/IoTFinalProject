@@ -91,21 +91,21 @@
                         <input type="checkbox" id="none" name="conditions" value="none" class="custom-checkbox">
                         None
                     </label>
+                </div>
                 <button type="submit" class="btn" onclick="AddPatient()">Submit</button>
             </form>
         </div>
 
     <script>
-        // Sample configuration data
-        // TODO: Replace with actual data from the server
-        const config = {
-            "patientsID": ["patient1", "patient2", "patient3"], // Sample patient IDs
-            "data": ["ECG", "data2", "data3"], // Sample data to monitor
-            "deviceConnectors":["device1", "device2", "device3"]
-        };
+
+        // load the config from the server
+        const config = JSON.parse('{{ config | tojson | safe }}');
 
         // Function to populate patient select dropdown
         function populatePatients() {
+            //DEBUG
+            console.log("Populating patients");
+            console.log(config.patientsID);
             const select = document.getElementById("patientSelect");
             config.patientsID.forEach(patient => {
                 const option = document.createElement("option");
