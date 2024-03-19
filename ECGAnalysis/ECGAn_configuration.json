@@ -1,6 +1,6 @@
 {
     "RegistrySystem": "http://localhost:8080",
-    "information": [
+    "information": 
         {
             "serviceID": 16,
             "serviceName": "ECG_Analysis",
@@ -11,5 +11,4 @@
             "subscribe_topic": "+/ECG",
             "sampling_frequency": 250
         }
-    ]
-}
+    }
