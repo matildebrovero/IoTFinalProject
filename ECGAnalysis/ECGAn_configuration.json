@@ -1,14 +1,15 @@
 {
-    "RegistrySystem": "../RegistrySystem/catalog.json",    
-    "serviceName": "ECG_Analysis",
-    "information":[{
-        "serviceID": "",
-        "availableServices": [
-            "MQTT",
-            "REST"
+    "RegistrySystem": "http://localhost:8080",
+    "information": [
+        {
+            "serviceID": 16,
+            "serviceName": "ECG_Analysis",
+            "availableServices": [
+                "MQTT",
+                "REST"
             ],
-        "subscribe_topic": "Patient1/ECG",
-        "sampling_frequency": 250
+            "subscribe_topic": "+/ECG",
+            "sampling_frequency": 250
         }
     ]
 }

@@ -3,17 +3,24 @@ import json
 from MyMQTT import *
 import biosppy.signals.ecg as ecg
 import requests
-import cherrypy
 import numpy as np
 import time
 
 class ECGAnalysis:
 
-    def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, topic_pub, fc):
+    """
+    Microservice for the SmartHospital IoT platform.
+    This microservice is responsible for analyzing the ECG data and publishing the results.
+
+    Standard Configuration file: ECGAn_configuration.json
+
+    """
+
+    def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, fc):
 
         """
         This microservice has both subscriber and publisher capabilities. 
-        
+        It subscribes to the ECG data and publishes the analyzed ECG data.
         """
 
         self.broker = broker
@@ -23,7 +30,7 @@ class ECGAnalysis:
         self.clientID_pub = clientID_pub
 
         self.topic_sub = topic_sub
-        self.topic_pub = topic_pub
+        print(topic_sub)
 
         self.fc = fc
 
@@ -37,24 +44,35 @@ class ECGAnalysis:
         
 
     def notify(self, topic, payload):
+
+        topic = topic.split("/")            
+        patient_id = topic[1]
+        basetopic = topic[0]
+        topic_pub = f"{basetopic}/{patient_id}/ECG_Analysis"
+
         message_json = json.loads(payload)
         ecg_data = message_json["e"][0]["v"]
-        #time_stamp = ecg_data[0]["t"]
-        self.process_and_publish_ecg_signal(ecg_data)
+        time_stamp = message_json["e"][0]["t"]
+        self.process_and_publish_ecg_signal(ecg_data, time_stamp, topic_pub)
 
-    def process_and_publish_ecg_signal(self,ecg_data):
+    def process_and_publish_ecg_signal(self,ecg_data,time_stamp,topic_pub):
+
         # We analyze the ECG with Bioppsy
         out = ecg.ecg(signal=ecg_data, sampling_rate=self.fc, show=False)
 
-        # We get the HR
+        # We get the HR and average it
         heart_rate = out["heart_rate"]
         heart_rate = int(np.mean(heart_rate))
 
-        # Another look at HR, just to be sure I am working correctly with the HRV
-        #hr_from_RR = int(60 / np.mean(np.diff(out["rpeaks"]) / self.fc))
+        # We get the filtered ECG
+        filtered = out["filtered"]
 
-        # We identify outlier peaks
-        rr_wave = np.diff(out["rpeaks"])
+        # We get the RR wave
+        rr_wave = np.diff(out["rpeaks"]/fc)
+
+        print(heart_rate)
+        print(int(60/np.mean(rr_wave)))
+        time.sleep(2)
 
         """
         print(len(rr_wave))
@@ -70,16 +88,19 @@ class ECGAnalysis:
         outliers = [rr for rr in rr_wave if rr < lower_threshold or rr > upper_threshold]
         """
 
-
-        current_time = time.time() # è corretto???????
-
         output = {
-            "bn": self.topic_pub,
+            "bn": topic_pub,
             "e": [
                 {
-                    "n": "hr",
+                    "n": "ECG_filtered",
+                    "u": "mV",  # Assuming ECG data is in millivolts
+                    "t": time_stamp,
+                    "v": filtered.tolist(),
+                },
+                {
+                    "n": "HR",
                     "u": "bpm",  
-                    "t": current_time,
+                    "t": time_stamp,
                     "v": heart_rate,
                 },
                 {
@@ -89,12 +110,13 @@ class ECGAnalysis:
                 }
             ]
         }
+        print(output)
+        print(topic_pub)
+        self.publish(output, topic_pub)
 
-        self.publish(output)
+    def publish(self,output, topic_pub):
 
-    def publish(self,output):
-
-        self.ClientPublisher.myPublish(self.topic_pub, output)
+        self.ClientPublisher.myPublish(topic_pub, output)
         
         return print("published")
         
@@ -110,24 +132,47 @@ class ECGAnalysis:
 
 if __name__ == "__main__":
 
-    # Load configuration from the registry system
-    
+
     conf = json.load(open("ECGAn_configuration.json"))
-    RegistrySystem = json.load(open(conf["RegistrySystem"]))
-    urlCatalog = RegistrySystem["catalogURL"]
-    #MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
-    
-    clientID_sub = "SmartHospital308sub"  # Assuming a fixed client ID for simplicity
-    clientID_pub = "SmartHospital308pub"
-    broker = "test.mosquitto.org"#MQTTinfo["IP"]
-    port = 1883 #MQTTinfo["port"]
-    topic_sub =  "SmartHospital308/Patient1/ECG"#MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
-    topic_pub = "SmartHospital308/Patient1/ECG_analyzed"
+    RegistrySystem = conf["RegistrySystem"]
+
+    # Make POST request
+    response = requests.post(f"{RegistrySystem}/service", json=conf)
+
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+
+        # Print the response text
+        print("Response from the server:")
+        print(response.text)
+
+        # Save the new configuration file
+        with open("ECGAn_configuration.json", "w") as file:
+            json.dump(response.json(), file, indent=4)
+        
+
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+
+
+    request = requests.get(f"{RegistrySystem}/broker")
+    MQTTinfo = json.loads(request.text)
+    clientID_sub = conf["information"][0]["serviceName"] + str(conf["information"][0]["serviceID"]) + "_sub"
+    clientID_pub = conf["information"][0]["serviceName"] + str(conf["information"][0]["serviceID"]) + "_pub"
+    broker = MQTTinfo["IP"]
+    port = MQTTinfo["port"]
+
+    topic_sub =  MQTTinfo["main_topic"] + conf["information"][0]["subscribe_topic"]
+    print(topic_sub)
+    print(broker)
 
     fc = conf["information"][0]["sampling_frequency"] #questo facciamo che lo prende dalla configurazione!
 
+
+
+
     # Create an instance of ECGAnalysis
-    myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, topic_pub, fc)
+    myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc)
     myECGAnalysis.startSim()
 
     try:

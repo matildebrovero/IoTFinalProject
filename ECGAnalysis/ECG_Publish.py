@@ -3,14 +3,15 @@ import json
 import numpy as np
 from MyMQTT import *
 import neurokit2 as nk
+import requests
 
-def generate_simulated_ecg(duration=60, sampling_rate=250, noise_level=0.5):
+def generate_simulated_ecg(duration=100, sampling_rate=250):
     
     """
     Function that simulates ECG data.
     """
 
-    ecg_signal = nk.ecg_simulate(duration=duration,sampling_rate=sampling_rate, noise=0.01, heart_rate=80, heart_rate_std=30, method='ecgsyn')
+    ecg_signal = nk.ecg_simulate(duration=duration,sampling_rate=sampling_rate, noise=0.01, heart_rate=70, heart_rate_std=5, method='ecgsyn')
 
     return ecg_signal.tolist()
 
@@ -46,6 +47,8 @@ class SensorPublisher:
 
         self.ClientPublisher.myPublish(self.topic, output)
         print(f"Published new ECG data: {output}")
+        print(topic)
+
 
     def StopPublish(self):
         self.ClientPublisher.stop()
@@ -62,17 +65,27 @@ def read_sensor_data():
 
 if __name__ == "__main__":
     
-    clientID = "SmartHospital308"
-    broker = "test.mosquitto.org"  # Adjust broker address if needed
-    port = 1883
-    topic = "SmartHospital308/Patient1/ECG"
+    # Load configuration from the registry system
+    conf = json.load(open("ECGAn_configuration.json"))
+    RegistrySystem = conf["RegistrySystem"]
+    request = requests.get(f"{RegistrySystem}/broker")
+    MQTTinfo = json.loads(request.text)
+    clientID = "ECG_Publisher"
+    broker = MQTTinfo["IP"]
+    port = MQTTinfo["port"]
+    topic =  "SmartHospital308/Patient1/ECG"
+
 
     mySensor = SensorPublisher(clientID, broker, port, topic)
     print('Welcome to the ECG data publisher\n')
 
     try:
         while True:
-            time.sleep(10)  # Publish data every 5 minutes
+            print("presleep")
+            time.sleep(10)
+            print("postsleep")
             mySensor.publish()
+            print("Published")# Publish data every 5 minutes
+              
     except KeyboardInterrupt:
         mySensor.StopPublish()
