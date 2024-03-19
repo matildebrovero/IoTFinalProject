@@ -9,6 +9,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 from MyMQTT import * #importing MyMQTT class from MyMQTT.py
 import cherrypy
 import requests
+import time
 
 # MQTT SUBSCRIBER
 class SensorSubscriber:
@@ -115,12 +116,27 @@ def InfluxDBread(query):
     print("Reading data from InfluxDB")
     query_api = client.query_api()
     tables = query_api.query(org="SPHYNX", query=query)
-    results = []
+    results = {
+            "bn": "InfluxDBdata", 
+            "patientID": "",
+            "e":{
+                "n": "",
+                "u": "",
+                "t": "",
+                "v": []
+            }
+        }
     for table in tables:
         for record in table.records:
             #results.append((record.get_measurement(), record.get_field(), record.get_value(), record.get_time()))
-            results.append((record.get_measurement(), record.get_field(), record.get_value()))
+            results["e"]["v"].append(record.get_value())
+            results["e"]["n"] = record.get_field()
+            results["e"]["t"] = time.time()
+            results["e"]["u"] = record.values.get("unit")
+            results["patientID"] = record.get_measurement()
+    
     return json.dumps(results)
+    
 
 # REST API
 class rest_API(object):
@@ -164,8 +180,8 @@ if __name__ == "__main__":
     urlCatalog = config_file["RegistrySystem"]
 
     # read information from the configuration file and POST the information to the catalog
-    config = config_file["ServiceInformation"]
-    config = requests.post(f"{urlCatalog}/service", data=config)
+    #config = config_file["ServiceInformation"]
+    config = requests.post(f"{urlCatalog}/service", json=config_file["ServiceInformation"])
     config_file["ServiceInformation"] = config.json()
     # save the new configuration file
     json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
@@ -188,7 +204,6 @@ if __name__ == "__main__":
     broker = RegistrySystem["broker"]["IP"]
     port = RegistrySystem["broker"]["port"]
     topics =  ["Monitoring/+/ECG", "Monitoring/+/sensorsData", "Monitoring/+/status"]"""
-    #print(topics)
 
     # Create an instance of the SensorSubscriber
     subscriber = SensorSubscriber(clientID, broker, port)
@@ -219,7 +234,7 @@ if __name__ == "__main__":
             current_time = time.time()
             if current_time - start_time > 5*60:
                 config_file = json.load(open('DBadaptor_config.json'))
-                config = requests.put(f"{urlCatalog}/service", data=config_file["ServiceInformation"])
+                config = requests.put(f"{urlCatalog}/service", json=config_file["ServiceInformation"])
                 config_file["ServiceInformation"] = config.json()
                 json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
                 start_time = current_time
