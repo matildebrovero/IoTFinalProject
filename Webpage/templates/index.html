@@ -157,14 +157,24 @@
                 return response.json();
             })
             .then(data => {
+                // Data are received in this format:  { "bn": "InfluxDBdata", "patientID": "", "e":{ "n": "", "u": "", "t": "", "v": [] } }
+                let dataa = JSON.parse(data);
+                let patient = dataa.patientID;
+                let dataType = dataa.e.n;
+                let values = dataa.e.v;
+                // xaixs is a vector with the same length of values containing the index of the values
+                let xaxis = [];
+                for (let i = 0; i < values.length; i++) {
+                    xaxis.push(i);
+                }
+
                 // Vettori per i dati suddivisi
-                let patients = [];
+                /*let patients = [];
                 let dataTypes = [];
                 let values = [];
                 let dataa = JSON.parse(data);
                 let xaxis = [];
-
-                // Itera attraverso i dati e inserisci i valori nei vettori appropriati
+                
                 for (let i = 0; i < dataa.length; i++) {
                     let rowData = dataa[i];
                     let patient = rowData[0];
@@ -176,7 +186,7 @@
                     dataTypes.push(dataType);
                     values.push(value);
                     xaxis.push(i);
-                }
+                }*/
 
                 /*console.log("Patients:", patients);
                 console.log("Data Types:", dataTypes);
@@ -278,7 +288,7 @@
                 document.getElementById('page1').style.display = 'block';
                 // Refresh the page to populate the new patient in the dropdown
                 location.reload();
-                
+
                 return response.json();
             })
             .then(data => {
