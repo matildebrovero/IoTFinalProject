@@ -7,7 +7,9 @@ app = Flask(__name__)
 # Initial page
 @app.route('/')
 def index():
-    # load the configuration file using a get request to 0.0.0.0:8080/configwebpage
+
+    # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
+    # URI to ask configurqation file using data from the catalog
     uri = "http://localhost:8080/configwebpage"
     try:
         response = requests.get(uri)
@@ -23,13 +25,12 @@ def index():
 # Function to get the data from the server (GET REQUEST)
 @app.route('/getData', methods=['POST'])
 def getData():
-    # TODO: cambiare questi dati leggendo dai dati passati da interfaccia grafica
     patientSelected = request.form['patientSelect']
     dataSelected = request.form['dataSelect']
     timeRange = request.form['timeRange']
     print(patientSelected, dataSelected, timeRange)
 
-    # TODO: cambiare l'indirizzo in base al server che ospita il servizio - LEGGERE DA FILE JSON DI CONFIGURAZIONE
+    # URI to ask data from the database
     uri = f"http://localhost:8081/{dataSelected}/{patientSelected}?range={timeRange}"
     print(uri)
 
@@ -45,16 +46,16 @@ def getData():
 
 @app.route('/addPatient', methods=['POST'])
 def add_patient():
+    # Get the data from the form
     new_patient_data = request.form.to_dict()
-    # Salvare i dati del nuovo paziente o fare altro con essi
-    print("New Patient Data:", new_patient_data)
+    #print("New Patient Data:", new_patient_data)
 
-    #TODO: cambiare l'indirizzo in base al server che ospita il servizio - LEGGERE DA FILE JSON DI CONFIGURAZIONE
+    # URI to post data in the catalog
     uri = f"http://localhost:8080/patient"
     print(uri)
 
     try:
-        # salvo i pazienti nel server
+        # Save the new patient data in the catalog
         response = requests.post(uri, data=new_patient_data)
         print(response)
         response.raise_for_status()  # Raise an exception if the request was unsuccessful

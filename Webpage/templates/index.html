@@ -269,6 +269,16 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+                // Show success message
+                alert('Patient added successfully');
+                // Reset form
+                document.getElementById('newPatientForm').reset();
+                // Hide form and show patient monitoring page
+                document.getElementById('page2').style.display = 'none';
+                document.getElementById('page1').style.display = 'block';
+                // Refresh the page to populate the new patient in the dropdown
+                location.reload();
+                
                 return response.json();
             })
             .then(data => {
