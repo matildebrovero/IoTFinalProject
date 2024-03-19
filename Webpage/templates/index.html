@@ -243,7 +243,20 @@
             const birthdate = document.getElementById("birthdate").value;
             const residence = document.getElementById("residence").value;
             const deviceConnector = document.getElementById("deviceConnector").value;
-            const conditions = document.querySelector('input[name="conditions"]:checked').value;
+            // I want conditions to be equal to an array with "n" = no patologies "d" = diabetic "h" = hypertention "c" = cardiatic desease
+            const conditions = [];
+            if (document.getElementById("diabetes").checked) {
+                conditions.push("d");
+            }
+            if (document.getElementById("hypertension").checked) {
+                conditions.push("h");
+            }
+            if (document.getElementById("heartDisease").checked) {
+                conditions.push("c");
+            }
+            if (document.getElementById("none").checked) {
+                conditions.push("n");
+            }
 
             fetch('/addPatient', {
                 method: 'POST',
