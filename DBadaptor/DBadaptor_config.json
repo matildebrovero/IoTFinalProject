@@ -22,10 +22,6 @@
                 "token": "SmartHospital308_OXIData"
             },
             {
-                "data": "Pulse",
-                "token": "SmartHospital308_PULSEData"
-            },
-            {
                 "data": "temperature",
                 "token": "SmartHospital308_TERMOData"
             },
@@ -36,6 +32,10 @@
             {
                 "data": "RR",
                 "token": "SmartHospital308_RRData"
+            },
+            {
+                "data": "HR",
+                "token": "SmartHospital308_HRData"
             }
         ],
         "bucket": "SmartHospital308"

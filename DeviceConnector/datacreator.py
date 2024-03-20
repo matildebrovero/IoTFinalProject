@@ -5,6 +5,7 @@ import neurokit2 as nk
 fever_periods = [False, True] * 4  # 4 periods of normal temperature and 4 periods with fever
 fever_period_index = 0
 
+# FUNCTION TO SIMULATE THE BODY TEMPERATURE
 def read_body_temperature():
     global fever_period_index
     
@@ -28,6 +29,7 @@ def read_body_temperature():
 pressure_periods = [False, True] * 4  # 4 periods of normal blood pressure and 4 periods with altered blood pressure
 pressure_period_index = 0
 
+# FUNCTION TO SIMULATE THE BLOOD PRESSURE
 def read_blood_pressure():
     global pressure_period_index
     
@@ -54,6 +56,7 @@ def read_blood_pressure():
 glucose_periods = [False, True] * 4  # 4 periods of normal glucose and 4 periods with altered glucose
 glucose_period_index = 0
 
+# FUNCTION TO SIMULATE THE GLUCOSE LEVEL
 def read_glucometer():
     global glucose_period_index
     
@@ -76,6 +79,7 @@ def read_glucometer():
 oxygen_periods = [False, True] * 4  # 4 periods of normal oxygenation and 4 periods with altered oxygenation
 oxygen_period_index = 0
 
+# FUNCTION TO SIMULATE THE OXYGEN SATURATION
 def read_oximeter():
     global oxygen_period_index
     
@@ -94,7 +98,7 @@ def read_oximeter():
     
     return oxygen_level
 
-# Function to generate simulated ECG data
+# FUNCTION TO SIMULATE THE ECG SIGNAL
 def generate_simulated_ecg(duration=60, sampling_rate=250, noise_level=0.5):
     
     """

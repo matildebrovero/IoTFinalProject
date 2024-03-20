@@ -25,6 +25,7 @@ class SensorSubscriber:
         print(f"Received new status: {self.sensorData}")
         print(f"Topic: {self.topic}")
         
+        # TODO: check the HOW THE DATA ARE WRITTEN TO THE INFLUXDB
         # Read the ECG and other sensors' data from the topic and write it to the InfluxDB
         if self.topic.split('/')[3] == "ECG":
             print("ECG data received")
@@ -74,24 +75,28 @@ class SensorSubscriber:
                     print(buck["token"])
                     bucket = buck["token"]
             # Write to InfluxDB
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value))
+            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],status))
             print("Writing to InfluxDB")
             InfluxDBwrite(bucket,point)   
         
-        elif self.topic.split('/')[3] == "RR":
+        # TODO: CHECK IF THE FOLLOWING CODE IS CORRECT
+        elif self.topic.split('/')[3] == "RR" or self.topic.split[3] == "HR":
             patientID = self.topic.split('/')[2]
-            RR = self.sensorData['RR']
-            print(f'Patient {patientID} has an RR interval equal to: {RR}')
             # Read the bucket from the DB adaptor config file
             buckets = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["buckets"]
             for buck in buckets:
                 if buck["data"] == self.topic.split('/')[3]:
                     print(buck["token"])
                     bucket = buck["token"]
-            # Write to InfluxDB
+            # Read the bucket from the DB adaptor config file 
+            time = self.sensorData['e'][0]['t']
+            value = self.sensorData['e'][0]['v']
+            unit = self.sensorData['e'][0]['u']
+            print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
+            # Write to InfluxDB  
             point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value))
             print("Writing to InfluxDB")
-            InfluxDBwrite(bucket,point)   
+            InfluxDBwrite(bucket,point)
         else:
             pass
 
