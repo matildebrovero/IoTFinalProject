@@ -16,7 +16,7 @@ class PatientStatus(object):
         ps_conf = copy.deepcopy(self.conf)
         self.urlRegistrySystem = self.conf["RegistrySystem"] # get the IP address of the registry system
         # register the service to the catalog
-        config = json.dumps(self.conf["information"][0])
+        config = json.dumps(self.conf["information"])
         # post the configuration to the catalog
         config = requests.post(f"{self.urlRegistrySystem}/service",json=config)
         ps_conf["information"][0] = config.json()
@@ -29,7 +29,7 @@ class PatientStatus(object):
         # get the mqtt information from the catalog
         b = requests.get(f"{self.urlRegistrySystem}/broker")
         self.broker = b.json()
-        self.clientID = self.conf["information"][0]["serviceName"]+str(self.conf["information"][0]["serviceID"])
+        self.clientID = self.conf["information"]["serviceName"]+str(self.conf["information"]["serviceID"])
         self.status_client = StatusManager(self.clientID, self.broker["IP"],self.broker["port"] )
         # start the mqtt publisher
         self.status_client.startSim()
@@ -50,7 +50,7 @@ class PatientStatus(object):
             data = {"gluco": response_gluco.json()["e"][0]["v"], "bps": response_bps.json()["e"][0]["v"], "oxim": response_oxim.json()["e"][0]["v"], "ECG": response_ECG.json()["e"][0]["v"], "termo": response_termo.json()["e"][0]["v"], "condition": condition[patID.index(pat)]}
             s = self.calculate_status(data)
             stat = {"patientID": pat, "status": s, "timestamp": time.time()}
-            topic = self.broker["main_topic"]+"patient"+str(pat)+self.conf["information"][0]["pubish_topic"]
+            topic = self.broker["main_topic"]+"patient"+str(pat)+self.conf["information"]["pubish_topic"]
             self.status_client.publish(topic, stat) 
 
     def calculate_status(self, data):
@@ -115,9 +115,9 @@ class PatientStatus(object):
     
     def update_service(self):
         # update the service in the catalog
-        config = json.dumps(self.conf["information"][0])
+        config = json.dumps(self.conf["information"])
         config = requests.put(f"{self.urlRegistrySystem}/service",json=config)
-        self.conf["information"][0] = config.json()
+        self.conf["information"] = config.json()
         # save the new configuration file 
         json.dump(self.conf, open("PatientStatus_config.json", "w"), indent=4)
         print("Service updated in the catalog")
