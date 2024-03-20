@@ -1,6 +1,6 @@
 {
     "RegistrySystem": "http://localhost:8080",
-    "information": [
+    "information": 
         {
             "serviceID": "",
             "serviceName": "PatientStatus",
@@ -11,5 +11,4 @@
             "pubish_topic": "/status",
             "lastUpdated": "2019-12-12T12:12:12Z"
         }
-    ]
 }
