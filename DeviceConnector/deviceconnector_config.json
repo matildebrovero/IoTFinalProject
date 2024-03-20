@@ -19,7 +19,7 @@
         "pubish_topic": [{
             "base_topic": "/Monitoring/patient",
             "sensors": "/sensorsData",
-            "ecg": "/ECG"
+            "ecg": "/ecgData"
         }],
         "resources":{
             "sensors":[{
