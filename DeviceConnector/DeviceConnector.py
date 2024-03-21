@@ -107,11 +107,9 @@ if __name__ == "__main__":
     # save the new configuration file
     json.dump(config_file, open("deviceconnector.json", "w"), indent = 4)
 
-    # get the deviceConnectorID from the configuration file
-    deviceConnectorID = config_file["information"]["deviceConnectorID"]
-
-    # get the patientID by doing a get request to the catalog
-    patientID = requests.get(f"{urlCatalog}/patientInfo?deviceconnector={deviceConnectorID}").json()["patientID"]
+    # get the patientID which is equal to the deviceConnectorID (read from the configuration file)
+    patientID = config_file["information"]["deviceConnectorID"]
+    
 
     # get the information about the MQTT broker from the catalog using get requests
     MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
