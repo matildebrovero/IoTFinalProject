@@ -36,7 +36,7 @@ class PatientStatus(object):
 
     def get_status_and_publish(self):
 
-        patientList = requests.get(f"{self.urlRegistrySystem}/patientAndCondition")
+        patientList = requests.get(f"{self.urlRegistrySystem}/patientInfo/All")
         patID = patientList.json()["patientID"]
         condition = patientList.json()["condition"]
         
