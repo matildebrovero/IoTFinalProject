@@ -7,9 +7,17 @@ app = Flask(__name__)
 # Initial page
 @app.route('/')
 def index():
-
     # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
     # URI to ask configurqation file using data from the catalog
+    """# load the configuration file of the Webpage
+    conf = json.load(open("config_web.json"))
+    # load the registry system
+    urlCatalog = conf["RegistrySystem"]
+    # read information from the configuration file and POST the information to the catalog
+    config = conf["information"]
+    config = requests.post(f"{urlCatalog}/service", data=config)
+    conf["information"] = config.json()"""
+
     uri = "http://localhost:8080/configwebpage"
     try:
         response = requests.get(uri)

@@ -252,7 +252,6 @@
             const lastName = document.getElementById("lastName").value;
             const birthdate = document.getElementById("birthdate").value;
             const residence = document.getElementById("residence").value;
-            const deviceConnector = document.getElementById("deviceConnector").value;
             // I want conditions to be equal to an array with "n" = no patologies "d" = diabetic "h" = hypertention "c" = cardiatic desease
             const conditions = [];
             if (document.getElementById("diabetes").checked) {
@@ -273,7 +272,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `firstName=${firstName}&lastName=${lastName}&birthdate=${birthdate}&residence=${residence}&deviceConnector=${deviceConnector}&conditions=${conditions}`,
+                body: `firstName=${firstName}&lastName=${lastName}&birthdate=${birthdate}&residence=${residence}&&conditions=${conditions}`,
             })
             .then(response => {
                 if (!response.ok) {
