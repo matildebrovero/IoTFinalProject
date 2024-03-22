@@ -9,19 +9,22 @@ import time
 class ECGAnalysis:
 
     """
-    Microservice for the SmartHospital IoT platform.
-    This microservice is responsible for analyzing the ECG data and publishing the results.
+    ECGAnalysis - SmartHospital IoT platform. Version 1.0.0
+    This microservice is responsible for analyzing the ECG data and publishing the results to the Database Connector.
+    The results are published according to the SenML format.
+    
+        Input: 
+            - ECG data from device connector.
 
-    Standard Configuration file: ECGAn_configuration.json
+        Output: 
+            - Heart Rate
+            - Filtered ECG signal
+            - RR wave
 
+    Standard Configuration file provided: ECGAn_configuration.json
     """
 
     def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, fc):
-
-        """
-        This microservice has both subscriber and publisher capabilities. 
-        It subscribes to the ECG data and publishes the analyzed ECG data.
-        """
 
         self.broker = broker
         self.port = port
@@ -30,7 +33,6 @@ class ECGAnalysis:
         self.clientID_pub = clientID_pub
 
         self.topic_sub = topic_sub
-        print(topic_sub)
 
         self.fc = fc
 
@@ -72,22 +74,8 @@ class ECGAnalysis:
 
         print(heart_rate)
         print(int(60/np.mean(rr_wave)))
-        time.sleep(2)
 
-        """
-        print(len(rr_wave))
-        q1 = np.percentile(rr_wave, 25)
-        q3 = np.percentile(rr_wave, 75)
-        iqr = q3 - q1
-        
-        # Define outlier thresholds
-        lower_threshold = q1 - 1.5*iqr
-        upper_threshold = q3 + 1.5*iqr
-        
-        # Identify outliers
-        outliers = [rr for rr in rr_wave if rr < lower_threshold or rr > upper_threshold]
-        """
-
+# ADAPT TO SENML FORMAT! 
         output = {
             "bn": topic_pub,
             "e": [
@@ -106,6 +94,7 @@ class ECGAnalysis:
                 {
                     "n": "RR_wave",
                     "u": "ms",  
+                    "t": time_stamp,
                     "v": rr_wave.tolist(),
                 }
             ]
@@ -114,10 +103,55 @@ class ECGAnalysis:
         print(topic_pub)
         self.publish(output, topic_pub)
 
-    def publish(self,output, topic_pub):
+    """
+        # Send individual samples of filtered ECG
+        for i, value in enumerate(filtered):
+            filtered_entry = {
+                "bn": topic_pub,
+                "e": [
+                    {
+                        "n": f"ECG_filtered_{i}",  # Unique name for each filtered ECG sample
+                        "u": "mV",
+                        "t": time_stamp + i * self.time_interval,  # Adjust timestamp for each sample
+                        "v": value,
+                    }
+                ]
+            }
+            self.publish(filtered_entry, topic_pub)
 
+        # Send heart rate
+        output_heart_rate = {
+            "bn": topic_pub,
+            "e": [
+                {
+                    "n": "HR",
+                    "u": "bpm",
+                    "t": time_stamp,
+                    "v": heart_rate,
+                }
+            ]
+        }
+        self.publish(output_heart_rate, topic_pub)
+
+        # Send RR wave samples individually
+        for i, rr_sample in enumerate(rr_wave):
+            rr_wave_entry = {
+                "bn": topic_pub,
+                "e": [
+                    {
+                        "n": f"RR_wave_{i}",  # Unique name for each RR wave sample
+                        "u": "ms",
+                        "t": time_stamp + i * self.time_interval,  # Adjust timestamp for each sample
+                        "v": rr_sample,
+                    }
+                ]
+            }
+            self.publish(rr_wave_entry, topic_pub)
+
+    """
+
+    def publish(self, output, topic_pub):
         self.ClientPublisher.myPublish(topic_pub, output)
-        
         return print("published")
         
 
@@ -132,11 +166,11 @@ class ECGAnalysis:
 
 if __name__ == "__main__":
 
-
+    # Load the configuration file
     conf = json.load(open("ECGAn_configuration.json"))
     RegistrySystem = conf["RegistrySystem"]
 
-    # Make POST request
+    # Make POST request to the registry system
     response = requests.post(f"{RegistrySystem}/service", json=conf)
 
     # Check if the request was successful (status code 200)
@@ -155,8 +189,11 @@ if __name__ == "__main__":
         print(f"Error: {response.status_code} - {response.text}")
 
 
-    request = requests.get(f"{RegistrySystem}/broker")
-    MQTTinfo = json.loads(request.text)
+    request = requests.get(f"{RegistrySystem}/broker") #get the broker info
+    MQTTinfo = json.loads(request.text) 
+
+    # Define the topics and the MQTT clientID, with the new configuration got from the RegistrySystem
+    
     clientID_sub = conf["information"][0]["serviceName"] + str(conf["information"][0]["serviceID"]) + "_sub"
     clientID_pub = conf["information"][0]["serviceName"] + str(conf["information"][0]["serviceID"]) + "_pub"
     broker = MQTTinfo["IP"]
