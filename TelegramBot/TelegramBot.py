@@ -47,8 +47,9 @@ class HospitalBot:
         patientID = topic.split("/")[2] 
         onlyID = patientID.split("t")[2]
         # request the patient name via get request to the catalog
-        patientName = requests.get(f"{urlCatalog}/patientInfo/{patientID}").json()["firstName"]
-        patientSurname = requests.get(f"{urlCatalog}/patientInfo/{patientID}").json()["lastName"]
+        patientInfo = requests.get(f"{urlCatalog}/patientInfo?patientID={onlyID}").json()
+        patientName = patientInfo["firstName"]
+        patientSurname = patientInfo["lastName"]
         # check the message received from the topic and send an alert message to the chat
         if msg["status"] == "bad":
             self.bot.sendMessage(self.chat_ID, text=f"ALERT MESSAGE: {patientName} {patientSurname} with ID {onlyID} is in danger")
