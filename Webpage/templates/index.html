@@ -17,6 +17,9 @@
             <!-- Add button to navigate to the new patient form -->
             <button onclick="showNewPatientForm()" class="btn">Add New Patient</button>
 
+            <!-- Add a button on the right to delete a patient from the server -->
+            <button onclick="deletePatient()" class="btn">Delete Patient</button>
+
             <br><br>
 
             <div class="form-group">
@@ -89,6 +92,20 @@
             </form>
         </div>
 
+        <div id="page3" style="display: none;">
+            <!-- Page 3: Delete Patient Form -->
+            <h1>Delete Patient</h1>
+            <form id="deletePatientForm">
+                <div>
+                    <label for="deletingPatient">Select a Patient:</label>
+                    <select id="deletingPatient" class="select-box">
+                        <!-- Options will be populated dynamically with JavaScript -->
+                    </select>
+                </div>
+                <br> <br>
+                <button type="submit" class="btn" onclick="DeletePatient()">Delete</button>
+            </form>
+
     <script>
 
         // load the config from the server
@@ -108,6 +125,19 @@
             });
         }
 
+        function deletingPatient() {
+            //DEBUG
+            console.log("Populating patients");
+            console.log(config.patientsID);
+            const select = document.getElementById("deletingPatient");
+            config.patientsID.forEach(patient => {
+                const option = document.createElement("option");
+                option.text = patient;
+                option.value = patient;
+                select.add(option);
+            });
+        }
+
         // Function to populate data select dropdown
         function populateData() {
             const select = document.getElementById("dataSelect");
@@ -119,16 +149,6 @@
             });
         }
 
-        // Function to populate device connector select dropdown
-        function populateDeviceConnectors() {
-            const select = document.getElementById("deviceConnector");
-            config.deviceConnectors.forEach(deviceConnector => {
-                const option = document.createElement("option");
-                option.text = deviceConnector;
-                option.value = deviceConnector;
-                select.add(option);
-            });
-        }
 
         // Function to handle GET request
         function getData() {
@@ -214,7 +234,7 @@
         window.onload = function() {
             populatePatients();
             populateData();
-            populateDeviceConnectors();
+            deletingPatient();
         };
     
         // Function to show the new patient form
@@ -285,6 +305,42 @@
             })
             .then(data => {
                 console.log(data);
+            })
+        }
+
+        // Function to show the delete patient form
+        function deletePatient() {
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'block';
+        }
+
+        // function to delete a patient by doing a delete request to the server
+        function DeletePatient() {
+            const selectedpatient = document.getElementById("deletingPatient").value;
+
+            fetch('/deletePatient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `selectedpatient=${selectedpatient}`,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Show success message
+                alert('Patient deleted successfully');
+                // Reset form
+                document.getElementById('deletePatientForm').reset();
+                // Hide form and show patient monitoring page
+                document.getElementById('page3').style.display = 'none';
+                document.getElementById('page1').style.display = 'block';
+                // Refresh the page to populate the new patient in the dropdown
+                location.reload();
+
+                return response.json();
             })
         }
 
