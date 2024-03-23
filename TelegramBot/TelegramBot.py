@@ -45,12 +45,13 @@ class HospitalBot:
             for nurse in self.nurseInfo:
                 if nurse["nurseName"] == message:
                     nurseID = nurse["nurseID"]
-                    patients = nurse["patients"]
                     # update chatID of the nurse in the nurseInfo file
                     nurse["chatID"] = self.chat_ID
                     print(nurse)
-                    # register the chatID of the nurse in the catalog using a POST request
-                    #requests.post(f"{urlCatalog}/NurseInfo?name={nurse["nurseName"]}", data=json.dumps(nurse))
+                    # register the chatID of the nurse in the catalog using a POST request, in this way the nurse can receive updates about the patients, also, assign patients to the nurse
+                    nurse = requests.post(f"{urlCatalog}/NurseInfo?name={nurse["nurseName"]}"
+                    data=json.dumps(nurse))
+                    patients = nurse["patients"]
             # send a message to the chat with the nurseID
             self.bot.sendMessage(self.chat_ID, text=f"Your ID is {nurseID} and you are in charge of the following patients: {patients}")
         elif message not in [self.Names, "/start", "/stop"]:
@@ -110,11 +111,14 @@ if __name__ == "__main__":
     token = conf["telegramToken"]
     # read the url of the Registry System from the configuration file
     urlCatalog = conf["RegistrySystem"]
-    RegistrySystem = json.load(open("..\RegistrySystem\catalog.json"))
+    
+    # FOLLOWING LINE WAS USED TO TEST THE BOT WITHOUT THE CATALOG
+    #RegistrySystem = json.load(open("..\RegistrySystem\catalog.json"))
+
     # read information from the configuration file
     config = conf["information"]
     # POST the configuration file to the catalog and get back the information (the Registry System will add the ID to the service information)
-    """config = requests.post(f"{urlCatalog}/service", data=config)
+    config = requests.post(f"{urlCatalog}/service", data=config)
     conf["information"] = config.json()
     # save the new configuration file
     json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
@@ -122,13 +126,13 @@ if __name__ == "__main__":
     MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
-    topic = MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]"""
+    topic = MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
     ###################################################
     ## The following code is used to test the bot without the catalog
     ###################################################
-    broker = RegistrySystem["broker"]["IP"]
+    """broker = RegistrySystem["broker"]["IP"]
     port = RegistrySystem["broker"]["port"]
-    topic = RegistrySystem["broker"]["main_topic"] + conf["information"]["subscribe_topic"]
+    topic = RegistrySystem["broker"]["main_topic"] + conf["information"]["subscribe_topic"]"""
     ###################################################  
     print(topic)
     # create an instance of the HospitalBot
