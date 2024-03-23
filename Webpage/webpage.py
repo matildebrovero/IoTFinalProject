@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 import json
+from configreader import read_config, save_config
+
 
 app = Flask(__name__)
 
@@ -9,16 +11,21 @@ app = Flask(__name__)
 def index():
     # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
     # URI to ask configurqation file using data from the catalog
-    """# load the configuration file of the Webpage
-    conf = json.load(open("config_web.json"))
+    # load the configuration file of the Webpage and convert it from a dictionary to a JSON object
+    conf = read_config()
+    print(conf)
     # load the registry system
     urlCatalog = conf["RegistrySystem"]
+    print(urlCatalog)
     # read information from the configuration file and POST the information to the catalog
     config = conf["information"]
+    print(config)
     config = requests.post(f"{urlCatalog}/service", data=config)
-    conf["information"] = config.json()"""
-
-    uri = "http://localhost:8080/configwebpage"
+    conf["information"] = config.json()
+    save_config(conf)
+    
+    uri = f"{urlCatalog}/configwebpage"
+    print(uri)
     try:
         response = requests.get(uri)
         print(response)
@@ -28,7 +35,7 @@ def index():
         return render_template('index.html', config=data)
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)})
-    #return render_template('index.html')
+    
 
 # Function to get the data from the server (GET REQUEST)
 @app.route('/getData', methods=['POST'])
@@ -38,8 +45,10 @@ def getData():
     timeRange = request.form['timeRange']
     print(patientSelected, dataSelected, timeRange)
 
-    # URI to ask data from the database
-    uri = f"http://localhost:8081/{dataSelected}/{patientSelected}?range={timeRange}"
+    conf = read_config()
+
+    # URI to ask data from the database for a certain patient and time range
+    uri = f"{conf["Database"]}/{dataSelected}/{patientSelected}?range={timeRange}"
     print(uri)
 
     try:
@@ -57,9 +66,9 @@ def add_patient():
     # Get the data from the form
     new_patient_data = request.form.to_dict()
     #print("New Patient Data:", new_patient_data)
-
+    conf = read_config()
     # URI to post data in the catalog
-    uri = f"http://localhost:8080/patient"
+    uri = f"{conf["RegistrySystem"]}/patient"
     print(uri)
 
     try:
@@ -74,4 +83,7 @@ def add_patient():
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
+
     app.run(debug=True)
+
+    
