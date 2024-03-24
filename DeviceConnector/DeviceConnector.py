@@ -103,8 +103,7 @@ if __name__ == "__main__":
     urlCatalog = RegistrySystem["catalogURL"]"""
 
     # read information from the configuration file and POST the information to the catalog
-    # TODO: READ THE URL FROM THE CONFIGURATION FILE
-    config = requests.post(f"{urlCatalog}/deviceConnectorList", data=config_file["information"])
+    config = requests.post(f"{urlCatalog}/{config_file['uri']['add_deviceconn']}", data=config_file["information"])
     config_file["information"] = config.json()
     # save the new configuration file
     json.dump(config_file, open("deviceconnector.json", "w"), indent = 4)
@@ -112,9 +111,8 @@ if __name__ == "__main__":
     # get the patientID which is equal to the deviceConnectorID (read from the configuration file)
     patientID = config_file["information"]["deviceConnectorID"]
     
-    # get the information about the MQTT broker from the catalog using get requests
-    # TODO: change the URL to the correct one
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
+    # get the information about the MQTT broker from the catalog using GET request
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{config_file['uri']['broker_info']}"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic_sensor = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["sensorsData"]
@@ -143,13 +141,13 @@ if __name__ == "__main__":
             mySensors.publish_ecg(topic_ecg)
             mySensors.publish_sensorsdata(topic_sensor)
 
-            #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
+            #update the configuration file every 5 minutes by doing a PUT request to the catalog
             # get the current time
             current_time = time.time()
             # check if 5 minutes have passed
             if current_time - start_time > 5*60:
                 config_file = json.load(open('deviceconnector_config.json'))
-                config = requests.put(f"{urlCatalog}/service", json=config_file["information"])
+                config = requests.put(f"{urlCatalog}/{config_file['uri']['add_deviceconn']}", json=config_file["information"])
                 config_file["information"] = config.json()
                 json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
                 # update the start time

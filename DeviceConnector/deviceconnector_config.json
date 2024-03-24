@@ -20,6 +20,10 @@
             "sensors": "/sensorsData",
             "ecg": "/ecgData"
         }],
+        "uri": [{
+            "add_deviceconn": "deviceConnector",
+            "broker_info": "broker"
+        }],
         "resources":{
             "sensors":[{
                 "sensorName": "MLX90614",
