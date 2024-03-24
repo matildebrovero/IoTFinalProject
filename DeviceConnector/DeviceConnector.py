@@ -132,12 +132,21 @@ if __name__ == "__main__":
     mySensors.start()
     
     time_sensors = True
-    counter = 0
+    start_time = time.time()
     try:
         while True: 
             # Publish all the data every minute
             mySensors.publish_ecg(topic_ecg)
             mySensors.publish_sensorsdata(topic_sensor)
+            #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
+            current_time = time.time()
+            if current_time - start_time > 5*60:
+                config_file = json.load(open('deviceconnector_config.json'))
+                config = requests.put(f"{urlCatalog}/service", json=config_file["information"])
+                config_file["information"] = config.json()
+                json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
+                start_time = current_time
+            # wait for 60 seconds
             time.sleep(60)
     except KeyboardInterrupt:
         mySensors.StopSim()
