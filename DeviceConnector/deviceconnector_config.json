@@ -15,15 +15,15 @@
             "MQTT",
             "REST"
             ],
-        "pubish_topic": [{
+        "pubish_topic": {
             "base_topic": "/Monitoring/patient",
             "sensors": "/sensorsData",
             "ecg": "/ecgData"
-        }],
-        "uri": [{
+        },
+        "uri": {
             "add_deviceconn": "deviceConnector",
             "broker_info": "broker"
-        }],
+        },
         "resources":{
             "sensors":[{
                 "sensorName": "MLX90614",
