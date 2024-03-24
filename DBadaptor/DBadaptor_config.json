@@ -38,7 +38,16 @@
                 "token": "SmartHospital308_HRData"
             }
         ],
-        "bucket": "SmartHospital308"
+        "bucket": "SmartHospital308",
+        "results": {
+            "bn": "InfluxData",
+            "e": {
+                "n": "",
+                "u": "",
+                "t": [],
+                "v": []
+            }
+        }
     },
     "ServiceInformation": {
         "serviceID": "",
@@ -54,6 +63,11 @@
             "Monitoring/+/ECG",
             "Monitoring/+/sensorsData"
         ],
+        "uri": {
+            "add_service": "service",
+            "broker_info": "broker"
+
+        },
         "lastUpdate": "2021-06-01T12:00:00"
     }
 }
