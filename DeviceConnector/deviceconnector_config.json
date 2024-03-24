@@ -1,6 +1,5 @@
 {
-    "RegistrySystem": "../RegistrySystem/catalog.json",  
-    "catalogURL": "http://localhost:8080",
+    "RegistrySystem": "http://localhost:8080",  
     "serviceName": "DeviceConnector",
     "information":{
         "deviceConnectorID": "",
