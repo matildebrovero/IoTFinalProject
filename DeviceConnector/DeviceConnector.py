@@ -1,15 +1,14 @@
 from MyMQTT import * #importing MyMQTT class from MyMQTT.py
 import time
 import json
-import random
 import requests
-from datacreator import *
+from datacreator import * #importing the functions to fake the data from the sensors
 
+# Function to read the data from the sensors
 def read_sensors_data():
     glucometer = read_glucometer()
     blood_pressure = read_blood_pressure()
     oximeter = read_oximeter()
-    #pulse = random.randint(80, 120)
     termometer = read_body_temperature()
     # Get the current time
     time = time.time()
@@ -45,8 +44,9 @@ def read_sensors_data():
     }
     return json.dumps(json_data, indent = 4)
 
+# Function to read the ECG data
 def read_ecg_data():
-    ecgdata = generate_simulated_ecg() #ECG data is a list of values
+    ecgdata = generate_simulated_ecg() #TODO: CHECK THIS ECG data is a list of values
     #get the current time
     time = time.time()
     #SenML standard
@@ -95,13 +95,15 @@ if __name__ == "__main__":
     config_file = json.load(open('deviceconnector.json'))
     # load the registry system
     urlCatalog = config_file["RegistrySystem"]
-    #########
+
+    ###########
     # LINES USED TO TEST
-    #########    
+    ###########
     """RegistrySystem = json.load(open(config_file["RegistrySystem"]))
     urlCatalog = RegistrySystem["catalogURL"]"""
 
     # read information from the configuration file and POST the information to the catalog
+    # TODO: READ THE URL FROM THE CONFIGURATION FILE
     config = requests.post(f"{urlCatalog}/deviceConnectorList", data=config_file["information"])
     config_file["information"] = config.json()
     # save the new configuration file
@@ -110,43 +112,50 @@ if __name__ == "__main__":
     # get the patientID which is equal to the deviceConnectorID (read from the configuration file)
     patientID = config_file["information"]["deviceConnectorID"]
     
-
     # get the information about the MQTT broker from the catalog using get requests
+    # TODO: change the URL to the correct one
     MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic_sensor = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["sensorsData"]
     topic_ecg = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["ECG"]
     clientID = config_file['serviceName'] + config_file["ServiceInformation"]['serviceID']
-    #########
+
+    ###########
     # LINES USED TO TEST
-    #########
+    ###########
     """clientID = config_file["ServiceInformation"]['serviceName'] + config_file["ServiceInformation"]['serviceID']
     broker = RegistrySystem["broker"]["IP"]
     port = RegistrySystem["broker"]["port"]
     topic_sensor = RegistrySystem["broker"]["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["sensorsData"]
     topic_ecg = RegistrySystem["broker"]["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["ECG"]"""
 
-    # create an instance of the publisher
+    # create an instance of the publisher to publish the data coming from the sensors
     mySensors = SensorsPublisher(clientID, broker, port)
     mySensors.start()
     
-    time_sensors = True
+    # get the start time
     start_time = time.time()
+
     try:
         while True: 
             # Publish all the data every minute
             mySensors.publish_ecg(topic_ecg)
             mySensors.publish_sensorsdata(topic_sensor)
+
             #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
+            # get the current time
             current_time = time.time()
+            # check if 5 minutes have passed
             if current_time - start_time > 5*60:
                 config_file = json.load(open('deviceconnector_config.json'))
                 config = requests.put(f"{urlCatalog}/service", json=config_file["information"])
                 config_file["information"] = config.json()
                 json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
+                # update the start time
                 start_time = current_time
             # wait for 60 seconds
             time.sleep(60)
     except KeyboardInterrupt:
+        # stop the publisher
         mySensors.StopSim()
