@@ -13,35 +13,20 @@ def read_sensors_data():
     # Get the current time
     time = time.time()
     # SenML standard
-    json_data = {
-        "bn": "SensorsData",
-        "e": [
-            {
-                "n": "glucometer",
-                "u": "mg/dL",
-                "t": time,
-                "v": glucometer
-            },
-            {
-                "n": "blood_pressure",
-                "u": "mmHg",
-                "t": time,
-                "v": blood_pressure
-            },
-            {
-                "n": "oximeter",
-                "u": "%",
-                "t": time,
-                "v": oximeter
-            },
-            {
-                "n": "termometer",
-                "u": "°C",
-                "t": time,
-                "v": termometer
-            }
-        ]
-    }
+    json_data = json.load(open('deviceconnector_config.json'))["sensorData"]
+    for data in json_data["e"]:
+        if data["n"] == "glucometer":
+            data["v"] = glucometer
+            data["t"] = time
+        elif data["n"] == "blood_pressure":
+            data["v"] = blood_pressure
+            data["t"] = time
+        elif data["n"] == "oximeter":
+            data["v"] = oximeter
+            data["t"] = time
+        elif data["n"] == "termometer":
+            data["v"] = termometer
+            data["t"] = time
     return json.dumps(json_data, indent = 4)
 
 # Function to read the ECG data
@@ -50,17 +35,9 @@ def read_ecg_data():
     #get the current time
     time = time.time()
     #SenML standard
-    json_data = {
-        "bn": "ECGdata",
-        "e": [
-            {
-                "n": "ECG",
-                "u": "mV",
-                "t": time,
-                "v": ecgdata
-            }
-        ]
-    }
+    json_data = json.load(open('deviceconnector_config.json'))["ECGdata"]
+    json_data["e"][0]["v"] = ecgdata
+    json_data["e"][0]["t"] = time
     return json.dumps(json_data, indent = 4)
 
 class SensorsPublisher:
