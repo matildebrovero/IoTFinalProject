@@ -8,6 +8,15 @@
             "MQTT", 
             "REST"
         ], 
+        "uri": {
+            "get_nurseInfo": "NurseInfo/all",
+            "post_nurseInfo": "NurseInfo",
+            "get_patientInfo": "patientInfo",
+            "single_patient": "patientID",
+            "add_service": "service",
+            "broker_info": "broker",
+
+        },
         "subscribe_topic": "Monitoring/+/status",
         "lastUpdate": "2019-11-20T14:00:00"
     }

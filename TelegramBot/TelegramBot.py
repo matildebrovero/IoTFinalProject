@@ -9,15 +9,19 @@ import cherrypy
 
 
 class HospitalBot:
-    def __init__(self, token, broker, port, topic):
+    def __init__(self, token, broker, port, topic, configuration):
         # Local token
         self.tokenBot = token
         self.bot = telepot.Bot(self.tokenBot)
         self.previousStatus = ""
         self.topic = topic
+        self.configuration = configuration
         MessageLoop(self.bot, {'chat': self.on_chat_message}).run_as_thread()
-        #self.nurseInfo = requests.get(f"{urlCatalog}/NurseInfo/all").json()
-        self.nurseInfo = json.load(open("nurseInfo.json"))
+        self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['uri']['get_nurseInfo']}").json()
+
+        # USED ONLY TO TEST THE BOT WITHOUT THE CATALOG
+        #self.nurseInfo = json.load(open("nurseInfo.json"))
+        
         # get the names of the nurses from the nurseInfo file
         self.Names = [nurse["nurseName"] for nurse in self.nurseInfo]
         print(self.Names)
@@ -49,7 +53,7 @@ class HospitalBot:
                     nurse["chatID"] = self.chat_ID
                     print(nurse)
                     # register the chatID of the nurse in the catalog using a POST request, in this way the nurse can receive updates about the patients, also, assign patients to the nurse
-                    nurse = requests.post(f"{urlCatalog}/NurseInfo?name={nurse["nurseName"]}"
+                    nurse = requests.post(f"{self.configuration['RegistrySystem']}/{self.configuration['uri']['post_nurseInfo']}?name={nurse["nurseName"]}"
                     data=json.dumps(nurse))
                     patients = nurse["patients"]
             # send a message to the chat with the nurseID
@@ -75,7 +79,7 @@ class HospitalBot:
         patientID = topic.split("/")[2] 
         onlyID = patientID.split("t")[2]
         # request patient name and surname via GET request to the catalog
-        patientInfo = requests.get(f"{urlCatalog}/patientInfo?patientID={onlyID}").json()
+        patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['uri']['get_patientInfo']}?{self.configuration['uri']['single_patient']}={onlyID}").json()
         patientName = patientInfo["firstName"]
         patientSurname = patientInfo["lastName"]
 
@@ -118,15 +122,16 @@ if __name__ == "__main__":
     # read information from the configuration file
     config = conf["information"]
     # POST the configuration file to the catalog and get back the information (the Registry System will add the ID to the service information)
-    config = requests.post(f"{urlCatalog}/service", data=config)
+    config = requests.post(f"{urlCatalog}/{conf['uri']['add_service']}", data=config)
     conf["information"] = config.json()
     # save the new configuration file
     json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
     # GET the information about the MQTT broker from the Registry System using get requests
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['uri']['broker_info']}"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic = MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
+
     ###################################################
     ## The following code is used to test the bot without the catalog
     ###################################################
@@ -134,9 +139,10 @@ if __name__ == "__main__":
     port = RegistrySystem["broker"]["port"]
     topic = RegistrySystem["broker"]["main_topic"] + conf["information"]["subscribe_topic"]"""
     ###################################################  
+    
     print(topic)
     # create an instance of the HospitalBot
-    SmartHospitalBot = HospitalBot(token, broker, port, topic)
+    SmartHospitalBot = HospitalBot(token, broker, port, topic, conf)
 
 while True:
     time.sleep(0.5)
