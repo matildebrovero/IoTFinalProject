@@ -37,12 +37,12 @@ class SensorSubscriber:
                     print(buck["token"])
                     bucket = buck["token"]
             # Read the bucket from the DB adaptor config file 
-            time = self.sensorData['e'][0]['t']
+            time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
             value = self.sensorData['e'][0]['v']
             unit = self.sensorData['e'][0]['u']
             print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
             # Write to InfluxDB  
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value))
+            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
             print("Writing to InfluxDB")
             InfluxDBwrite(bucket,point)
         
@@ -55,12 +55,12 @@ class SensorSubscriber:
             for sensor in sensorList:
                 for bucket in bucketList:
                     if sensor['n'] == bucket['data']:
-                        time = sensor['t']
+                        time = sensor['t'] * 1000000000 # convert to nanoseconds
                         value = sensor['v']
                         unit = sensor['u']
                         print(f'{sensor["n"]} measured a value of {value} {unit} at the time {time}') 
                         # Write to InfluxDB  
-                        point = (Point(sensor["n"]).measurement(patientID).tag("unit", unit).field(sensor['n'], value))
+                        point = (Point(sensor["n"]).measurement(patientID).tag("unit", unit).field(sensor['n'], value).time(int(time)))
                         InfluxDBwrite(bucket['token'],point)
 
         # Read the status from the topic and write it to the InfluxDB        
@@ -75,7 +75,7 @@ class SensorSubscriber:
                     print(buck["token"])
                     bucket = buck["token"]
             # Write to InfluxDB
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],status))
+            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],status).time(int(time.time()*1000000000)))
             print("Writing to InfluxDB")
             InfluxDBwrite(bucket,point)   
         
@@ -89,12 +89,12 @@ class SensorSubscriber:
                     print(buck["token"])
                     bucket = buck["token"]
             # Read the bucket from the DB adaptor config file 
-            time = self.sensorData['e'][0]['t']
+            time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
             value = self.sensorData['e'][0]['v']
             unit = self.sensorData['e'][0]['u']
             print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
             # Write to InfluxDB  
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value))
+            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
             print("Writing to InfluxDB")
             InfluxDBwrite(bucket,point)
         else:
@@ -110,6 +110,7 @@ class SensorSubscriber:
 
 # INFLUXDB CLIENT TO WRITE DATA
 def InfluxDBwrite(bucket,record):
+    print(record.to_line_protocol())  # print the data to be written to InfluxDB
     # read bucket from a config file
     write_api = client.write_api(write_options=SYNCHRONOUS)   
     write_api.write(bucket=bucket, org="SPHYNX", record=record)
@@ -127,7 +128,7 @@ def InfluxDBread(query):
             "e":{
                 "n": "",
                 "u": "",
-                "t": "",
+                "t": [],
                 "v": []
             }
         }
@@ -136,7 +137,7 @@ def InfluxDBread(query):
             #results.append((record.get_measurement(), record.get_field(), record.get_value(), record.get_time()))
             results["e"]["v"].append(record.get_value())
             results["e"]["n"] = record.get_field()
-            results["e"]["t"] = time.time()
+            results["e"]["t"].append(record.get_time().isoformat()) #convert object datetime to isoformat which is "YYYY-MM-DDTHH:MM:SS.ffffff+00:00"
             results["e"]["u"] = record.values.get("unit")
             results["patientID"] = record.get_measurement()
     
@@ -178,14 +179,18 @@ if __name__ == "__main__":
     start_time = time.time()
     # Open configuration file to read InfluxDB token, org and url and MQTT clientID, broker, port and base topic
     config_file = json.load(open('DBadaptor_config.json'))
-    # load the registry system
-    ### LINES USED TO TEST THE CODE WITHOUT THE CATALOG
-    """RegistrySystem = json.load(open(config_file["RegistrySystem"]))
-    urlCatalog = RegistrySystem["catalogURL"]"""
+
+    # load the url of the registry system from the configuration file
     urlCatalog = config_file["RegistrySystem"]
 
+    ########################
+    ### LINES USED TO TEST THE CODE WITHOUT THE CATALOG
+    ########################
+    """RegistrySystem = json.load(open("../RegistrySystem/catalog.json"))
+    urlCatalog = config_file["RegistrySystem"]"""
+
     # read information from the configuration file and POST the information to the catalog
-    #config = config_file["ServiceInformation"]
+    config = config_file["ServiceInformation"]
     config = requests.post(f"{urlCatalog}/service", json=config_file["ServiceInformation"])
     config_file["ServiceInformation"] = config.json()
     # save the new configuration file
@@ -204,16 +209,19 @@ if __name__ == "__main__":
     port = MQTTinfo["port"]
     topics = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["subscribe_topic"]
     clientID = config_file['serviceName'] + config_file["ServiceInformation"]['serviceID']
+
+    ###############
     ### LINES USED TO TEST THE CODE WITHOUT THE CATALOG
+    ###############
     """clientID = config_file["ServiceInformation"]['serviceName'] + config_file["ServiceInformation"]['serviceID']
     broker = RegistrySystem["broker"]["IP"]
     port = RegistrySystem["broker"]["port"]
-    topics =  ["Monitoring/+/ECG", "Monitoring/+/sensorsData", "Monitoring/+/status"]"""
+    topics =  ["SmartHospital308/Monitoring/+/ECG", "SmartHospital308/Monitoring/+/sensorsData", "SmartHospital308/Monitoring/+/status"]"""
 
     # Create an instance of the SensorSubscriber
     subscriber = SensorSubscriber(clientID, broker, port)
     for topic in topics:
-        final_topic = MQTTinfo["main_topic"] + topic
+        final_topic = MQTTinfo["main_topic"] + topic  
         subscriber.startSim(final_topic)
     
     # Start the REST API
