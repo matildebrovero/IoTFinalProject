@@ -7,6 +7,10 @@
         "availableServices": [
             "REST"
         ], 
+        "uri": {
+            "add_service": "service",
+            "get_configurations": "configwebpage"
+        },
         "host": "0.0.0.0",
         "port": 5080,
         "lastUpdate": "2019-11-20T14:00:00"

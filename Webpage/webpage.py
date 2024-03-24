@@ -18,13 +18,14 @@ def index():
     urlCatalog = conf["RegistrySystem"]
     print(urlCatalog)
     # read information from the configuration file and POST the information to the catalog
-    #config = conf["information"]
-    #print(config)
-    #config = requests.post(f"{urlCatalog}/service", data=config)
-    #conf["information"] = config.json()
-    #save_config(conf)
+    config = conf["information"]
+    print(config)
+    config = requests.post(f"{urlCatalog}/{conf['uri']['add_service']}", data=config)
+    conf["information"] = config.json()
+    save_config(conf)
     
-    uri = f"{urlCatalog}/configwebpage"
+    # URI to ask to the registry system configuration file containing patients and data available 
+    uri = f"{urlCatalog}/{conf['uri']['get_configurations']}"
     print(uri)
     try:
         response = requests.get(uri)
@@ -105,7 +106,6 @@ def delete_patient():
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
-
     app.run(debug=True)
 
     
