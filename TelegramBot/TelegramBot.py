@@ -17,7 +17,7 @@ class HospitalBot:
         self.topic = topic
         self.configuration = configuration
         MessageLoop(self.bot, {'chat': self.on_chat_message}).run_as_thread()
-        self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['uri']['get_nurseInfo']}").json()
+        self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_nurseInfo']}").json()
 
         # USED ONLY TO TEST THE BOT WITHOUT THE CATALOG
         #self.nurseInfo = json.load(open("nurseInfo.json"))
@@ -53,8 +53,7 @@ class HospitalBot:
                     nurse["chatID"] = self.chat_ID
                     print(nurse)
                     # register the chatID of the nurse in the catalog using a POST request, in this way the nurse can receive updates about the patients, also, assign patients to the nurse
-                    nurse = requests.post(f"{self.configuration['RegistrySystem']}/{self.configuration['uri']['post_nurseInfo']}?name={nurse["nurseName"]}"
-                    data=json.dumps(nurse))
+                    nurse = requests.post(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['post_nurseInfo']}",data=json.dumps(nurse))
                     patients = nurse["patients"]
             # send a message to the chat with the nurseID
             self.bot.sendMessage(self.chat_ID, text=f"Your ID is {nurseID} and you are in charge of the following patients: {patients}")
@@ -79,7 +78,7 @@ class HospitalBot:
         patientID = topic.split("/")[2] 
         onlyID = patientID.split("t")[2]
         # request patient name and surname via GET request to the catalog
-        patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['uri']['get_patientInfo']}?{self.configuration['uri']['single_patient']}={onlyID}").json()
+        patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['uri']['single_patient']}={onlyID}").json()
         patientName = patientInfo["firstName"]
         patientSurname = patientInfo["lastName"]
 
@@ -122,12 +121,12 @@ if __name__ == "__main__":
     # read information from the configuration file
     config = conf["information"]
     # POST the configuration file to the catalog and get back the information (the Registry System will add the ID to the service information)
-    config = requests.post(f"{urlCatalog}/{conf['uri']['add_service']}", data=config)
+    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", data=config)
     conf["information"] = config.json()
     # save the new configuration file
     json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
     # GET the information about the MQTT broker from the Registry System using get requests
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['uri']['broker_info']}"))
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['information']['uri']['broker_info']}"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic = MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
