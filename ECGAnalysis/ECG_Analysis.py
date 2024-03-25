@@ -24,7 +24,7 @@ class ECGAnalysis:
     Standard Configuration file provided: ECGAn_configuration.json
     """
 
-    def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, fc):
+    def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis):
 
         self.broker = broker
         self.port = port
@@ -33,6 +33,14 @@ class ECGAnalysis:
         self.clientID_pub = clientID_pub
 
         self.topic_sub = topic_sub
+        self.servicepub = servicepub
+
+        self.analysis = analysis
+
+        print(self.analysis)
+
+        time.sleep(5)  # Wait for the broker to be ready
+
 
         self.fc = fc
 
@@ -47,108 +55,80 @@ class ECGAnalysis:
 
     def notify(self, topic, payload):
 
-        topic = topic.split("/")            
-        patient_id = topic[1]
-        basetopic = topic[0]
-        topic_pub = f"{basetopic}/{patient_id}/ECG_Analysis"
+        topic_parts = topic.split("/")
+        patient_id = topic_parts[1]
+        base_topic = topic_parts[0]
+
+        topic_pub = f"{base_topic}/{patient_id}/{self.servicepub}"
 
         message_json = json.loads(payload)
-        ecg_data = message_json["e"][0]["v"]
-        time_stamp = message_json["e"][0]["t"]
-        self.process_and_publish_ecg_signal(ecg_data, time_stamp, topic_pub)
+        data = message_json["e"]
+        ecg_data = np.array([entry['v'] for entry in data])
+        basetime = message_json["bt"]
 
-    def process_and_publish_ecg_signal(self,ecg_data,time_stamp,topic_pub):
+        topic_pubs = [f"{topic_pub}/{self.analysis[0]}",f"{topic_pub}/{self.analysis[1]}",f"{topic_pub}/{self.analysis[2]}"]
+        
 
-        # We analyze the ECG with Bioppsy
+        print(topic_pubs)
+
+        self.process_and_publish_ecg_signal(ecg_data, basetime, topic_pubs)
+
+    def process_and_publish_ecg_signal(self,ecg_data,basetime,topic_pubs):
+
+        # ECG analysis
         out = ecg.ecg(signal=ecg_data, sampling_rate=self.fc, show=False)
-
-        # We get the HR and average it
         heart_rate = out["heart_rate"]
         heart_rate = int(np.mean(heart_rate))
-
-        # We get the filtered ECG
         filtered = out["filtered"]
-
-        # We get the RR wave
         rr_wave = np.diff(out["rpeaks"]/fc)
 
-        print(heart_rate)
-        print(int(60/np.mean(rr_wave)))
 
-# ADAPT TO SENML FORMAT! 
-        output = {
-            "bn": topic_pub,
-            "e": [
-                {
-                    "n": "ECG_filtered",
-                    "u": "mV",  # Assuming ECG data is in millivolts
-                    "t": time_stamp,
-                    "v": filtered.tolist(),
-                },
-                {
-                    "n": "HR",
-                    "u": "bpm",  
-                    "t": time_stamp,
-                    "v": heart_rate,
-                },
-                {
-                    "n": "RR_wave",
-                    "u": "ms",  
-                    "t": time_stamp,
-                    "v": rr_wave.tolist(),
-                }
-            ]
-        }
-        print(output)
-        print(topic_pub)
-        self.publish(output, topic_pub)
-
-    """
-        # Send individual samples of filtered ECG
+        # ECG filtered output
+        filtered_data = [] # Accumulate all entries here
         for i, value in enumerate(filtered):
-            filtered_entry = {
-                "bn": topic_pub,
-                "e": [
-                    {
-                        "n": f"ECG_filtered_{i}",  # Unique name for each filtered ECG sample
-                        "u": "mV",
-                        "t": time_stamp + i * self.time_interval,  # Adjust timestamp for each sample
-                        "v": value,
-                    }
-                ]
+            entry = {
+                "u": "mV",
+                "v": value,
+                "t": i * 1 / self.fc   # Adjust timestamp for each sample according to the "basetime"
             }
-            self.publish(filtered_entry, topic_pub)
+            filtered_data.append(entry)
+        filtered_output = {
+            "bn": topic_pubs[0],
+            "bt": basetime,
+            "e": filtered_data
+        }
+        self.publish(filtered_output, topic_pubs[0])
+    
+        # RR wave output
+        rr_data = []  # Accumulate all entries here
+        for i, value in enumerate(rr_wave):
+            entry = {
+                "u": "ms",
+                "v": value,
+                "t": i * 1 / self.fc   # Adjust timestamp for each sample according to the "basetime"
+            }
+            rr_data.append(entry)
+        rr_output = {
+            "bn": topic_pubs[1],
+            "bt": basetime,
+            "e": filtered_data
+        }
+        self.publish(rr_output, topic_pubs[1])
+    
 
-        # Send heart rate
-        output_heart_rate = {
-            "bn": topic_pub,
+        # Heart rate output
+        heart_rate_output = {
+            "bn": topic_pubs[2],
+            "bt": basetime,
             "e": [
                 {
-                    "n": "HR",
                     "u": "bpm",
-                    "t": time_stamp,
                     "v": heart_rate,
+                    "t": 0
                 }
             ]
-        }
-        self.publish(output_heart_rate, topic_pub)
-
-        # Send RR wave samples individually
-        for i, rr_sample in enumerate(rr_wave):
-            rr_wave_entry = {
-                "bn": topic_pub,
-                "e": [
-                    {
-                        "n": f"RR_wave_{i}",  # Unique name for each RR wave sample
-                        "u": "ms",
-                        "t": time_stamp + i * self.time_interval,  # Adjust timestamp for each sample
-                        "v": rr_sample,
-                    }
-                ]
-            }
-            self.publish(rr_wave_entry, topic_pub)
-
-    """
+        }   
+        self.publish(heart_rate_output, topic_pubs[2])
 
     def publish(self, output, topic_pub):
         self.ClientPublisher.myPublish(topic_pub, output)
@@ -194,22 +174,26 @@ if __name__ == "__main__":
 
     # Define the topics and the MQTT clientID, with the new configuration got from the RegistrySystem
     
-    clientID_sub = conf["information"][0]["serviceName"] + str(conf["information"][0]["serviceID"]) + "_sub"
-    clientID_pub = conf["information"][0]["serviceName"] + str(conf["information"][0]["serviceID"]) + "_pub"
+    servicepub = conf["information"]["publish_topic"]
+    clientID_sub = conf["information"]["serviceName"] + str(conf["information"]["serviceID"]) + "_sub"
+    clientID_pub = conf["information"]["serviceName"] + str(conf["information"]["serviceID"]) + "_pub"
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
 
-    topic_sub =  MQTTinfo["main_topic"] + conf["information"][0]["subscribe_topic"]
+    analysis = conf["information"]["analysis"]
+    print(analysis)
+
+    topic_sub =  MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
     print(topic_sub)
     print(broker)
 
-    fc = conf["information"][0]["sampling_frequency"] #questo facciamo che lo prende dalla configurazione!
+    fc = conf["information"]["sampling_frequency"] #questo facciamo che lo prende dalla configurazione!
 
 
 
 
     # Create an instance of ECGAnalysis
-    myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc)
+    myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis)
     myECGAnalysis.startSim()
 
     try:

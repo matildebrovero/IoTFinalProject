@@ -1,14 +1,19 @@
 {
     "RegistrySystem": "http://localhost:8080",
-    "information": 
-        {
-            "serviceID": 16,
-            "serviceName": "ECG_Analysis",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "subscribe_topic": "+/ECG",
-            "sampling_frequency": 250
-        }
+    "information": {
+        "serviceID": 20,
+        "serviceName": "ECG_Analysis",
+        "availableServices": [
+            "MQTT",
+            "REST"
+        ],
+        "subscribe_topic": "+/ECG",
+        "publish_topic": "ECG_Analysis",
+        "analysis": [
+            "filtered_ECG",
+            "R_peaks",
+            "HR"
+        ],
+        "sampling_frequency": 250
     }
+}

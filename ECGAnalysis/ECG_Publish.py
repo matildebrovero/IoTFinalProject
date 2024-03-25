@@ -5,13 +5,15 @@ from MyMQTT import *
 import neurokit2 as nk
 import requests
 
-def generate_simulated_ecg(duration=100, sampling_rate=250):
+sampling_rate=100
+
+def generate_simulated_ecg(duration=60):
     
     """
     Function that simulates ECG data.
     """
 
-    ecg_signal = nk.ecg_simulate(duration=duration,sampling_rate=sampling_rate, noise=0.01, heart_rate=70, heart_rate_std=5, method='ecgsyn')
+    ecg_signal = nk.ecg_simulate(duration=duration,sampling_rate=sampling_rate, noise=0.1, heart_rate=70, heart_rate_std=5, method='ecgsyn')
 
     return ecg_signal.tolist()
 
@@ -22,32 +24,38 @@ class SensorPublisher:
         self.last_timestamp = time.time()  # Store the timestamp of the last published data
         self.ClientPublisher.start()
 
-#    def start(self):
-#        self.ClientPublisher.start()
-        
 
     def publish(self):
-
         self.ecg_data = read_sensor_data()
         current_time = time.time()
-        elapsed_time = current_time - self.last_timestamp
         self.last_timestamp = current_time
 
+        # Create a list to hold all ECG samples
+        ecg_samples = []
+
+        # https://datatracker.ietf.org/doc/html/rfc8428#section-4.5
+
+        for index, ecg_value in enumerate(self.ecg_data):
+            # Create a dictionary for each ECG sample
+            ecg_sample = {
+                "u": "mV",  # Assuming ECG data is in millivolts
+                "t": index * 1/sampling_rate,
+                "v": ecg_value
+            }
+            # Add the sample to the list
+            ecg_samples.append(ecg_sample)
+
+        # Create the output payload containing all ECG samples
         output = {
             "bn": self.topic,
-            "e": [
-                {
-                    "n": "ecg",
-                    "u": "mV",  # Assuming ECG data is in millivolts
-                    "t": elapsed_time,
-                    "v": [ecg_value for ecg_value in self.ecg_data],
-                }
-            ]
+            "bt": current_time,
+            "e": ecg_samples
         }
 
+        # Publish the payload
         self.ClientPublisher.myPublish(self.topic, output)
         print(f"Published new ECG data: {output}")
-        print(topic)
+        print(self.topic)
 
 
     def StopPublish(self):
@@ -85,7 +93,7 @@ if __name__ == "__main__":
             time.sleep(10)
             print("postsleep")
             mySensor.publish()
-            print("Published")# Publish data every 5 minutes
+            print("Published")
               
     except KeyboardInterrupt:
         mySensor.StopPublish()
