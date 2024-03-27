@@ -26,16 +26,12 @@ class SensorSubscriber:
         print(f"Topic: {self.topic}")
         
         # TODO: check the HOW THE DATA ARE WRITTEN TO THE INFLUXDB
-        # Read the ECG and other sensors' data from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] == "ECG":
-            print("ECG data received")
+        # Read the ECG, RR and HR data from the topic and write it to the InfluxDB
+        if self.topic.split('/')[3] in ["ECG", "RR", "HR"]:
+            print("Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
-            buckets = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["buckets"]
-            for buck in buckets:
-                if buck["data"] == self.topic.split('/')[3]:
-                    print(buck["token"])
-                    bucket = buck["token"]
+            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
             # Read the bucket from the DB adaptor config file 
             time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
             value = self.sensorData['e'][0]['v']
@@ -51,52 +47,29 @@ class SensorSubscriber:
             sensorList = self.sensorData['e']
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
-            bucketList = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["buckets"]
+            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
             for sensor in sensorList:
-                for bucket in bucketList:
-                    if sensor['n'] == bucket['data']:
-                        time = sensor['t'] * 1000000000 # convert to nanoseconds
-                        value = sensor['v']
-                        unit = sensor['u']
-                        print(f'{sensor["n"]} measured a value of {value} {unit} at the time {time}') 
-                        # Write to InfluxDB  
-                        point = (Point(sensor["n"]).measurement(patientID).tag("unit", unit).field(sensor['n'], value).time(int(time)))
-                        InfluxDBwrite(bucket['token'],point)
+                time = sensor['t'] * 1000000000 # convert to nanoseconds
+                value = sensor['v']
+                unit = sensor['u']
+                print(f'{sensor["n"]} measured a value of {value} {unit} at the time {time}') 
+                # Write to InfluxDB  
+                point = (Point(sensor["n"]).measurement(patientID).tag("unit", unit).field(sensor['n'], value).time(int(time)))
+                InfluxDBwrite(bucket,point)
 
         # Read the status from the topic and write it to the InfluxDB        
         elif self.topic.split('/')[3] == "status":
             patientID = self.topic.split('/')[2]
             status = self.sensorData['status']
+            time = time.time() * 1000000000 # convert to nanoseconds
             print(f'Patient {patientID} has a new status: {status}')
             # Read the bucket from the DB adaptor config file
-            buckets = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["buckets"]
-            for buck in buckets:
-                if buck["data"] == self.topic.split('/')[3]:
-                    print(buck["token"])
-                    bucket = buck["token"]
+            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
             # Write to InfluxDB
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],status).time(int(time.time()*1000000000)))
+            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],status).time(time))
             print("Writing to InfluxDB")
             InfluxDBwrite(bucket,point)   
         
-        # TODO: CHECK IF THE FOLLOWING CODE IS CORRECT
-        elif self.topic.split('/')[3] == "RR" or self.topic.split[3] == "HR":
-            patientID = self.topic.split('/')[2]
-            # Read the bucket from the DB adaptor config file
-            buckets = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["buckets"]
-            for buck in buckets:
-                if buck["data"] == self.topic.split('/')[3]:
-                    print(buck["token"])
-                    bucket = buck["token"]
-            # Read the bucket from the DB adaptor config file 
-            time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
-            value = self.sensorData['e'][0]['v']
-            unit = self.sensorData['e'][0]['u']
-            print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
-            # Write to InfluxDB  
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
-            print("Writing to InfluxDB")
-            InfluxDBwrite(bucket,point)
         else:
             pass
 
@@ -142,17 +115,15 @@ class rest_API(object):
         print("REST API created")
     def GET(self, *uri, **params):
         print("GET request received")
-        buckets = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["buckets"]
-        for current_bucket in buckets:
-            if current_bucket["data"] == uri[0]:
-                bucket = current_bucket["token"]
+        bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
         # Read data from InfluxDB and return them as a JSON
         if uri[0] in ["ECG", "glucometer", "temperature", "blood_pressure", "pulse", "oximeter", "RR", "status"]:
             patientID = uri[1]
             range = params["range"]
             query = f"""from(bucket: "{bucket}")
             |> range(start: -{range}m)
-            |> filter(fn: (r) => r._measurement == "{str(patientID)}")"""
+            |> filter(fn: (r) => r._measurement == "{str(patientID)}")
+            |> filter(fn: (r) => r._field == "{uri[0]}")"""
             print(query)
             return json.dumps(InfluxDBread(query))
         else:
@@ -182,20 +153,22 @@ if __name__ == "__main__":
 
     # read information from the configuration file and POST the information to the catalog
     config = config_file["ServiceInformation"]
-    config = requests.post(f"{urlCatalog}/{config_file['uri']['add_service']}", json=config_file["ServiceInformation"])
+    config = requests.post(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['add_service']}", json=config_file["ServiceInformation"])
     config_file["ServiceInformation"] = config.json()
     # save the new configuration file
     json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
 
     # Read InfluxDB configuration from the configuration file
-    token = config_file["InfluxInformation"]["INFLUXDB_TOKEN"]
+    token = config_file["InfluxInformation"]["INFLUX_DOCKER_TOKEN"]
     url = config_file["InfluxInformation"]["INFLUXDB_URL"]
     org = config_file["InfluxInformation"]["INFLUXDB_ORG"]
     # Create an instance of the InfluxDB client
     client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
+
+
     # get the information about the MQTT broker from the catalog using get requests
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{config_file['uri']['broker_info']}"))
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['broker_info']}"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topics = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["subscribe_topic"]
@@ -207,7 +180,7 @@ if __name__ == "__main__":
     """clientID = config_file["ServiceInformation"]['serviceName'] + config_file["ServiceInformation"]['serviceID']
     broker = RegistrySystem["broker"]["IP"]
     port = RegistrySystem["broker"]["port"]
-    topics =  ["SmartHospital308/Monitoring/+/ECG", "SmartHospital308/Monitoring/+/sensorsData", "SmartHospital308/Monitoring/+/status"]"""
+    topics =  ["SmartHospital308/Monitoring/+/ECG", "SmartHospital308/Monitoring/+/RR", "SmartHospital308/Monitoring/+/sensorsData", "SmartHospital308/Monitoring/+/status"]"""
 
     # Create an instance of the SensorSubscriber
     subscriber = SensorSubscriber(clientID, broker, port)
