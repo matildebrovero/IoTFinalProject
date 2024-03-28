@@ -9,7 +9,7 @@ import time
 class ECGAnalysis:
 
     """
-    ECGAnalysis - SmartHospital IoT platform. Version 1.0.0
+    ECGAnalysis - SmartHospital IoT platform. Version 1.0.1
     This microservice is responsible for analyzing the ECG data and publishing the results to the Database Connector.
     The results are published according to the SenML format.
     
@@ -91,6 +91,7 @@ class ECGAnalysis:
 
         self.process_and_publish_ecg_signal(ecg_data, basetime, topic_pubs)
 
+
     def process_and_publish_ecg_signal(self,ecg_data,basetime,topic_pubs):
 
         # ECG analysis
@@ -157,7 +158,7 @@ class ECGAnalysis:
         self.ClientSubscriber.mySubscribe(self.topic_sub)
     
     def StopSim(self):
-        self.ClientSubscriber.unsubscribe()  # Automatic, no need to specify the topics
+        self.ClientSubscriber.unsubscribe() 
         self.ClientSubscriber.stop()
 
 
@@ -173,16 +174,9 @@ if __name__ == "__main__":
 
     # Check if the request was successful (status code 200)
     if response.status_code == 200:
-
-        # Print the response text
-        print("Response from the server:")
-        print(response.text)
-
         # Save the new configuration file
         with open("ECGAn_configuration.json", "w") as file:
             json.dump(response.json(), file, indent=4)
-        
-
     else:
         print(f"Error: {response.status_code} - {response.text}")
 
@@ -197,19 +191,12 @@ if __name__ == "__main__":
     clientID_pub = conf["information"]["serviceName"] + str(conf["information"]["serviceID"]) + "_pub"
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
-
     analysis = conf["information"]["analysis"]
-    print(analysis)
-
     topic_sub =  MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
-    print(topic_sub)
-    print(broker)
 
-    fc = conf["information"]["sampling_frequency"] #questo facciamo che lo prende dalla configurazione!
+    # The sampling frequency of the ECG is a project choice, so it is defined considering that all physical device will have the same frequency.
 
-
-
-
+    fc = conf["information"]["sampling_frequency"] # TODO: check if I can hardcode the frequency into the configuration file, i think is doable since we can assume that every device is the same.
     # Create an instance of ECGAnalysis
     myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis)
     myECGAnalysis.startSim()
