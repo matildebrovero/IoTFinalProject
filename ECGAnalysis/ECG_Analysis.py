@@ -21,7 +21,33 @@ class ECGAnalysis:
             - Filtered ECG signal
             - RR wave
 
+    --------------------------------------------------------------------------
+    --------------         standard configuration          -------------------
+    --------------------------------------------------------------------------
+
     Standard Configuration file provided: ECGAn_configuration.json
+    The parameters of the configuration file are:
+
+        - "RegistrySystem": URL of the Registry System
+        - "information": 
+            - "serviceName": Name of the service
+
+            - "serviceID": ID of the service, automatically assigned by the Registry System 
+
+            - "subscribe_topic": Where the ECG data are expected to come in input. Data are taken in with a MQTT Wildcard +,
+                        Example: SmartHospitalN/*** PatientN ***/ECG
+                            The data are then re-published in the "publish_topic" topic, with the *** PatientN *** information
+                            filled with the actual patient data. 
+
+            - "publish_topic": Publish topic of the service, the main topic where the "analysis" will be published
+                        Example: SmartHospitalN/PatientN/ *** publish_topic *** / ***analysis_1***
+
+            
+            - "analysis": List of analysis to be performed. Those are the topics where the different
+                           analysis will be published.
+
+            - "sampling_frequency": Sampling frequency of the ECG signal, in Hz. 
+
     """
 
     def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis):
@@ -36,11 +62,6 @@ class ECGAnalysis:
         self.servicepub = servicepub
 
         self.analysis = analysis
-
-        print(self.analysis)
-
-        time.sleep(5)  # Wait for the broker to be ready
-
 
         self.fc = fc
 
@@ -67,9 +88,6 @@ class ECGAnalysis:
         basetime = message_json["bt"]
 
         topic_pubs = [f"{topic_pub}/{self.analysis[0]}",f"{topic_pub}/{self.analysis[1]}",f"{topic_pub}/{self.analysis[2]}"]
-        
-
-        print(topic_pubs)
 
         self.process_and_publish_ecg_signal(ecg_data, basetime, topic_pubs)
 
