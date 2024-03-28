@@ -9,6 +9,22 @@
                 "REST"
             ],
             "pubish_topic": "/status",
+            "uri_catalog": 
+            {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB":
+            {
+                "gluco": "/glucometer",
+                "bps": "/blood_pressure",
+                "oxim": "/oximeter",
+                "ecg": "/ECG",
+                "temp": "/temperature",
+                "RR": "/RR"
+            },
             "lastUpdated": "2019-12-12T12:12:12Z"
         }
 }
