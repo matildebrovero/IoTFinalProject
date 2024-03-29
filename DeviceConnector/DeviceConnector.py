@@ -31,13 +31,23 @@ def read_sensors_data():
 
 # Function to read the ECG data
 def read_ecg_data():
-    ecgdata = generate_simulated_ecg() #TODO: CHECK THIS ECG data is a list of values
+    ecgdata, ECG_fc = generate_simulated_ecg()
     #get the current time
     time = time.time()
     #SenML standard
     json_data = json.load(open('deviceconnector_config.json'))["ECGdata"]
-    json_data["e"][0]["v"] = ecgdata
-    json_data["e"][0]["t"] = time
+    json_data["bt"] = time
+    ecg_samples = []
+    for index, ecg_value in enumerate(ecgdata):
+        # Create a dictionary for each ECG sample
+        ecg_sample = {
+            "u": "mV",  
+            "t": index * 1/ECG_fc,
+            "v": ecg_value
+        }
+        # Add the sample to the list
+        ecg_samples.append(ecg_sample)
+    json_data["e"] = ecg_samples
     return json.dumps(json_data, indent = 4)
 
 class SensorsPublisher:
