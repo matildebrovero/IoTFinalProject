@@ -4,6 +4,39 @@ import json
 import requests
 from datacreator import * #importing the functions to fake the data from the sensors
 
+""" 
+    DeviceConnector - SmartHospital IoT platform. Version 1.0.1 
+    This microservice is responsible for publishing the data coming from the sensors to the MQTT broker. Each patient has a unique ID and has its own device connector with temperature, blood pressure, oximeter, glucometer and ECG data.
+ 
+        Output:  
+            - data from the sensors (temperature, blood pressure, oximeter, glucometer) in SenML format in the topic: SmartHospitalN/Monitoring/PatientN/sensorsData
+            - ECG data in SenML format in the topic: SmartHospitalN/Monitoring/PatientN/ecgData
+
+    -------------------------------------------------------------------------- 
+    --------------         standard configuration          ------------------- 
+    -------------------------------------------------------------------------- 
+ 
+    Standard Configuration file provided: ECGAn_configuration.json 
+    The parameters of the configuration file are: 
+ 
+        - "RegistrySystem": URL of the Registry System 
+
+        - "information":  
+            - "serviceID": ID of the service, automatically assigned by the Registry System  
+            - "serviceName": Name of the service = "DeviceConnector"
+            - "measureType": Measurements that can be done by the sensors
+            - "availableServices": List of communication protocols available in the device connector 
+            - "publish_topic": Publish topic of the service, the main topic where the "analysis" will be published 
+                        Example: SmartHospitalN/Monitoring/PatientN/**sensorsData** or **ecgData** 
+            - "uri": List of URIs to ask for information to the Registry System
+                - "add_deviceconn": URI to add the device connector to the Registry System
+                - "broker_info": URI to get the information about the MQTT broker from the Registry System
+            - "resources": List of sensors available in the device connector
+        - "sensorsData": SenML format for the sensors data
+        - "ECGdata": SenML format for the ECG data
+    """ 
+
+
 # Function to read the data from the sensors
 def read_sensors_data():
     glucometer = read_glucometer()

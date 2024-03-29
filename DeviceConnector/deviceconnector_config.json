@@ -1,8 +1,8 @@
 {
     "RegistrySystem": "http://localhost:8080",  
-    "serviceName": "DeviceConnector",
     "information":{
         "deviceConnectorID": "",
+        "serviceName": "DeviceConnector",
         "measureType": [
             "temperature",
             "glucose",
