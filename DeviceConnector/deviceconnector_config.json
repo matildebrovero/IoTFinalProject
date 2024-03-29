@@ -1,9 +1,8 @@
 {
-    "RegistrySystem": "../RegistrySystem/catalog.json",  
-    "catalogURL": "http://localhost:8080",
-    "serviceName": "DeviceConnector",
+    "RegistrySystem": "http://localhost:8080",  
     "information":{
         "deviceConnectorID": "",
+        "serviceName": "DeviceConnector",
         "measureType": [
             "temperature",
             "glucose",
@@ -16,11 +15,15 @@
             "MQTT",
             "REST"
             ],
-        "pubish_topic": [{
+        "pubish_topic": {
             "base_topic": "/Monitoring/patient",
             "sensors": "/sensorsData",
             "ecg": "/ecgData"
-        }],
+        },
+        "uri": {
+            "add_deviceconn": "deviceConnector",
+            "broker_info": "broker"
+        },
         "resources":{
             "sensors":[{
                 "sensorName": "MLX90614",
@@ -81,6 +84,40 @@
             }
             ]
         },
-        "lastUpdate": "2020-03-30"
-    } 
+        "lastUpdate": "2019-11-20T14:00:00"
+    },
+    "sensorData":{
+        "bn": "SensorsData",
+        "e": [
+            {
+                "n": "glucometer",
+                "u": "mg/dL",
+                "t": "",
+                "v": ""
+            },
+            {
+                "n": "blood_pressure",
+                "u": "mmHg",
+                "t": "",
+                "v": ""
+            },
+            {
+                "n": "oximeter",
+                "u": "%",
+                "t": "",
+                "v": ""
+            },
+            {
+                "n": "termometer",
+                "u": "°C",
+                "t": "",
+                "v": ""
+            }
+        ]
+    },
+    "ECGdata":{
+        "bn": "ECGData",
+        "bt": "",
+        "e": []
+    }
 }

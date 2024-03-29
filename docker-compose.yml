@@ -1,0 +1,20 @@
+version: "3" 
+services: 
+  influxdb: 
+    image: influxdb:2.0 
+    container_name: platform_influx 
+    restart: always 
+    environment: 
+      - DOCKER_INFLUXDB_INIT_MODE=setup 
+      - DOCKER_INFLUXDB_INIT_USERNAME=SPHYNX 
+      - DOCKER_INFLUXDB_INIT_PASSWORD=hospital308 
+      - DOCKER_INFLUXDB_INIT_ORG=SPHYNX 
+      - DOCKER_INFLUXDB_INIT_BUCKET=SmartHospital308 
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=jZR2G9mCbHx1_2obB5nEn0EFcjVHVSXi4HjFyI4aQ1_4J7QRp8wVWCVjJFUVAou4Q22bjp_LQDJeBPi7HQXlwQ== 
+    ports: 
+      - 8086:8086 
+    volumes: 
+      - myInfluxVolume:/var/lib/influxdb 
+ 
+volumes: 
+  myInfluxVolume:
