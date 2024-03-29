@@ -46,18 +46,34 @@ class PatientStatus(object):
         
         for pat in patID:
             range = 300
-            # TODO ma questi come faccio a metterli nel config e non scriverli così?
-            response_gluco = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["gluco"]}/patient{pat}?range={range}")  
-            response_bps = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["bps"]}/patient{pat}?range={range}")
-            response_oxim = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["oxim"]}/patient{pat}?range={range}")
-            response_ECG = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["ecg"]}/patient{pat}?range={range}")
-            response_termo = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["temp"]}/patient{pat}?range={range}")
-            response_RR = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["RR"]}/patient{pat}?range={range}")
+
+            # get the data from the database
+            response_gluco = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["gluco"]}{pat}?{self.conf["information"]["params_DB"]}{range}")  
+            response_bps = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["bps"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
+            response_oxim = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["oxim"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
+            response_ECG = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["ecg"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
+            response_termo = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["temp"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
+            response_RR = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["RR"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
+           
             # definition of the data dictionary containing the data of the patient 
-            data = {"gluco": response_gluco.json()["e"][0]["v"], "bps": response_bps.json()["e"][0]["v"], "oxim": response_oxim.json()["e"][0]["v"], "ECG": response_ECG.json()["e"][0]["v"], "termo": response_termo.json()["e"][0]["v"],"termo": response_RR.json()["e"][0]["v"], "condition": condition[patID.index(pat)]}
+            data = {"gluco": response_gluco.json()["e"][0]["v"], 
+                    "bps": response_bps.json()["e"][0]["v"], 
+                    "oxim": response_oxim.json()["e"][0]["v"], 
+                    "ECG": response_ECG.json()["e"][0]["v"], 
+                    "termo": response_termo.json()["e"][0]["v"],
+                    "RR": response_RR.json()["e"][0]["v"], 
+                    "condition": condition[patID.index(pat)]}
+            
             s = self.calculate_status(data)
-            stat = {"patientID": pat, "status": s, "timestamp": time.time()}
-            topic = self.broker["main_topic"]+"patient"+str(pat)+self.conf["information"]["pubish_topic"]
+
+            stat = {"bn": "Status",
+                    "e":[ 
+                        {
+                            "n": "status",
+                            "t": time.time(),
+                            "v": s
+                        }]}
+            topic = self.broker["main_topic"]+self.conf["information"]["pubish_topic"]["base_topic"]+str(pat)+self.conf["information"]["pubish_topic"]["status"]
             self.status_client.publish(topic, stat) 
 
     def calculate_status(self, data):
