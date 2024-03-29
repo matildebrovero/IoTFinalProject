@@ -199,7 +199,7 @@ if __name__ == "__main__":
 
     # The sampling frequency of the ECG is a project choice, so it is defined considering that all physical device will have the same frequency.
 
-    fc = conf["information"]["sampling_frequency"] # TODO: check if I can hardcode the frequency into the configuration file, i think is doable since we can assume that every device is the same.
+    fc = conf["information"]["sampling_frequency"] 
     # Create an instance of ECGAnalysis
     myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis)
     myECGAnalysis.startSim()

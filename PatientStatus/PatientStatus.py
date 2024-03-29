@@ -18,19 +18,18 @@ class PatientStatus(object):
         ps_conf = copy.deepcopy(self.conf)
         # get the IP address of the registry system
         self.urlRegistrySystem = self.conf["RegistrySystem"] 
-        # register the service to the catalog
-        config = json.dumps(self.conf["information"])
         # post the configuration to the catalog
-        config = requests.post(f"{self.urlRegistrySystem}{self.conf["information"]["uri_catalog"]["service"]}",json=config)
-        ps_conf["information"][0] = config.json()
+        config = requests.post(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=self.conf["information"])
+        print(config)
+        ps_conf["information"] = config.json()
         # save the new configuration file 
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
         print("Service registered to the catalog")
         # get the database information from the catalog
-        DB = requests.get(f"{self.urlRegistrySystem}{self.conf["information"]["uri_catalog"]["DB"]}")
+        DB = requests.get(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['DB']}")
         self.Database = DB.json()["urlDB"]
         # get the mqtt information from the catalog
-        b = requests.get(f"{self.urlRegistrySystem}{self.conf["information"]["uri_catalog"]["broker"]}")
+        b = requests.get(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['broker']}")
         self.broker = b.json()
         self.clientID = self.conf["information"]["serviceName"]+str(self.conf["information"]["serviceID"])
         self.status_client = StatusManager(self.clientID, self.broker["IP"],self.broker["port"] )
@@ -40,20 +39,24 @@ class PatientStatus(object):
 
 
     def get_status_and_publish(self):
-        patientList = requests.get(f"{self.urlRegistrySystem}{self.conf["information"]["uri_catalog"]["patient"]}")
+        patientList = requests.get(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['patient']}")
+        print("GETTING PATIENT LIST")
+        print(patientList)
+        print(patientList.json())
         patID = patientList.json()["patientID"]
-        condition = patientList.json()["condition"]
+        condition = patientList.json()["patientCondition"]
+        print(condition)
         
         for pat in patID:
+            print(f"Getting status for patient {pat}")
             range = 300
-
             # get the data from the database
-            response_gluco = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["gluco"]}{pat}?{self.conf["information"]["params_DB"]}{range}")  
-            response_bps = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["bps"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
-            response_oxim = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["oxim"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
-            response_ECG = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["ecg"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
-            response_termo = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["temp"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
-            response_RR = requests.get(f"{self.Database}{self.conf["information"]["uri_DB"]["RR"]}{pat}?{self.conf["information"]["params_DB"]}{range}")
+            response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}{range}")  
+            response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}{range}")
+            response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}{range}")
+            response_ECG = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['ecg']}{pat}?{self.conf['information']['params_DB']}{range}")
+            response_termo = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}{range}")
+            response_RR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}{range}")
            
             # definition of the data dictionary containing the data of the patient 
             data = {"gluco": response_gluco.json()["e"][0]["v"], 
@@ -141,7 +144,7 @@ class PatientStatus(object):
     def update_service(self):
         # update the service in the catalog
         config = json.dumps(self.conf["information"])
-        config = requests.put(f"{self.urlRegistrySystem}{self.conf["information"]["uri_catalog"]["service"]}",json=config)
+        config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=config)
         self.conf["information"] = config.json()
         # save the new configuration file 
         json.dump(self.conf, open("PatientStatus_config.json", "w"), indent=4)

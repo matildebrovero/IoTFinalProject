@@ -226,13 +226,16 @@ if __name__ == "__main__":
     # read information from the configuration file and POST the information to the catalog
     config = config_file["ServiceInformation"]
     config = requests.post(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['add_service']}", json=config_file["ServiceInformation"])
-    print(f"Service Information: {config}")
-    config_file["ServiceInformation"] = config.json()
-    # print the updated information about the service
-    print(f"Service Information: {config_file['ServiceInformation']}")
-    # save the new configuration file
-    json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
-
+    if config.status_code == 200:
+        print(f"Service Information: {config}")
+        config_file["ServiceInformation"] = config.json()
+        # print the updated information about the service
+        print(f"Service Information: {config_file['ServiceInformation']}")
+        # save the new configuration file
+        json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
+    else:
+        print(f"Error: {config.status_code} - {config.text}")
+    
     # Read InfluxDB configuration from the configuration file
     token = config_file["InfluxInformation"]["INFLUX_TOKEN"]
     url = config_file["InfluxInformation"]["INFLUXDB_URL"]
@@ -290,11 +293,15 @@ if __name__ == "__main__":
             if current_time - start_time > 5*60:
                 config_file = json.load(open('DBadaptor_config.json'))
                 config = requests.put(f"{urlCatalog}/{config_file['uri']['broker_info']}", json=config_file["ServiceInformation"])
-                config_file["ServiceInformation"] = config.json()
-                # print the updated information about the service
-                print(f"Service Information: {config_file['ServiceInformation']}")
-                json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
-                start_time = current_time
+                if config.status_code == 200:
+                    print(f"Service Information: {config}")
+                    config_file["ServiceInformation"] = config.json()
+                    # print the updated information about the service
+                    print(f"Service Information: {config_file['ServiceInformation']}")
+                    json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
+                    start_time = current_time
+                else:
+                    print(f"Error: {config.status_code} - {config.text}")
             else:
                 pass
     except KeyboardInterrupt:
