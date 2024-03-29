@@ -69,7 +69,7 @@ class PatientStatus(object):
             stat = {"bn": "Status",
                     "e":[ 
                         {
-                            "n": "status",
+                            "u": "status",
                             "t": time.time(),
                             "v": s
                         }]}
