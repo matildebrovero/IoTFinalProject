@@ -1,5 +1,5 @@
 {
-    "RegistrySystem": "http://localhost:8080", 
+    "RegistrySystem": "http://localhost:8080",
     "InfluxInformation": {
         "INFLUX_TOKEN": "jZR2G9mCbHx1_2obB5nEn0EFcjVHVSXi4HjFyI4aQ1_4J7QRp8wVWCVjJFUVAou4Q22bjp_LQDJeBPi7HQXlwQ==",
         "INFLUXDB_ORG": "SPHYNX",
@@ -15,7 +15,16 @@
             }
         }
     },
-    "SensorsAvailable": ["ECG", "glucometer", "temperature", "blood_pressure", "oximeter", "RR", "status", "HR"],
+    "SensorsAvailable": [
+        "ECG",
+        "glucometer",
+        "temperature",
+        "bloodpressure",
+        "oximeter",
+        "RR",
+        "status",
+        "HR"
+    ],
     "ServiceInformation": {
         "serviceID": "",
         "serviceName": "DB_adaptor",
@@ -35,8 +44,7 @@
         "uri": {
             "add_service": "service",
             "broker_info": "broker"
-
         },
-        "lastUpdate": "2021-06-01T12:00:00"
+        "lastUpdate": "2024-03-29T18:39:59"
     }
 }

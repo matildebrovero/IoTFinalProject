@@ -49,7 +49,7 @@ def read_blood_pressure():
         diastolic_pressure = random.randint(60, 80)  # Normal diastolic
     
     # Create a tuple with blood pressure values
-    blood_pressure = (systolic_pressure, diastolic_pressure)
+    blood_pressure = diastolic_pressure
     return blood_pressure
 
 # Global variables to keep track of glucose status

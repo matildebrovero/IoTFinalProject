@@ -13,7 +13,7 @@ class RegistrySystem(object):
             "patientsID": [],
             "data": [],
             "deviceConnectors":[]
-            }  # TODO capire con mati se è giusto inizializzarlo qui o farlo ogni volta che arriva la richiesta, perchè qui una volta che lo modifico che le modifiche rimnagono e non vorrei che poi ad una successiva richiesta mi ritorni un json con valori che non sono più validi ha in memoria quelle vecchie
+            }
 
     def GET(self,*uri,**params):
         # uri is with * and params is with **
@@ -23,6 +23,12 @@ class RegistrySystem(object):
             print("Received GET request for broker info.")
             response = self.catalog["broker"]
             return json.dumps(response, indent = 4)
+
+        # "http://localhost:8080/DBadaptor"
+        if uri[0]=="DBadaptor":
+            for s in self.catalog["serviceList"]:
+                if s["serviceName"] == "DB_adaptor":
+                    return json.dumps({"urlDB" : "http://"+s["serviceHost"]+":"+str(s["servicePort"])})
         
         # "http://localhost:8080/configwebpage"
         if uri[0] == "configwebpage":  # TODO debug it
@@ -79,12 +85,12 @@ class RegistrySystem(object):
                 print("Received POST request for service.")
                 ID = self.catalog["counter"]["serviceCounter"]
                 self.catalog["counter"]["serviceCounter"] += 1
-                body["information"]["serviceID"] = ID
-                body["information"]["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                self.catalog["serviceList"].append(body["information"])
+                body["serviceID"] = ID
+                body["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                self.catalog["serviceList"].append(body)
                 with open("catalog.json", "w") as file:
                     json.dump(self.catalog, file, indent = 4)
-                print("Catalog updated with service:", body["information"])
+                print("Catalog updated with service:", body)
                 return json.dumps(body, indent = 4)
             
             # "http://localhost:8080/DeviceConnector"
@@ -92,12 +98,13 @@ class RegistrySystem(object):
                 print("Received POST request for DeviceConnector.")
                 ID = self.catalog["counter"]["deviceConnectorCounter"]
                 self.catalog["counter"]["deviceConnectorCounter"] += 1
-                body["information"]["deviceConnectorID"] = ID
-                body["information"]["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                self.catalog["deviceConnectorList"].append(body["information"])
+                body["deviceConnectorID"] = ID
+                body["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                self.catalog["deviceConnectorList"].append(body)
                 with open("catalog.json", "w") as file:
                     json.dump(self.catalog, file, indent = 4)
-                print("Catalog updated with Device connector:", body["information"])
+                    print("Catalog updated with Device connector:", body)
+                print("Catalog updated with Device connector:", body)
                 return json.dumps(body, indent = 4)
 
             # "http://localhost:8080/patient"

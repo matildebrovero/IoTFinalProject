@@ -109,6 +109,2529 @@
                 ]
             },
             "lastUpdate": "2020-03-30"
+        },
+        {
+            "deviceConnectorID": 1,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:18:26"
+        },
+        {
+            "deviceConnectorID": 2,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:20:54"
+        },
+        {
+            "deviceConnectorID": 3,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:22:47"
+        },
+        {
+            "deviceConnectorID": 4,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:23:57"
+        },
+        {
+            "deviceConnectorID": 5,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:24:59"
+        },
+        {
+            "deviceConnectorID": 6,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:25:26"
+        },
+        {
+            "deviceConnectorID": 7,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:26:27"
+        },
+        {
+            "deviceConnectorID": 8,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:26:57"
+        },
+        {
+            "deviceConnectorID": 9,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:27:48"
+        },
+        {
+            "deviceConnectorID": 10,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:28:43"
+        },
+        {
+            "deviceConnectorID": 11,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:29:13"
+        },
+        {
+            "deviceConnectorID": 12,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:29:39"
+        },
+        {
+            "deviceConnectorID": 13,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:31:00"
+        },
+        {
+            "deviceConnectorID": 14,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:31:55"
+        },
+        {
+            "deviceConnectorID": 15,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:33:49"
+        },
+        {
+            "deviceConnectorID": 16,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:39:45"
+        },
+        {
+            "deviceConnectorID": 17,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:44:41"
+        },
+        {
+            "deviceConnectorID": 18,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:48:55"
+        },
+        {
+            "deviceConnectorID": 19,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T17:53:53"
+        },
+        {
+            "deviceConnectorID": 20,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:11:10"
+        },
+        {
+            "deviceConnectorID": 21,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:14:51"
+        },
+        {
+            "deviceConnectorID": 22,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:20:52"
+        },
+        {
+            "deviceConnectorID": 23,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:27:51"
+        },
+        {
+            "deviceConnectorID": 24,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:29:45"
+        },
+        {
+            "deviceConnectorID": 25,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:34:29"
+        },
+        {
+            "deviceConnectorID": 26,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:37:04"
+        },
+        {
+            "deviceConnectorID": 27,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:38:24"
+        },
+        {
+            "deviceConnectorID": 28,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:39:43"
+        },
+        {
+            "deviceConnectorID": 29,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-29T18:41:13"
         }
     ],
     "nursesList": [
@@ -173,11 +2696,607 @@
             ],
             "pubish_topic": "/status",
             "lastUpdate": "2024-03-19T19:12:21"
+        },
+        {
+            "serviceID": 5,
+            "serviceName": "ECG_Analysis",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "subscribe_topic": "Monitoring/+/ecgData",
+            "publish_topic": "Monitoring",
+            "analysis": [
+                "ECG",
+                "RR",
+                "HR"
+            ],
+            "sampling_frequency": 100,
+            "lastUpdate": "2024-03-29T17:34:17"
+        },
+        {
+            "serviceID": 6,
+            "serviceName": "ECG_Analysis",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "subscribe_topic": "Monitoring/+/ecgData",
+            "publish_topic": "Monitoring",
+            "analysis": [
+                "ECG",
+                "RR",
+                "HR"
+            ],
+            "sampling_frequency": 100,
+            "lastUpdate": "2024-03-29T17:37:41"
+        },
+        {
+            "serviceID": 7,
+            "serviceName": "ECG_Analysis",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "subscribe_topic": "Monitoring/+/ecgData",
+            "publish_topic": "Monitoring",
+            "analysis": [
+                "ECG",
+                "RR",
+                "HR"
+            ],
+            "sampling_frequency": 100,
+            "lastUpdate": "2024-03-29T17:44:50"
+        },
+        {
+            "serviceID": 8,
+            "serviceName": "ECG_Analysis",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "subscribe_topic": "Monitoring/+/ecgData",
+            "publish_topic": "Monitoring",
+            "analysis": [
+                "ECG",
+                "RR",
+                "HR"
+            ],
+            "sampling_frequency": 100,
+            "lastUpdate": "2024-03-29T17:54:02"
+        },
+        {
+            "serviceID": 9,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:01:24"
+        },
+        {
+            "serviceID": 10,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:02:09"
+        },
+        {
+            "serviceID": 11,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:03:27"
+        },
+        {
+            "serviceID": 12,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:05:45"
+        },
+        {
+            "serviceID": 13,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:07:24"
+        },
+        {
+            "serviceID": 14,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:07:59"
+        },
+        {
+            "serviceID": 15,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:08:34"
+        },
+        {
+            "serviceID": 16,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:08:58"
+        },
+        {
+            "serviceID": 17,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:09:27"
+        },
+        {
+            "serviceID": 18,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:10:01"
+        },
+        {
+            "serviceID": 19,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:14:53"
+        },
+        {
+            "serviceID": 20,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:15:21"
+        },
+        {
+            "serviceID": 21,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:17:06"
+        },
+        {
+            "serviceID": 22,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:17:07"
+        },
+        {
+            "serviceID": 23,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:18:26"
+        },
+        {
+            "serviceID": 24,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:20:55"
+        },
+        {
+            "serviceID": 25,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:21:44"
+        },
+        {
+            "serviceID": 26,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:26:03"
+        },
+        {
+            "serviceID": 27,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:26:03"
+        },
+        {
+            "serviceID": 28,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:26:34"
+        },
+        {
+            "serviceID": 29,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:34:32"
+        },
+        {
+            "serviceID": 30,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:37:17"
+        },
+        {
+            "RegistrySystem": "http://localhost:8080",
+            "information": {
+                "serviceID": 8,
+                "serviceName": "ECG_Analysis",
+                "availableServices": [
+                    "MQTT",
+                    "REST"
+                ],
+                "subscribe_topic": "Monitoring/+/ecgData",
+                "publish_topic": "Monitoring",
+                "analysis": [
+                    "ECG",
+                    "RR",
+                    "HR"
+                ],
+                "sampling_frequency": 10,
+                "lastUpdate": "2024-03-29T17:54:02"
+            },
+            "serviceID": 31,
+            "lastUpdate": "2024-03-29T18:39:32"
+        },
+        {
+            "serviceID": 32,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8085,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-29T18:39:59"
         }
     ],
     "counter": {
-        "deviceConnectorCounter": 1,
-        "serviceCounter": 5,
+        "deviceConnectorCounter": 30,
+        "serviceCounter": 33,
         "nurseCounter": 0
     }
 }

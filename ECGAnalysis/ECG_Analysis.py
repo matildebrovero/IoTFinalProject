@@ -77,8 +77,11 @@ class ECGAnalysis:
     def notify(self, topic, payload):
 
         topic_parts = topic.split("/")
-        patient_id = topic_parts[1]
+        print(topic_parts)
+
+        patient_id = topic_parts[2]
         base_topic = topic_parts[0]
+        print(base_topic)
 
         topic_pub = f"{base_topic}/{self.servicepub}/{patient_id}"
 

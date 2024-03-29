@@ -113,10 +113,12 @@ class SensorSubscriber:
         elif self.topic.split('/')[3] == "sensorsData":
             print(f"{self.topic.split('/')[3]} Data received")
             sensorList = self.sensorData['e']
+            print(sensorList)
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
             bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
             for sensor in sensorList:
+                print(sensor)
                 time = sensor['t'] * 1000000000 # convert to nanoseconds
                 value = sensor['v']
                 unit = sensor['u']
@@ -224,6 +226,7 @@ if __name__ == "__main__":
     # read information from the configuration file and POST the information to the catalog
     config = config_file["ServiceInformation"]
     config = requests.post(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['add_service']}", json=config_file["ServiceInformation"])
+    print(f"Service Information: {config}")
     config_file["ServiceInformation"] = config.json()
     # print the updated information about the service
     print(f"Service Information: {config_file['ServiceInformation']}")
@@ -239,11 +242,14 @@ if __name__ == "__main__":
 
 
     # get the information about the MQTT broker from the catalog using get requests
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['broker_info']}"))
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['broker_info']}").text)
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
-    topics = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["subscribe_topic"]
-    clientID = config_file['serviceName'] + config_file["ServiceInformation"]['serviceID']
+    print(config_file["ServiceInformation"]["subscribe_topic"])
+    topics = []
+    for topic in config_file["ServiceInformation"]["subscribe_topic"]:
+        topics.append(MQTTinfo["main_topic"] + topic)
+    clientID = config_file["ServiceInformation"]['serviceName'] + str(config_file["ServiceInformation"]['serviceID'])
 
     ###############
     ### LINES USED TO TEST THE CODE WITHOUT THE CATALOG
@@ -257,8 +263,8 @@ if __name__ == "__main__":
     subscriber = SensorSubscriber(clientID, broker, port)
     for topic in topics:
         #final_topic = MQTTinfo["main_topic"] + topic  
-        final_topic = topic
-        subscriber.startSim(final_topic)
+        #final_topic = topic
+        subscriber.startSim(topic)
     
     # Start the REST API
     #get the information about host and port from the configuration file
