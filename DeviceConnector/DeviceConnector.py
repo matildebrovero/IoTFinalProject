@@ -7,6 +7,8 @@ from datacreator import * #importing the functions to fake the data from the sen
 """ 
     DeviceConnector - SmartHospital IoT platform. Version 1.0.1 
     This microservice is responsible for publishing the data coming from the sensors to the MQTT broker. Each patient has a unique ID and has its own device connector with temperature, blood pressure, oximeter, glucometer and ECG data.
+
+    In this version the data are simulated by the functions in the datacreator.py file. The data are published in SenML format to the MQTT broker.
  
         Output:  
             - data from the sensors (temperature, blood pressure, oximeter, glucometer) in SenML format in the topic: SmartHospitalN/Monitoring/PatientN/sensorsData
