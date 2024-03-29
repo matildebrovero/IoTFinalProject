@@ -11,6 +11,51 @@ import cherrypy
 import requests
 import time
 
+""" 
+    DB_adaptor - SmartHospital IoT platform. Version 1.0.1 
+    This microservice is responsible for reading the data from the sensors and writing them to the InfluxDB and for getting the data from the InfluxDB and returning them as a JSON to the services that request them. 
+     
+        Input:  
+            - Data from all the sensors and from the ECG Analysis service
+            - GET requests from the services that want to read the data from the InfluxDB
+        Output:
+            - Data written to the InfluxDB
+            - Data read from the InfluxDB and returned as a JSON to the services that requested them following the SenML standard
+ 
+    -------------------------------------------------------------------------- 
+    --------------         standard configuration          ------------------- 
+    -------------------------------------------------------------------------- 
+ 
+    Standard Configuration file provided: ECGAn_configuration.json 
+    The parameters of the configuration file are: 
+ 
+        - "RegistrySystem": URL of the Registry System 
+
+        - "InfluxInformation": 
+            - "INFLUXDB_TOKEN": Token of the InfluxDB database
+            - "INFLUXDB_ORG": Organization of the InfluxDB database
+            - "INFLUXDB_URL": URL of the InfluxDB database
+            - "bucket": Bucket of the InfluxDB database where the data will be written
+            - "results": SenML format to return the data read from the InfluxDB as a JSON
+ 
+        - "SensorsAvailable": List of the sensors available in the Smart Hospital
+
+        - "ServiceInformation": 
+            - "serviceID": ID of the service
+            - "availableServices": List of the communication protocol available for this service (MQTT, REST)
+            - "serviceName": Name of the service = "DB_adaptor" 
+            - "serviceHost": Host of the service = "localhost"
+            - "servicePort": Port of the service exposed to make get request to retrieve data
+            - "subscribe_topic": Topic where the service will subscribe to read the data from the sensors
+                    Example: "SmartHospitalN/Monitoring/patientN/ECG"
+                    to get the data from every patient present the wildcard "+" is used
+            - "publish_topic": Topic where the service will publish the data to the sensors
+            - "uri": 
+                - "add_service": URI to add the service to the Registry System
+                - "broker_info": URI to get the information about the MQTT broker from the Registry System           
+ 
+    """ 
+
 # MQTT SUBSCRIBER
 class SensorSubscriber:
     def __init__(self, clientID, broker, port):
@@ -82,18 +127,17 @@ class SensorSubscriber:
                 print(f"Writing {sensor} to InfluxDB {point.to_line_protocol()}")
                 InfluxDBwrite(bucket,point)
 
-        # TODO: COME VIENE PUBBLICATO LO STATO??
         # Read the status from the topic and write it to the InfluxDB        
         elif self.topic.split('/')[3] == "status":
             print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
-            status = self.sensorData['status']
-            time = time.time() * 1000000000 # convert to nanoseconds
-            print(f'Patient {patientID} has a new status: {status}')
             # Read the bucket from the DB adaptor config file
             bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-            # Write to InfluxDB
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],status).time(time))
+            # Read the bucket from the DB adaptor config file 
+            time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
+            value = self.sensorData['e'][0]['v']
+            unit = self.sensorData['e'][0]['u']
+            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(time))
             # Print the data that is written to the InfluxDB
             print(f"Writing to InfluxDB {point.to_line_protocol()}")
             InfluxDBwrite(bucket,point)   
@@ -119,7 +163,6 @@ def InfluxDBwrite(bucket,record):
 
 # INFLUXDB CLIENT TO READ DATA
 def InfluxDBread(query):
-    print("Reading data from InfluxDB")
     query_api = client.query_api()
     tables = query_api.query(org="SPHYNX", query=query)
     results = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["results"]
@@ -142,10 +185,9 @@ class rest_API(object):
     def GET(self, *uri, **params):
         print("GET request received")
         bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+        availableSensor = json.load(open('DBadaptor_config.json'))["SensorsAvailable"]
         # Read data from InfluxDB and return them as a JSON
-        # TODO: PRENDERE I SENSORI DISPONIBILI DAL CATALOG E RESTITUIRE UN ERRORE SE IL SENSORE RICHIESTO NON E' DISPONIBILE
-        if uri[0] in ["ECG", "glucometer", "temperature", "blood_pressure", "pulse", "oximeter", "RR", "status", "HR"]:
-            # TODO: DO WE WANT THE PATIENT ID TO BE IN THE PARAMS AND NOT THE URI?
+        if uri[0] in availableSensor:
             patientID = uri[1]
             range = params["range"]
             query = f"""from(bucket: "{bucket}")
@@ -153,10 +195,10 @@ class rest_API(object):
             |> filter(fn: (r) => r._measurement == "{str(patientID)}")
             |> filter(fn: (r) => r._field == "{uri[0]}")"""
             print(query)
+            print(f"Reading {uri[0]} data for patient {patientID} from InfluxDB")
             return json.dumps(InfluxDBread(query))
         else:
             raise(cherrypy.HTTPError(404, "Resource not found"))
-
     def POST(self, *uri, **params):
         pass
     def PUT(self, *uri, **params):
@@ -189,7 +231,7 @@ if __name__ == "__main__":
     json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
 
     # Read InfluxDB configuration from the configuration file
-    token = config_file["InfluxInformation"]["INFLUX_DOCKER_TOKEN"]
+    token = config_file["InfluxInformation"]["INFLUX_TOKEN"]
     url = config_file["InfluxInformation"]["INFLUXDB_URL"]
     org = config_file["InfluxInformation"]["INFLUXDB_ORG"]
     # Create an instance of the InfluxDB client
