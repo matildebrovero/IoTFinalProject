@@ -115,11 +115,29 @@
         {
             "nurseID": 1,
             "nurseName": "Jake Blues",
-            "nurseSurname": "Blues",
             "nurseBirthDate": "2020-03-30",
             "patients": [
                 1
-            ]
+            ],
+            "chatID": ""
+        },
+        {
+            "nurseID": 2,
+            "nurseName": "Elwood Blues",
+            "nurseBirthDate": "2020-03-30",
+            "patients": [
+                2
+            ],
+            "chatID": ""
+        },
+        {
+            "nurseID": 3,
+            "nurseName": "John Belushi",
+            "nurseBirthDate": "2020-03-30",
+            "patients": [
+                3
+            ],
+            "chatID": ""
         }
     ],
     "serviceList": [
@@ -159,6 +177,7 @@
     ],
     "counter": {
         "deviceConnectorCounter": 1,
-        "serviceCounter": 5
+        "serviceCounter": 5,
+        "nurseCounter": 0
     }
 }
