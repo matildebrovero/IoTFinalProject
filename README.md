@@ -1,5 +1,5 @@
 # IoTFinalProject
-Final Project for the exam "Programming for IoT applications". \
+Final Project for the exam "Programming for IoT applications".
 
 Here is the description of the system implemented in v1.0.1
 
