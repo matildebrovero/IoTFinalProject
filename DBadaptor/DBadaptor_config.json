@@ -1,45 +1,21 @@
 {
     "RegistrySystem": "http://localhost:8080", 
     "InfluxInformation": {
-        "INFLUXDB_TOKEN": "8lbSLwSZOUIQD4fga6VbHd6RpEQ_BGFhkgpAswTNQJ1oKI-G3DUmNZj75znn6H6s_lVoyvh97W-jbggz-nrmaA==",
+        "INFLUX_TOKEN": "jZR2G9mCbHx1_2obB5nEn0EFcjVHVSXi4HjFyI4aQ1_4J7QRp8wVWCVjJFUVAou4Q22bjp_LQDJeBPi7HQXlwQ==",
         "INFLUXDB_ORG": "SPHYNX",
         "INFLUXDB_URL": "http://localhost:8086",
-        "buckets": [
-            {
-                "data": "ECG",
-                "token": "SmartHospital308_ECGdata"
-            },
-            {
-                "data": "glucometer",
-                "token": "SmartHospital308_GLUCOData"
-            },
-            {
-                "data": "blood_pressure",
-                "token": "SmartHospital308_BPSdata"
-            },
-            {
-                "data": "oximeter",
-                "token": "SmartHospital308_OXIData"
-            },
-            {
-                "data": "Pulse",
-                "token": "SmartHospital308_PULSEData"
-            },
-            {
-                "data": "temperature",
-                "token": "SmartHospital308_TERMOData"
-            },
-            {
-                "data": "status",
-                "token": "SmartHospital308_STATUSData"
-            },
-            {
-                "data": "RR",
-                "token": "SmartHospital308_RRData"
+        "bucket": "SmartHospital308",
+        "results": {
+            "bn": "InfluxData",
+            "e": {
+                "n": "",
+                "u": "",
+                "t": [],
+                "v": []
             }
-        ],
-        "bucket": "SmartHospital308"
+        }
     },
+    "SensorsAvailable": ["ECG", "glucometer", "temperature", "blood_pressure", "pulse", "oximeter", "RR", "status", "HR"],
     "ServiceInformation": {
         "serviceID": "",
         "serviceName": "DB_adaptor",
@@ -52,8 +28,15 @@
         "subscribe_topic": [
             "Monitoring/+/status",
             "Monitoring/+/ECG",
-            "Monitoring/+/sensorsData"
+            "Monitoring/+/sensorsData",
+            "Monitoring/+/RR",
+            "Monitoring/+/HR"
         ],
+        "uri": {
+            "add_service": "service",
+            "broker_info": "broker"
+
+        },
         "lastUpdate": "2021-06-01T12:00:00"
     }
 }
