@@ -1,3 +1,4 @@
+                    time_sensors = True
 from MyMQTT import * #importing MyMQTT class from MyMQTT.py
 import time
 import json
