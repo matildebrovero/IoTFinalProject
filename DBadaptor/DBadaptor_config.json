@@ -15,7 +15,7 @@
             }
         }
     },
-    "SensorsAvailable": ["ECG", "glucometer", "temperature", "blood_pressure", "pulse", "oximeter", "RR", "status", "HR"],
+    "SensorsAvailable": ["ECG", "glucometer", "temperature", "blood_pressure", "oximeter", "RR", "status", "HR"],
     "ServiceInformation": {
         "serviceID": "",
         "serviceName": "DB_adaptor",
