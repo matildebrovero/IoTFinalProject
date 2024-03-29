@@ -25,15 +25,36 @@ class SensorSubscriber:
         print(f"Received new status: {self.sensorData}")
         print(f"Topic: {self.topic}")
         
-        # TODO: ADD BASETIME TO THE DATA 
-        # Read the ECG, RR and HR data from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] in ["ECG", "RR", "HR"]:
+        # Read the ECG, RR signals from the topic and write it to the InfluxDB
+        if self.topic.split('/')[3] in ["ECG", "RR"]:
             print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
             bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
             # Read the bucket from the DB adaptor config file 
-            time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
+            basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
+            print(f"basetime: {basetime}")
+            for i in range(len(self.sensorData['e'])):
+                time = basetime + self.sensorData['e'][i]['t'] * 1000000000 # convert to nanoseconds
+                value = self.sensorData['e'][i]['v']
+                unit = self.sensorData['e'][i]['u']
+                print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
+                # Write to InfluxDB  
+                point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
+                # Print the data that is written to the InfluxDB
+                print(f"Writing to InfluxDB {point.to_line_protocol()}")
+                InfluxDBwrite(bucket,point)
+        
+        # Read the HR data from the topic and write it to the InfluxDB
+        elif self.topic.split('/')[3] == "HR":
+            print(f"{self.topic.split('/')[3]} Data received")
+            patientID = self.topic.split('/')[2]
+            # Read the bucket from the DB adaptor config file
+            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+            # Read the bucket from the DB adaptor config file 
+            basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
+            time = basetime + self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
+            print(f"basetime: {basetime}")
             value = self.sensorData['e'][0]['v']
             unit = self.sensorData['e'][0]['u']
             print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
@@ -61,6 +82,7 @@ class SensorSubscriber:
                 print(f"Writing {sensor} to InfluxDB {point.to_line_protocol()}")
                 InfluxDBwrite(bucket,point)
 
+        # TODO: COME VIENE PUBBLICATO LO STATO??
         # Read the status from the topic and write it to the InfluxDB        
         elif self.topic.split('/')[3] == "status":
             print(f"{self.topic.split('/')[3]} Data received")
