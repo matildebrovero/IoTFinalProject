@@ -1,66 +1,88 @@
 from MyMQTT import * #importing MyMQTT class from MyMQTT.py
 import time
 import json
-import random
 import requests
-from datacreator import *
+from datacreator import * #importing the functions to fake the data from the sensors
 
+""" 
+    DeviceConnector - SmartHospital IoT platform. Version 1.0.1 
+    This microservice is responsible for publishing the data coming from the sensors to the MQTT broker. Each patient has a unique ID and has its own device connector with temperature, blood pressure, oximeter, glucometer and ECG data.
+
+    In this version the data are simulated by the functions in the datacreator.py file. The data are published in SenML format to the MQTT broker.
+ 
+        Output:  
+            - data from the sensors (temperature, blood pressure, oximeter, glucometer) in SenML format in the topic: SmartHospitalN/Monitoring/PatientN/sensorsData
+            - ECG data in SenML format in the topic: SmartHospitalN/Monitoring/PatientN/ecgData
+
+    -------------------------------------------------------------------------- 
+    --------------         standard configuration          ------------------- 
+    -------------------------------------------------------------------------- 
+ 
+    Standard Configuration file provided: ECGAn_configuration.json 
+    The parameters of the configuration file are: 
+ 
+        - "RegistrySystem": URL of the Registry System 
+
+        - "information":  
+            - "serviceID": ID of the service, automatically assigned by the Registry System  
+            - "serviceName": Name of the service = "DeviceConnector"
+            - "measureType": Measurements that can be done by the sensors
+            - "availableServices": List of communication protocols available in the device connector 
+            - "publish_topic": Publish topic of the service, the main topic where the "analysis" will be published 
+                        Example: SmartHospitalN/Monitoring/PatientN/**sensorsData** or **ecgData** 
+            - "uri": List of URIs to ask for information to the Registry System
+                - "add_deviceconn": URI to add the device connector to the Registry System
+                - "broker_info": URI to get the information about the MQTT broker from the Registry System
+            - "resources": List of sensors available in the device connector
+        - "sensorsData": SenML format for the sensors data
+        - "ECGdata": SenML format for the ECG data
+    """ 
+
+
+# Function to read the data from the sensors
 def read_sensors_data():
     glucometer = read_glucometer()
     blood_pressure = read_blood_pressure()
     oximeter = read_oximeter()
-    #pulse = random.randint(80, 120)
     termometer = read_body_temperature()
     # Get the current time
     time = time.time()
     # SenML standard
-    json_data = {
-        "bn": "SensorsData",
-        "e": [
-            {
-                "n": "glucometer",
-                "u": "mg/dL",
-                "t": time,
-                "v": glucometer
-            },
-            {
-                "n": "blood_pressure",
-                "u": "mmHg",
-                "t": time,
-                "v": blood_pressure
-            },
-            {
-                "n": "oximeter",
-                "u": "%",
-                "t": time,
-                "v": oximeter
-            },
-            {
-                "n": "termometer",
-                "u": "°C",
-                "t": time,
-                "v": termometer
-            }
-        ]
-    }
+    json_data = json.load(open('deviceconnector_config.json'))["sensorData"]
+    for data in json_data["e"]:
+        if data["n"] == "glucometer":
+            data["v"] = glucometer
+            data["t"] = time
+        elif data["n"] == "blood_pressure":
+            data["v"] = blood_pressure
+            data["t"] = time
+        elif data["n"] == "oximeter":
+            data["v"] = oximeter
+            data["t"] = time
+        elif data["n"] == "termometer":
+            data["v"] = termometer
+            data["t"] = time
     return json.dumps(json_data, indent = 4)
 
+# Function to read the ECG data
 def read_ecg_data():
-    ecgdata = generate_simulated_ecg() #ECG data is a list of values
+    ecgdata, ECG_fc = generate_simulated_ecg()
     #get the current time
     time = time.time()
     #SenML standard
-    json_data = {
-        "bn": "ECGdata",
-        "e": [
-            {
-                "n": "ECG",
-                "u": "mV",
-                "t": time,
-                "v": ecgdata
-            }
-        ]
-    }
+    json_data = json.load(open('deviceconnector_config.json'))["ECGdata"]
+    json_data["bt"] = time
+    ecg_samples = []
+    for index, ecg_value in enumerate(ecgdata):
+        # Create a dictionary for each ECG sample
+        ecg_sample = {
+            "u": "mV",  
+            "t": index * 1/ECG_fc,
+            "v": ecg_value
+        }
+        # Add the sample to the list
+        ecg_samples.append(ecg_sample)
+    json_data["e"] = ecg_samples
     return json.dumps(json_data, indent = 4)
 
 class SensorsPublisher:
@@ -95,51 +117,65 @@ if __name__ == "__main__":
     config_file = json.load(open('deviceconnector.json'))
     # load the registry system
     urlCatalog = config_file["RegistrySystem"]
-    #########
+
+    ###########
     # LINES USED TO TEST
-    #########    
+    ###########
     """RegistrySystem = json.load(open(config_file["RegistrySystem"]))
     urlCatalog = RegistrySystem["catalogURL"]"""
 
     # read information from the configuration file and POST the information to the catalog
-    config = requests.post(f"{urlCatalog}/deviceConnectorList", data=config_file["information"])
+    config = requests.post(f"{urlCatalog}/{config_file['uri']['add_deviceconn']}", data=config_file["information"])
     config_file["information"] = config.json()
     # save the new configuration file
     json.dump(config_file, open("deviceconnector.json", "w"), indent = 4)
 
-    # get the deviceConnectorID from the configuration file
-    deviceConnectorID = config_file["information"]["deviceConnectorID"]
-
-    # get the patientID by doing a get request to the catalog
-    patientID = requests.get(f"{urlCatalog}/patientInfo?deviceconnector={deviceConnectorID}").json()["patientID"]
-
-    # get the information about the MQTT broker from the catalog using get requests
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/broker"))
+    # get the patientID which is equal to the deviceConnectorID (read from the configuration file)
+    patientID = config_file["information"]["deviceConnectorID"]
+    
+    # get the information about the MQTT broker from the catalog using GET request
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{config_file['uri']['broker_info']}"))
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic_sensor = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["sensorsData"]
     topic_ecg = MQTTinfo["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["ECG"]
     clientID = config_file['serviceName'] + config_file["ServiceInformation"]['serviceID']
-    #########
+
+    ###########
     # LINES USED TO TEST
-    #########
+    ###########
     """clientID = config_file["ServiceInformation"]['serviceName'] + config_file["ServiceInformation"]['serviceID']
     broker = RegistrySystem["broker"]["IP"]
     port = RegistrySystem["broker"]["port"]
     topic_sensor = RegistrySystem["broker"]["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["sensorsData"]
     topic_ecg = RegistrySystem["broker"]["main_topic"] + config_file["ServiceInformation"]["publish_topic"]["base_topic"] + patientID + config_file["ServiceInformation"]["publish_topic"]["ECG"]"""
 
-    # create an instance of the publisher
+    # create an instance of the publisher to publish the data coming from the sensors
     mySensors = SensorsPublisher(clientID, broker, port)
     mySensors.start()
     
-    time_sensors = True
-    counter = 0
+    # get the start time
+    start_time = time.time()
+
     try:
         while True: 
             # Publish all the data every minute
             mySensors.publish_ecg(topic_ecg)
             mySensors.publish_sensorsdata(topic_sensor)
+
+            #update the configuration file every 5 minutes by doing a PUT request to the catalog
+            # get the current time
+            current_time = time.time()
+            # check if 5 minutes have passed
+            if current_time - start_time > 5*60:
+                config_file = json.load(open('deviceconnector_config.json'))
+                config = requests.put(f"{urlCatalog}/{config_file['uri']['add_deviceconn']}", json=config_file["information"])
+                config_file["information"] = config.json()
+                json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
+                # update the start time
+                start_time = current_time
+            # wait for 60 seconds
             time.sleep(60)
     except KeyboardInterrupt:
+        # stop the publisher
         mySensors.StopSim()

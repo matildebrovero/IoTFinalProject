@@ -98,13 +98,11 @@ def read_oximeter():
     
     return oxygen_level
 
-# FUNCTION TO SIMULATE THE ECG SIGNAL
-def generate_simulated_ecg(duration=60, sampling_rate=250, noise_level=0.5):
-    
+# Function to generate simulated ECG data
+def generate_simulated_ecg(duration=60, sampling_rate=100, noise_level=0.5):
     """
     Function that simulates ECG data.
     """
-
     ecg_signal = nk.ecg_simulate(duration=duration,sampling_rate=sampling_rate, noise=0.01, heart_rate=80, heart_rate_std=30, method='ecgsyn')
 
-    return ecg_signal.tolist()
+    return ecg_signal.tolist(), sampling_rate
