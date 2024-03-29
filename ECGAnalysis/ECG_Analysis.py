@@ -40,7 +40,7 @@ class ECGAnalysis:
                             filled with the actual patient data. 
 
             - "publish_topic": Publish topic of the service, the main topic where the "analysis" will be published
-                        Example: SmartHospitalN/PatientN/ *** publish_topic *** / ***analysis_1***
+                        Example: SmartHospitalN/ *** publish_topic ***/PatientN / ***analysis_1***
 
             
             - "analysis": List of analysis to be performed. Those are the topics where the different
@@ -80,7 +80,7 @@ class ECGAnalysis:
         patient_id = topic_parts[1]
         base_topic = topic_parts[0]
 
-        topic_pub = f"{base_topic}/{patient_id}/{self.servicepub}"
+        topic_pub = f"{base_topic}/{self.servicepub}/{patient_id}"
 
         message_json = json.loads(payload)
         data = message_json["e"]

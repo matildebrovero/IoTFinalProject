@@ -7,11 +7,11 @@
             "MQTT",
             "REST"
         ],
-        "subscribe_topic": "+/ECG",
-        "publish_topic": "ECG_Analysis",
+        "subscribe_topic": "Monitoring/+/ecgData",
+        "publish_topic": "Monitoring",
         "analysis": [
-            "filtered_ECG",
-            "R_peaks",
+            "ECG",
+            "RR",
             "HR"
         ],
         "sampling_frequency": 100
