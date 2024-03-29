@@ -8,7 +8,27 @@
                 "MQTT",
                 "REST"
             ],
-            "pubish_topic": "/status",
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": 
+            {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB":
+            {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=",
             "lastUpdated": "2019-12-12T12:12:12Z"
         }
 }
