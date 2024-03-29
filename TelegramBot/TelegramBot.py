@@ -5,8 +5,42 @@ import json
 import requests
 import time
 from MyMQTT import *
-import cherrypy
 
+"""
+    TelegramBot - SmartHospital IoT platform. Version 1.0.1 
+    This microservice is responsible for subscribing to the MQTT broker and sending alerts to the nurses when a patient is in danger.
+     
+        Input:  
+            - Patient status received trough the MQTT broker from the PatientStatus microservice
+        Output:
+            - alert message sent to the nurse chat when a patient is in danger (Telegram Bot)
+ 
+    -------------------------------------------------------------------------- 
+    --------------         standard configuration          ------------------- 
+    -------------------------------------------------------------------------- 
+ 
+    Standard Configuration file provided: ECGAn_configuration.json 
+    The parameters of the configuration file are: 
+ 
+        - "RegistrySystem": URL of the Registry System 
+
+        - "telegramToken": Token of the Telegram Bot
+ 
+        - "information": 
+            - "serviceID": ID of the service
+            - "serviceName": Name of the service = "DB_adaptor" 
+            - "availableServices": List of the communication protocol available for this service (MQTT, REST)
+            - "subscribe_topic": Topic where the service will subscribe to read the data from the sensors
+                    Example: "SmartHospitalN/Monitoring/patientN/status"
+                    to get the status of each patient present the wildcard "+" is used
+            - "uri":               
+                - "get_nurseInfo": URI to get the information of a single nurse
+                - "post_nurseInfo": URI to post the information of a single nurse
+                - "get_patientInfo": URI to get the information of a single patient
+                - "single_patient": URI to get the information of a single patient
+                - "add_service": URI to add the service to the catalog
+                - "broker_info": URI to get the information of the MQTT broker
+"""
 
 class HospitalBot:
     def __init__(self, token, broker, port, topic, configuration):
@@ -89,6 +123,8 @@ class HospitalBot:
                 if onlyID in nurse["patients"]:
                     # send the message to the chat of the nurse
                     self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: {patientName} {patientSurname} with ID {onlyID} is in danger")
+
+        # NOT USED IN THIS VERSION. JUST THE MESSAGE ALERT WILL BE SENT
         """#if the status equal to regular and the previous status is also regular the patient may require attention, write a message to the chat
         elif msg["status"] == "regular" and self.previousStatus == "regular":
             # check to which nurse the patient is assigned
@@ -105,7 +141,7 @@ class HospitalBot:
                     self.bot.sendMessage(nurse["chatID"], text=f"{patientName} {patientSurname} with ID {onlyID} has now normal parameters. NO LONGER IN DANGER")
         else:
             pass"""
-                # not used for now. TOOD: CHECK
+                
         self.previousStatus = msg["status"]
         
 if __name__ == "__main__":
