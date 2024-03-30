@@ -87,33 +87,56 @@ class PatientStatus(object):
         
         for pat in patID:
             print(f"Getting status for patient {pat}")
-            range = 300
+            print(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}")
+          
             # get the data from the database
-            response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}{range}")  
-            response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}{range}")
-            response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}{range}")
-            response_ECG = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['ecg']}{pat}?{self.conf['information']['params_DB']}{range}")
-            response_termo = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}{range}")
-            response_RR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}{range}")
-           
+            try: 
+                response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}")  
+                response_gluco = response_gluco.json()
+            except:
+                print("Error in getting glucose data")  
+                response_gluco = {"e": [{"v": [0]}]}
+            try:  
+                response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
+                response_bps = response_bps.json()
+            except:
+                print("Error in getting blood pressure data")
+                response_bps = {"e": [{"v": [0]}]}
+            try:
+                response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
+                response_oxim = response_oxim.json()
+            except:
+                print("Error in getting oximeter data")
+                response_oxim = {"e": [{"v": [0]}]}
+            try:
+                response_ECG = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['ecg']}{pat}?{self.conf['information']['params_DB']}")
+                response_ECG = response_ECG.json()
+            except: 
+                print("Error in getting ECG data")
+                response_ECG = {"e": [{"v": [0]}]}
+            try:
+                response_termo = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}")
+                response_termo = response_termo.json()
+            except:
+                print("Error in getting temperature data")
+                response_termo = {"e": [{"v": [0]}]}
+            try:
+                response_RR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
+                response_RR = response_RR.json()
+            except: 
+                print("Error in getting respiration rate data")
+                response_RR = {"e": [{"v": [0]}]}   
+
             # definition of the data dictionary containing the data of the patient 
-            data = {"gluco": response_gluco.json()["e"][0]["v"], 
-                    "bps": response_bps.json()["e"][0]["v"], 
-                    "oxim": response_oxim.json()["e"][0]["v"], 
-                    "ECG": response_ECG.json()["e"][0]["v"], 
-                    "termo": response_termo.json()["e"][0]["v"],
-                    "RR": response_RR.json()["e"][0]["v"], 
+            data = {"gluco": response_gluco["e"][0]["v"], 
+                    "bps": response_bps["e"][0]["v"], 
+                    "oxim": response_oxim["e"][0]["v"], 
+                    "ECG": response_ECG["e"][0]["v"], 
+                    "termo": response_termo["e"][0]["v"],
+                    "RR": response_RR["e"][0]["v"], 
                     "condition": condition[patID.index(pat)]}
             
-            # definition of the data dictionary containing the data of the patient  
-            data = {"gluco": response_gluco.json()["e"][0]["v"],  
-                    "bps": response_bps.json()["e"][0]["v"],  
-                    "oxim": response_oxim.json()["e"][0]["v"],  
-                    "ECG": response_ECG.json()["e"][0]["v"],  
-                    "termo": response_termo.json()["e"][0]["v"], 
-                    "RR": response_RR.json()["e"][0]["v"],  
-                    "condition": condition[patID.index(pat)]} 
-             
+            # calculate the status of the patient 
             s = self.calculate_status(data) 
  
             stat = {"bn": "Status", 
@@ -191,8 +214,9 @@ class PatientStatus(object):
     def update_service(self): 
         # update the service in the catalog 
         config = json.dumps(self.conf["information"]) 
-        config = requests.put(f"{self.urlRegistrySystem}{self.conf["information"]["uri_catalog"]["service"]}",json=config) 
+        config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=config) 
         ps_conf = copy.deepcopy(self.conf) 
+        print(config.json())
         ps_conf["information"] = config.json() 
         # save the new configuration file  
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4) 
@@ -206,71 +230,3 @@ if __name__ == "__main__":
         # every 5 minutes the status is calculated and published for every patient 
         time.sleep(300)  
  
-
-
-
-        termo_mean = np.mean(data["termo"])
-        condition = data["condition"]
-
-        # Definition of the status vector, every element represents a different parameter
-        # 0 -> gluco
-        # 1 -> bps
-        # 2 -> oxim
-        # 3 -> ECG
-        # 4 -> RR
-        # 5 -> termo
-        # the value of the element is the membership degree of the parameter to the status
-        stat_vett = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-
-        # Fuzzy rules
-        if "d" in condition:
-            stat_vett[0] = max(0, 1 - (gluco_mean - 70) / 130)  
-        else:
-            stat_vett[0] = max(0, 1 - abs(gluco_mean - 105) / 35)
-
-        if condition == "n" or "c" in condition:
-            stat_vett[1] = max(0, (bps_mean - 100) / 40) 
-        else:
-            stat_vett[1] = max(0, (bps_mean - 120) / 50)
-
-        stat_vett[2] = max(0, (98 - oxim_mean) / 10)  
-
-        stat_vett[3] = max(0, (ECG_mean - 80) / 20)  
-
-        stat_vett[4] = max(0, 1 - RR_count / 20)  
-
-        stat_vett[5] = max(0, 1 - abs(termo_mean - 36) / 2)  
-
-        # Definition oh the weights for the aggregation
-        weights = np.array([1.5, 2.0, 2.5, 2.0, 1.5, 1.0])  # oxim, bps, ECG, RR are more important
-
-        # Aggregation of the information 
-        weighted_aggregated_status = np.dot(stat_vett, weights) / np.sum(weights)
-
-        # Definition of the status
-        if weighted_aggregated_status >= 0.7:
-            status = "very good"
-        elif weighted_aggregated_status >= 0.4:
-            status = "regular"
-        else:
-            status = "bad"
-            
-        return status
-
-    
-    def update_service(self):
-        # update the service in the catalog
-        config = json.dumps(self.conf["information"])
-        config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=config)
-        self.conf["information"] = config.json()
-        # save the new configuration file 
-        json.dump(self.conf, open("PatientStatus_config.json", "w"), indent=4)
-        print("Service updated in the catalog")
-    
-if __name__ == "__main__":
-    status = PatientStatus()
-    while True:
-        status.get_status_and_publish()
-        status.update_service()
-        # every 5 minutes the status is calculated and published for every patient
-        time.sleep(300) 
