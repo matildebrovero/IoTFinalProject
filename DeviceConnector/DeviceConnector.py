@@ -126,12 +126,15 @@ if __name__ == "__main__":
 
     # read information from the configuration file and POST the information to the catalog
     config = requests.post(f"{urlCatalog}/{config_file['information']['uri']['add_deviceconn']}", json=config_file["information"])
-    config_file["information"] = config.json()
-    print(f"\n\n\n{config_file['information']}")
-    # save the new configuration file
-    print("updated configuration file")
-    json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
-    print("configuration file saved")
+    if config.status_code == 200:
+        config_file["information"] = config.json()
+        print(f"\n\n\n{config_file['information']}")
+        # save the new configuration file
+        print("updated configuration file")
+        json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
+        print("configuration file saved")
+    else:
+        print(f"Error: {config.status_code} - {config.text}")
 
     # get the patientID which is equal to the deviceConnectorID (read from the configuration file)
     patientID = config_file["information"]["deviceConnectorID"]
@@ -177,10 +180,13 @@ if __name__ == "__main__":
             if current_time - start_time > 5*60:
                 config_file = json.load(open('deviceconnector_config.json'))
                 config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_deviceconn']}", json=config_file["information"])
-                config_file["information"] = config
-                json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
-                # update the start time
-                start_time = current_time
+                if config.status_code == 200:
+                    config_file["information"] = config
+                    json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
+                    # update the start time
+                    start_time = current_time
+                else:
+                    print(f"Error: {config.status_code} - {config.text}")
             i += 1
             # wait for 60 seconds
             time.sleep(60)

@@ -5,8 +5,42 @@ import json
 import requests
 import time
 from MyMQTT import *
-import cherrypy
 
+"""
+    TelegramBot - SmartHospital IoT platform. Version 1.0.1 
+    This microservice is responsible for subscribing to the MQTT broker and sending alerts to the nurses when a patient is in danger.
+     
+        Input:  
+            - Patient status received trough the MQTT broker from the PatientStatus microservice
+        Output:
+            - alert message sent to the nurse chat when a patient is in danger (Telegram Bot)
+ 
+    -------------------------------------------------------------------------- 
+    --------------         standard configuration          ------------------- 
+    -------------------------------------------------------------------------- 
+ 
+    Standard Configuration file provided: ECGAn_configuration.json 
+    The parameters of the configuration file are: 
+ 
+        - "RegistrySystem": URL of the Registry System 
+
+        - "telegramToken": Token of the Telegram Bot
+ 
+        - "information": 
+            - "serviceID": ID of the service
+            - "serviceName": Name of the service = "DB_adaptor" 
+            - "availableServices": List of the communication protocol available for this service (MQTT, REST)
+            - "subscribe_topic": Topic where the service will subscribe to read the data from the sensors
+                    Example: "SmartHospitalN/Monitoring/patientN/status"
+                    to get the status of each patient present the wildcard "+" is used
+            - "uri":               
+                - "get_nurseInfo": URI to get the information of a single nurse
+                - "post_nurseInfo": URI to post the information of a single nurse
+                - "get_patientInfo": URI to get the information of a single patient
+                - "single_patient": URI to get the information of a single patient
+                - "add_service": URI to add the service to the catalog
+                - "broker_info": URI to get the information of the MQTT broker
+"""
 
 class HospitalBot:
     def __init__(self, token, broker, port, topic, configuration):
@@ -89,6 +123,8 @@ class HospitalBot:
                 if onlyID in nurse["patients"]:
                     # send the message to the chat of the nurse
                     self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: {patientName} {patientSurname} with ID {onlyID} is in danger")
+
+        # NOT USED IN THIS VERSION. JUST THE MESSAGE ALERT WILL BE SENT
         """#if the status equal to regular and the previous status is also regular the patient may require attention, write a message to the chat
         elif msg["status"] == "regular" and self.previousStatus == "regular":
             # check to which nurse the patient is assigned
@@ -105,7 +141,7 @@ class HospitalBot:
                     self.bot.sendMessage(nurse["chatID"], text=f"{patientName} {patientSurname} with ID {onlyID} has now normal parameters. NO LONGER IN DANGER")
         else:
             pass"""
-                # not used for now. TOOD: CHECK
+                
         self.previousStatus = msg["status"]
         
 if __name__ == "__main__":
@@ -122,9 +158,12 @@ if __name__ == "__main__":
     config = conf["information"]
     # POST the configuration file to the catalog and get back the information (the Registry System will add the ID to the service information)
     config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", data=config)
-    conf["information"] = config.json()
-    # save the new configuration file
-    json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
+    if config.status_code == 200:
+        conf["information"] = config.json()
+        # save the new configuration file
+        json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
+    else:
+        print("Error in adding the service to the catalog")
     # GET the information about the MQTT broker from the Registry System using get requests
     MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['information']['uri']['broker_info']}"))
     broker = MQTTinfo["IP"]
@@ -142,7 +181,23 @@ if __name__ == "__main__":
     print(topic)
     # create an instance of the HospitalBot
     SmartHospitalBot = HospitalBot(token, broker, port, topic, conf)
+    
+    # get the start time
+    start_time = time.time()
 
 while True:
+    #update the configuration file every 5 minutes by doing a PUT request to the catalog
+    # get the current time
+    current_time = time.time()
+    # check if 5 minutes have passed
+    if current_time - start_time > 5*60:
+        config_file = json.load(open('TB_configuration.json'))
+        config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_service']}", json=config_file["information"])
+        if config.status_code == 200:
+            config_file["information"] = config
+            json.dump(config_file, open("TB_configuration.json", "w"), indent = 4)
+            # update the start time
+            start_time = current_time
+        else:
+            print(f"Error: {config.status_code} - {config.text}")
     time.sleep(0.5)
-    pass
