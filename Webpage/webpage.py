@@ -20,12 +20,12 @@ def index():
     # read information from the configuration file and POST the information to the catalog
     config = conf["information"]
     print(config)
-    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", data=config)
+    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
     conf["information"] = config.json()
     save_config(conf)
     
     # URI to ask to the registry system configuration file containing patients and data available 
-    uri = f"{urlCatalog}/{conf['uri']['get_configurations']}"
+    uri = f"{urlCatalog}/{conf['information']['uri']['get_configurations']}"
     print(uri)
     try:
         response = requests.get(uri)
@@ -71,10 +71,13 @@ def add_patient():
     # URI to post data in the catalog
     uri = f"{conf['RegistrySystem']}/patient"
     print(uri)
+    print("\n\n\n\n\n\n\n\n")
+    print("AGGIUNTO???")
+    print("\n\n\n\n\n\n\n\n")
 
     try:
         # Save the new patient data in the catalog
-        response = requests.post(uri, data=new_patient_data)
+        response = requests.post(uri, json=new_patient_data)
         print(response)
         response.raise_for_status()  # Raise an exception if the request was unsuccessful
         data = response.json()
