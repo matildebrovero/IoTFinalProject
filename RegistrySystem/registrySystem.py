@@ -108,11 +108,18 @@ class RegistrySystem(object):
                 return json.dumps(body, indent = 4)
 
             # "http://localhost:8080/patient"
+
             if uri[0] == "patient":
                 print("Received POST request for patient.")
                 ID = self.catalog["counter"]["deviceConnectorCounter"]
                 body["patientID"] = ID
                 self.catalog["patientsList"].append(body)
+                print("\n\n\n")
+                print(self.catalog["patientsList"])
+                print("\n\n\n")
+                print(body)
+                print("\n\n\n")
+
                 with open("catalog.json", "w") as file:
                     json.dump(self.catalog, file, indent = 4)
                 print("Catalog updated with patient:", body)
@@ -147,15 +154,15 @@ class RegistrySystem(object):
                 # Debugging statement to ensure entering service condition
                 print("Inside Service Condition")
                 #retrieve the unique ID from the request
-                ID = body["information"]["serviceID"]
+                ID = body["serviceID"]
                 print("ID:", ID)
                 for service in self.catalog["serviceList"]:
                     if service["serviceID"] == ID:
                         service["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                        service.update(body["information"])
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
-                        print("Catalog updated with service:", body["information"])
+                            body = service
+                        print("Catalog updated with service:",body)
                         return json.dumps(body, indent = 4)
                 return "Service not found"
             
@@ -164,15 +171,15 @@ class RegistrySystem(object):
                 # Debugging statement to ensure entering devconn condition
                 print("Inside DeviceConnector Condition")
                 #retrieve the unique ID from the catalog
-                ID = body["information"]["deviceConnectorID"]
+                ID = body["deviceConnectorID"]
                 print("ID:", ID)
                 for deviceConnector in self.catalog["deviceConnectorList"]:
                     if deviceConnector["deviceConnectorID"] == ID:
                         deviceConnector["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                        deviceConnector.update(body["information"])
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
-                        print("Catalog updated with Device connector:", body["information"])
+                            body = deviceConnector
+                        print("Catalog updated with Device connector:", body)
                         return json.dumps(body, indent = 4)
                 return "DeviceConnector not found"
         else:
@@ -227,6 +234,7 @@ if __name__=="__main__":
             for service in catalog.get("serviceList", []):
                 toDelete = App.checkLastUpdate(service.get("lastUpdate"))
                 if toDelete:
+                    print(f"\n\n Found service toDelete {service}\n\n") #Fra trying to debugit
                     ID = service["serviceID"]
                     print(f"Service {ID} is going to be deleted")
                     catalog["serviceList"].remove(service)
