@@ -1,0 +1,163 @@
+{
+    "projectOwner": "SPHINX",
+    "projectName": "SmartHospital IoT Sevice",
+    "broker": {
+        "IP": "mqtt.eclipseprojects.io",
+        "port": 1883,
+        "main_topic": "SmartHospital308/"
+    },
+    "IPaddress": " ",
+    "patientsList": [
+        {
+            "patientID": 1,
+            "patient_topic": "patient1/",
+            "patientName": "Jake",
+            "patientSurname": "Blues",
+            "patientBirthDate": "2020-03-30",
+            "patientGender": "M",
+            "patientAddress": "Via Roma 1",
+            "patientCity": "Roma",
+            "patientProvince": "RM",
+            "patientCountry": "Italy",
+            "patientPhone": "1234567890",
+            "patientEmail": "",
+            "patientCondition": "n",
+            "deviceConnectorID": "3"
+        }
+    ],
+    "deviceConnectorList": [
+        {
+            "deviceConnectorID": "",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": [
+                {
+                    "base_topic": "/Monitoring/patient",
+                    "sensors": "/sensorsData",
+                    "ecg": "/ECG"
+                }
+            ],
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2020-03-30"
+        }
+    ],
+    "nursesList": [
+        {
+            "nurseID": 1,
+            "nurseName": "Jake Blues",
+            "nurseBirthDate": "2020-03-30",
+            "patients": [
+                1
+            ],
+            "chatID": ""
+        },
+        {
+            "nurseID": 2,
+            "nurseName": "Elwood Blues",
+            "nurseBirthDate": "2020-03-30",
+            "patients": [
+                2
+            ],
+            "chatID": ""
+        },
+        {
+            "nurseID": 3,
+            "nurseName": "John Belushi",
+            "nurseBirthDate": "2020-03-30",
+            "patients": [
+                3
+            ],
+            "chatID": ""
+        }
+    ],
+    "serviceList": [
+        {
+            "serviceID": "",
+            "serviceName": "",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceIP": "test.mosquitto.org",
+            "servicePort": 1883,
+            "serviceTopic": "MySmartThingy/1/temp",
+            "lastUpdate": "2024-03-19T18:43:48",
+            "pubish_topic": "/status"
+        }
+    ],
+    "counter": {
+        "deviceConnectorCounter": 0,
+        "serviceCounter": 0,
+        "nurseCounter": 0
+    }
+}
