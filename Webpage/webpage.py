@@ -20,7 +20,7 @@ def index():
     # read information from the configuration file and POST the information to the catalog
     config = conf["information"]
     print(config)
-    config = requests.post(f"{urlCatalog}/{conf['uri']['add_service']}", data=config)
+    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", data=config)
     conf["information"] = config.json()
     save_config(conf)
     
