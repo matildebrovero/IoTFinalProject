@@ -43,13 +43,16 @@ from MyMQTT import *
 """
 
 class HospitalBot:
-    def __init__(self, token, broker, port, topic, configuration):
+    def __init__(self, token, broker, port, clientID, topic, configuration):
         # Local token
         self.tokenBot = token
         self.bot = telepot.Bot(self.tokenBot)
         self.previousStatus = ""
         self.topic = topic
         self.configuration = configuration
+        self.broker = broker
+        self.port = port
+        self.clientID = clientID
         MessageLoop(self.bot, {'chat': self.on_chat_message}).run_as_thread()
         self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_nurseInfo']}").json()
 
@@ -67,8 +70,8 @@ class HospitalBot:
         message = msg['text']
         # check wich message has been received from the bot
         if message == "/start":
-            # create an instance of the MyMQTT class
-            self.client = MyMQTT("telegramBotUniqueID", broker, port, self)
+            # create an instance of the MyMQTT class 
+            self.client = MyMQTT(self.clientID, self.broker, self.port, self)
             self.client.start()
             # welcome message     
             self.bot.sendMessage(self.chat_ID, text="Welcome to the Hospital Bot. From now on the bot is turned on and you can receive updates about the patients.")
@@ -112,7 +115,7 @@ class HospitalBot:
         patientID = topic.split("/")[2] 
         onlyID = patientID.split("t")[2]
         # request patient name and surname via GET request to the catalog
-        patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['uri']['single_patient']}={onlyID}").json()
+        patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}").json()
         patientName = patientInfo["firstName"]
         patientSurname = patientInfo["lastName"]
 
@@ -169,6 +172,7 @@ if __name__ == "__main__":
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic = MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
+    clientID = conf['information']['serviceName'] + str(conf["information"]["serviceID"])
 
     ###################################################
     ## The following code is used to test the bot without the catalog
@@ -180,7 +184,7 @@ if __name__ == "__main__":
     
     print(topic)
     # create an instance of the HospitalBot
-    SmartHospitalBot = HospitalBot(token, broker, port, topic, conf)
+    SmartHospitalBot = HospitalBot(token, broker, port, clientID, topic, conf)
     
     # get the start time
     start_time = time.time()
