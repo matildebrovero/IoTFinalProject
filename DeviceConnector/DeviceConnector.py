@@ -98,7 +98,7 @@ class SensorsPublisher:
         self.message = read_ecg_data()
         output = json.loads(self.message)
         self.ClientPublisher.myPublish(self.topic, output)
-        print(f"Sensors have published new data: {output} on topic {self.topic}")
+        print(f"Sensors have published new data: on topic {self.topic}") #output not 
         return json.dumps(output, indent = 4)
     
     def publish_sensorsdata(self, topic):
@@ -123,7 +123,7 @@ if __name__ == "__main__":
     ###########
     """RegistrySystem = json.load(open(config_file["RegistrySystem"]))
     urlCatalog = RegistrySystem["catalogURL"]"""
-
+    print("\n\n\nPOST request to update the configuration file\n\n\n")
     # read information from the configuration file and POST the information to the catalog
     config = requests.post(f"{urlCatalog}/{config_file['information']['uri']['add_deviceconn']}", json=config_file["information"])
     if config.status_code == 200:
@@ -178,10 +178,12 @@ if __name__ == "__main__":
             current_time = time.time()
             # check if 5 minutes have passed
             if current_time - start_time > 5*60:
+                print("\n\n\nPut request to update the configuration file\n\n\n")
                 config_file = json.load(open('deviceconnector_config.json'))
                 config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_deviceconn']}", json=config_file["information"])
                 if config.status_code == 200:
-                    config_file["information"] = config
+                    config_file["information"] = config.json()
+                    print(config_file)
                     json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
                     # update the start time
                     start_time = current_time
@@ -192,4 +194,4 @@ if __name__ == "__main__":
             time.sleep(60)
     except KeyboardInterrupt:
         # stop the publisher
-        mySensors.StopSim()
+        mySensors.StopPublish()
