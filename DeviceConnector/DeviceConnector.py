@@ -183,10 +183,10 @@ if __name__ == "__main__":
                 if config.status_code == 200:
                     config_file["information"] = config
                     json.dump(config_file, open("deviceconnector_config.json", "w"), indent = 4)
+                    # update the start time
                     start_time = current_time
                 else:
                     print(f"Error: {config.status_code} - {config.text}")
-                # update the start time
             i += 1
             # wait for 60 seconds
             time.sleep(60)
