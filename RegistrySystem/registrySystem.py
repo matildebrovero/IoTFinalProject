@@ -66,7 +66,7 @@ class RegistrySystem(object):
         if uri[0] == "nurseInfo":
             if uri[1] == "All":
                 print("Received GET request for all nurse info.")
-                response = self.catalog["nurseList"]
+                response = self.catalog["nursesList"]
                 return json.dumps(response, indent = 4)
 
     def POST(self,*uri,**params):
@@ -85,7 +85,9 @@ class RegistrySystem(object):
                 print("Received POST request for service.")
                 ID = self.catalog["counter"]["serviceCounter"]
                 self.catalog["counter"]["serviceCounter"] += 1
+                print(body["serviceName"])
                 body["serviceID"] = ID
+                
                 body["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
                 self.catalog["serviceList"].append(body)
                 with open("catalog.json", "w") as file:
@@ -101,6 +103,7 @@ class RegistrySystem(object):
                 body["deviceConnectorID"] = ID
                 body["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
                 self.catalog["deviceConnectorList"].append(body)
+                self.catalog["patientsList"][0]["patientID"] = ID
                 with open("catalog.json", "w") as file:
                     json.dump(self.catalog, file, indent = 4)
                     print("Catalog updated with Device connector:", body)
@@ -136,6 +139,7 @@ class RegistrySystem(object):
         print("Received PUT request with body:", rawBody)
         if len(rawBody) > 0:
             try:
+                print("body received correctly")
                 body = json.loads(rawBody)
             except json.decoder.JSONDecodeError:
                 raise cherrypy.HTTPError(400,"Bad Request. Body must be a valid JSON")
@@ -147,24 +151,28 @@ class RegistrySystem(object):
                 # Debugging statement to ensure entering service condition
                 print("Inside Service Condition")
                 #retrieve the unique ID from the request
-                ID = body["information"]["serviceID"]
-                print("ID:", ID)
+                body = json.loads(body)
+                print(body)
+                print(body["serviceName"])
+                ID = body["serviceID"]
+                print(f"ID: {ID}")
                 for service in self.catalog["serviceList"]:
                     if service["serviceID"] == ID:
                         service["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-                        service.update(body["information"])
+                        service.update(body)
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
-                        print("Catalog updated with service:", body["information"])
+                        print("Catalog updated with service:", body)
                         return json.dumps(body, indent = 4)
-                return "Service not found"
+                    else:
+                        return "Service not found"
             
             #"http://localhost:8080/DeviceConnector"
             if uri[0] == "DeviceConnector":
                 # Debugging statement to ensure entering devconn condition
                 print("Inside DeviceConnector Condition")
                 #retrieve the unique ID from the catalog
-                ID = body["information"]["deviceConnectorID"]
+                ID = body["deviceConnectorID"]
                 print("ID:", ID)
                 for deviceConnector in self.catalog["deviceConnectorList"]:
                     if deviceConnector["deviceConnectorID"] == ID:

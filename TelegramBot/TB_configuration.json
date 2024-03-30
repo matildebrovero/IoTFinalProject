@@ -1,15 +1,15 @@
 {
-    "RegistrySystem": "http://localhost:8080", 
-    "telegramToken": "6824620442:AAFE2pjzeuOCli8As2RMcdEGrJuJWqIZObw", 
+    "RegistrySystem": "http://localhost:8080",
+    "telegramToken": "6824620442:AAFE2pjzeuOCli8As2RMcdEGrJuJWqIZObw",
     "information": {
-        "serviceID": "", 
-        "serviceName": "TelegramBot", 
+        "serviceID": 72,
+        "serviceName": "TelegramBot",
         "availableServices": [
-            "MQTT", 
+            "MQTT",
             "REST"
-        ], 
+        ],
         "uri": {
-            "get_nurseInfo": "NurseInfo/all",
+            "get_nurseInfo": "nurseInfo/All",
             "post_nurseInfo": "nurse",
             "get_patientInfo": "patientInfo",
             "single_patient": "patientID",
@@ -17,6 +17,6 @@
             "broker_info": "broker"
         },
         "subscribe_topic": "Monitoring/+/status",
-        "lastUpdate": "2019-11-20T14:00:00"
+        "lastUpdate": "2024-03-30T20:28:01"
     }
 }

@@ -95,19 +95,19 @@ class PatientStatus(object):
                 response_gluco = response_gluco.json()
             except:
                 print("Error in getting glucose data")  
-                response_gluco = {"e": [{"v": [0]}]}
+                response_gluco = {"e": [{"v": [1]}]}
             try:  
                 response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
                 response_bps = response_bps.json()
             except:
                 print("Error in getting blood pressure data")
-                response_bps = {"e": [{"v": [0]}]}
+                response_bps = {"e": [{"v": [200]}]}
             try:
                 response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
                 response_oxim = response_oxim.json()
             except:
                 print("Error in getting oximeter data")
-                response_oxim = {"e": [{"v": [0]}]}
+                response_oxim = {"e": [{"v": [96]}]}
             try:
                 response_ECG = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['ecg']}{pat}?{self.conf['information']['params_DB']}")
                 response_ECG = response_ECG.json()
@@ -119,13 +119,13 @@ class PatientStatus(object):
                 response_termo = response_termo.json()
             except:
                 print("Error in getting temperature data")
-                response_termo = {"e": [{"v": [0]}]}
+                response_termo = {"e": [{"v": [38]}]}
             try:
                 response_RR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
                 response_RR = response_RR.json()
             except: 
-                print("Error in getting respiration rate data")
-                response_RR = {"e": [{"v": [0]}]}   
+                print("Error in getting RR")
+                response_RR = {"e": [{"v": [1000]}]}   
 
             # definition of the data dictionary containing the data of the patient 
             data = {"gluco": response_gluco["e"][0]["v"], 
@@ -214,10 +214,11 @@ class PatientStatus(object):
     def update_service(self): 
         # update the service in the catalog 
         config = json.dumps(self.conf["information"]) 
+        print(config)
         config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=config) 
         ps_conf = copy.deepcopy(self.conf) 
-        print(config.json())
-        ps_conf["information"] = config.json() 
+        print(config)
+        ps_conf["information"] = config.text 
         # save the new configuration file  
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4) 
         print("Service updated in the catalog") 

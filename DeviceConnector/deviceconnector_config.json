@@ -1,7 +1,7 @@
 {
     "RegistrySystem": "http://localhost:8080",
     "information": {
-        "deviceConnectorID": "",
+        "deviceConnectorID": 31,
         "serviceName": "DeviceConnector",
         "measureType": [
             "temperature",
@@ -85,7 +85,7 @@
                 }
             ]
         },
-        "lastUpdate": "2024-03-29T18:41:13"
+        "lastUpdate": "2024-03-30T18:50:24"
     },
     "sensorData": {
         "bn": "SensorsData",

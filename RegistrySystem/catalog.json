@@ -9,7 +9,7 @@
     "IPaddress": " ",
     "patientsList": [
         {
-            "patientID": 1,
+            "patientID": 31,
             "patient_topic": "patient1/",
             "patientName": "Jake Blues",
             "patientSurname": "Blues",
@@ -2632,6 +2632,180 @@
                 ]
             },
             "lastUpdate": "2024-03-29T18:41:13"
+        },
+        {
+            "deviceConnectorID": 30,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-30T18:35:12"
+        },
+        {
+            "deviceConnectorID": 31,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-30T18:50:24"
         }
     ],
     "nursesList": [
@@ -3292,11 +3466,897 @@
                 "broker_info": "broker"
             },
             "lastUpdate": "2024-03-29T18:39:59"
+        },
+        {
+            "RegistrySystem": "http://localhost:8080",
+            "information": {
+                "serviceID": "",
+                "serviceName": "ECG_Analysis",
+                "availableServices": [
+                    "MQTT",
+                    "REST"
+                ],
+                "subscribe_topic": "Monitoring/+/ecgData",
+                "publish_topic": "Monitoring",
+                "analysis": [
+                    "ECG",
+                    "RR",
+                    "HR"
+                ],
+                "sampling_frequency": 100,
+                "lastUpdate": "2024-03-29T17:54:02"
+            },
+            "serviceID": 33,
+            "lastUpdate": "2024-03-30T18:36:47"
+        },
+        {
+            "serviceID": 34,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-30T18:37:50"
+        },
+        {
+            "serviceID": 35,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T18:38:11"
+        },
+        {
+            "serviceID": 36,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T18:40:00"
+        },
+        {
+            "serviceID": 37,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T18:42:08"
+        },
+        {
+            "serviceID": 38,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T18:43:59"
+        },
+        {
+            "serviceID": 39,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T18:44:43"
+        },
+        {
+            "RegistrySystem": "http://localhost:8080",
+            "information": {
+                "serviceID": "",
+                "serviceName": "ECG_Analysis",
+                "availableServices": [
+                    "MQTT",
+                    "REST"
+                ],
+                "subscribe_topic": "Monitoring/+/ecgData",
+                "publish_topic": "Monitoring",
+                "analysis": [
+                    "ECG",
+                    "RR",
+                    "HR"
+                ],
+                "sampling_frequency": 100,
+                "lastUpdate": "2024-03-29T17:54:02"
+            },
+            "serviceID": 40,
+            "lastUpdate": "2024-03-30T18:51:51"
+        },
+        {
+            "serviceID": 41,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-03-30T18:53:25"
+        },
+        {
+            "serviceID": 42,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T18:53:34"
+        },
+        {
+            "serviceID": 43,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T18:55:53"
+        },
+        {
+            "serviceID": 44,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:05:07"
+        },
+        {
+            "serviceID": 45,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:14:44"
+        },
+        {
+            "serviceID": 46,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:17:57"
+        },
+        {
+            "serviceID": 47,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:19:00"
+        },
+        {
+            "serviceID": 48,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:21:04"
+        },
+        {
+            "serviceID": 49,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:28:16"
+        },
+        {
+            "serviceID": 50,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:30:15"
+        },
+        {
+            "serviceID": 51,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "/Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-03-30T19:32:13"
+        },
+        {
+            "serviceID": 52,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:45:59"
+        },
+        {
+            "serviceID": 53,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:47:01"
+        },
+        {
+            "serviceID": 54,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:48:09"
+        },
+        {
+            "serviceID": 55,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:48:53"
+        },
+        {
+            "serviceID": 56,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:50:42"
+        },
+        {
+            "serviceID": 57,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:51:27"
+        },
+        {
+            "serviceID": 58,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:56:18"
+        },
+        {
+            "serviceID": 59,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:57:19"
+        },
+        {
+            "serviceID": 60,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:58:25"
+        },
+        {
+            "serviceID": 61,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T19:59:31"
+        },
+        {
+            "serviceID": 62,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:00:19"
+        },
+        {
+            "serviceID": 63,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:00:52"
+        },
+        {
+            "serviceID": 64,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:06:11"
+        },
+        {
+            "serviceID": 65,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:08:16"
+        },
+        {
+            "serviceID": 66,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:10:22"
+        },
+        {
+            "serviceID": 67,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:11:55"
+        },
+        {
+            "serviceID": 68,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:14:09"
+        },
+        {
+            "serviceID": 69,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:23:57"
+        },
+        {
+            "serviceID": 70,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:25:38"
+        },
+        {
+            "serviceID": 71,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:26:52"
+        },
+        {
+            "serviceID": 72,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "nurseInfo/All",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-03-30T20:28:01"
         }
     ],
     "counter": {
-        "deviceConnectorCounter": 30,
-        "serviceCounter": 33,
+        "deviceConnectorCounter": 32,
+        "serviceCounter": 73,
         "nurseCounter": 0
     }
 }

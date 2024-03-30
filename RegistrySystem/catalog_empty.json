@@ -22,7 +22,7 @@
             "patientPhone": "1234567890",
             "patientEmail": "",
             "patientCondition": "n",
-            "deviceConnectorID": "3"
+            "deviceConnectorID": ""
         }
     ],
     "deviceConnectorList": [
