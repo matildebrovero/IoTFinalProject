@@ -37,13 +37,13 @@ class RegistrySystem(object):
             data = []
             dConnectors = []
             for patient in self.catalog["patientsList"]:
-                pIDs.append(patient["patientID"])
-                self.configWebPage["patientsID"] = "patient"+str(pIDs[-1])
+                pIDs.append("patient"+ str(patient["patientID"]))
+                self.configWebPage["patientsID"] = pIDs
             for dC in self.catalog["deviceConnectorList"]:
-                dConnectors.append(dC["deviceConnectorID"])
-                self.configWebPage["deviceConnectors"] = "device"+str(dConnectors[-1])
+                dConnectors.append("device" + str(dC["deviceConnectorID"]))
                 data.append(dC["measureType"])
-                self.configWebPage["data"] = data
+                self.configWebPage["deviceConnectors"] = dConnectors
+                self.configWebPage["data"] = data[-1]
             return json.dumps(self.configWebPage, indent = 4)
         
         # "http://localhost:8080/patientInfo"
