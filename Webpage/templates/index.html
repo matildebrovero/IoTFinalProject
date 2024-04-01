@@ -50,6 +50,9 @@
         </div>
 
         <div id="page2" style="display: none;">
+            <!-- Add button to navigate to the new patient form -->
+            <button onclick="goBack()" class="btn">Go Back</button>
+
             <!-- Page 2: New Patient Form -->
             <h1>Add New Patient</h1>
             <form id="newPatientForm">
@@ -68,6 +71,12 @@
                 <div>
                     <label for="residence">Place of Residence:</label>
                     <input type="text" id="residence" name="residence" class="input-box">
+                </div>
+                <div class="form-group">
+                    <label for="DeviceConnector">Select Device Connector to be linked with the patient:</label>
+                    <select id="DeviceConnector" class="select-box">
+                        <!-- Options will be populated dynamically with JavaScript -->
+                    </select>
                 </div>
                 <div class="checkbox-container">
                     <label for="conditions">Conditions:</label><br>
@@ -93,6 +102,9 @@
         </div>
 
         <div id="page3" style="display: none;">
+            <!-- Add button to navigate to the new patient form -->
+            <button onclick="goBack()" class="btn">Go Back</button>
+
             <!-- Page 3: Delete Patient Form -->
             <h1>Delete Patient</h1>
             <form id="deletePatientForm">
@@ -148,7 +160,17 @@
                 select.add(option);
             });
         }
-
+        
+        // Function to populate data select dropdown
+        function populateDevices() {
+            const select = document.getElementById("DeviceConnector");
+            config.deviceConnectors.forEach(deviceConnector => {
+                const option = document.createElement("option");
+                option.text = deviceConnector;
+                option.value = deviceConnector;
+                select.add(option);
+            });
+        }
 
         // Function to handle GET request
         function getData() {
@@ -235,12 +257,21 @@
             populatePatients();
             populateData();
             deletingPatient();
+            populateDevices();
+
         };
     
         // Function to show the new patient form
         function showNewPatientForm() {
             document.getElementById('page1').style.display = 'none';
             document.getElementById('page2').style.display = 'block';
+        }
+
+        // Function to go back to the patient monitoring page
+        function goBack() {
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'none';
+            document.getElementById('page1').style.display = 'block';
         }
 
         document.getElementById('newPatientForm').addEventListener('submit', function(event) {
@@ -265,6 +296,7 @@
             const lastName = document.getElementById("lastName").value;
             const birthdate = document.getElementById("birthdate").value;
             const residence = document.getElementById("residence").value;
+            const DeviceConnector = document.getElementById("DeviceConnector").value;
             // I want conditions to be equal to an array with "n" = no patologies "d" = diabetic "h" = hypertention "c" = cardiatic desease
             const conditions = [];
             if (document.getElementById("diabetes").checked) {

@@ -9,8 +9,6 @@ app = Flask(__name__)
 # Initial page
 @app.route('/')
 def index():
-    # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
-    # URI to ask configurqation file using data from the catalog
     # load the configuration file of the Webpage and convert it from a dictionary to a JSON object
     conf = read_config()
     print(conf)
@@ -24,9 +22,11 @@ def index():
     conf["information"] = config.json()
     save_config(conf)
     
+    # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
     # URI to ask to the registry system configuration file containing patients and data available 
     uri = f"{urlCatalog}/{conf['information']['uri']['get_configurations']}"
-    print(uri)
+    print("\n\n\n\n\n")
+    print(f"Requesting configuration file from {uri}")
     try:
         response = requests.get(uri)
         print(response)
