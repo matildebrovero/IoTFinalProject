@@ -110,6 +110,7 @@ def delete_patient():
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    config = read_config()
+    app.run(debug=True, port=config["information"]["port"])
 
     
