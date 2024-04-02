@@ -31,19 +31,17 @@ class RegistrySystem(object):
                     return json.dumps({"urlDB" : "http://"+s["serviceHost"]+":"+str(s["servicePort"])})
         
         # "http://localhost:8080/configwebpage"
-        if uri[0] == "configwebpage":  # TODO debug it
+        if uri[0] == "configwebpage":  
             print("Received GET request for configwebpage.")
             pIDs = []
-            data = []
             dConnectors = []
             for patient in self.catalog["patientsList"]:
                 pIDs.append("patient"+ str(patient["patientID"]))
                 self.configWebPage["patientsID"] = pIDs
             for dC in self.catalog["deviceConnectorList"]:
                 dConnectors.append("device" + str(dC["deviceConnectorID"]))
-                data.append(dC["measureType"])
                 self.configWebPage["deviceConnectors"] = dConnectors
-                self.configWebPage["data"] = data[-1]
+            self.configWebPage["data"] = self.catalog["dataList"]
             return json.dumps(self.configWebPage, indent = 4)
         
         # "http://localhost:8080/patientInfo"
@@ -69,6 +67,14 @@ class RegistrySystem(object):
                 print("Received GET request for all nurse info.")
                 response = self.catalog["nursesList"]
                 return json.dumps(response, indent = 4)
+            
+        # "http://localhost:8080/availableData"
+        if uri[0] == "availableData":
+            print("\n\n\n")
+            print("Received GET request for available data.")
+            response = self.catalog["dataList"]
+            print(response)
+            return json.dumps(response, indent = 4)
 
     def POST(self,*uri,**params):
         rawBody = cherrypy.request.body.read()

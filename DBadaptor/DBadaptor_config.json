@@ -15,18 +15,8 @@
             }
         }
     },
-    "SensorsAvailable": [
-        "ECG",
-        "glucometer",
-        "temperature",
-        "bloodpressure",
-        "oximeter",
-        "RR",
-        "status",
-        "HR"
-    ],
     "ServiceInformation": {
-        "serviceID": "",
+        "serviceID": 110,
         "serviceName": "DB_adaptor",
         "availableServices": [
             "MQTT",
@@ -45,6 +35,6 @@
             "add_service": "service",
             "broker_info": "broker"
         },
-        "lastUpdate": "2024-03-29T18:39:59"
+        "lastUpdate": "2024-04-02T19:01:10"
     }
 }

@@ -123,10 +123,17 @@ class HospitalBot:
         onlyID = patientID.split("t")[2]
         # request patient name and surname via GET request to the catalog
         print(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}")
-        """patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}").json()
-        patientName = patientInfo["firstName"]
-        patientSurname = patientInfo["lastName"]"""
-
+        patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}").json()
+        try:
+            if patientInfo["firstName"] != "" and patientInfo["lastName"] != "":
+                patientName = patientInfo["firstName"]
+                patientSurname = patientInfo["lastName"]
+            else:
+                patientName = "Unknown"
+                patientSurname = "Unknown"
+        except:
+            patientName = "Unknown"
+            patientSurname = "Unknown"
         # check the message received from the topic and send an alert message to the correct chat
         if msg["e"][0]["v"] == "bad":
             print("ALERT MESSAGE MUST BE SENT")
@@ -136,7 +143,7 @@ class HospitalBot:
                 if onlyID in nurse["patients"] and nurse["chatID"] != "":
                     print(nurse["chatID"])
                     # send the message to the chat of the nurse
-                    self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: patient with ID {onlyID} is in danger")
+                    self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: patient {patientName} {patientSurname} with ID {onlyID} is in danger")
 
         # NOT USED IN THIS VERSION. JUST THE MESSAGE ALERT WILL BE SENT
         """#if the status equal to regular and the previous status is also regular the patient may require attention, write a message to the chat

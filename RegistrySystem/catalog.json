@@ -7,6 +7,16 @@
         "main_topic": "SmartHospital308/"
     },
     "IPaddress": " ",
+    "dataList": [
+        "ECG",
+        "glucometer",
+        "temperature",
+        "bloodpressure",
+        "oximeter",
+        "RR",
+        "status",
+        "HR"
+    ],
     "patientsList": [
         {
             "firstName": "ff",

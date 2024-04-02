@@ -188,9 +188,12 @@ class rest_API(object):
     def GET(self, *uri, **params):
         print("GET request received")
         bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-        availableSensor = json.load(open('DBadaptor_config.json'))["SensorsAvailable"]
+        availableSensor = requests.get(f"{urlCatalog}/availableData")
+        print("\n\n\n\n")
+        print(f"Available sensors: {availableSensor.text}")
         # Read data from InfluxDB and return them as a JSON
         if uri[0] in availableSensor:
+            print(f"Reading {uri[0]} data from InfluxDB")
             patientID = uri[1]
             range = params["range"]
             query = f"""from(bucket: "{bucket}")
