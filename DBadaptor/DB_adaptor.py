@@ -67,31 +67,11 @@ class SensorSubscriber:
     def notify(self, topic, payload):
         self.topic = topic
         self.sensorData = json.loads(payload)
-        print(f"Received new status: {self.sensorData}")
+        #print(f"Received new status: {self.sensorData}")
         print(f"Topic: {self.topic}")
-        
-        # Read the ECG, RR signals from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] in ["ECG", "RR"]:
-            print(f"{self.topic.split('/')[3]} Data received")
-            patientID = self.topic.split('/')[2]
-            # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-            # Read the bucket from the DB adaptor config file 
-            basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
-            print(f"basetime: {basetime}")
-            for i in range(len(self.sensorData['e'])):
-                time = basetime + self.sensorData['e'][i]['t'] * 1000000000 # convert to nanoseconds
-                value = self.sensorData['e'][i]['v']
-                unit = self.sensorData['e'][i]['u']
-                print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
-                # Write to InfluxDB  
-                point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
-                # Print the data that is written to the InfluxDB
-                print(f"Writing to InfluxDB {point.to_line_protocol()}")
-                InfluxDBwrite(bucket,point)
-        
+
         # Read the HR data from the topic and write it to the InfluxDB
-        elif self.topic.split('/')[3] == "HR":
+        if self.topic.split('/')[3] == "HR":
             print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
@@ -109,8 +89,29 @@ class SensorSubscriber:
             print(f"Writing to InfluxDB {point.to_line_protocol()}")
             InfluxDBwrite(bucket,point)
         
+        # Read the ECG, RR signals from the topic and write it to the InfluxDB
+        if self.topic.split('/')[3] in ["RR", "ECG"]:
+            #print(f"{self.topic.split('/')[3]} Data received")
+            patientID = self.topic.split('/')[2]
+            # Read the bucket from the DB adaptor config file
+            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+            # Read the bucket from the DB adaptor config file 
+            basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
+            #print(f"basetime: {basetime}")
+            print(len(self.sensorData['e']))
+            for i in range(len(self.sensorData['e'])):
+                time = basetime + self.sensorData['e'][i]['t'] * 1000000000 # convert to nanoseconds
+                value = self.sensorData['e'][i]['v']
+                unit = self.sensorData['e'][i]['u']
+                #print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
+                # Write to InfluxDB  
+                point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
+                # Print the data that is written to the InfluxDB
+                #print(f"Writing to InfluxDB {point.to_line_protocol()}")
+                InfluxDBwrite(bucket,point)
+        
         # Read the sensors' data from the topic and write it to the InfluxDB
-        elif self.topic.split('/')[3] == "sensorsData":
+        if self.topic.split('/')[3] == "sensorsData":
             print(f"{self.topic.split('/')[3]} Data received")
             sensorList = self.sensorData['e']
             print(sensorList)
@@ -130,7 +131,7 @@ class SensorSubscriber:
                 InfluxDBwrite(bucket,point)
 
         # Read the status from the topic and write it to the InfluxDB        
-        elif self.topic.split('/')[3] == "status":
+        if self.topic.split('/')[3] == "status":
             print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
@@ -161,7 +162,7 @@ def InfluxDBwrite(bucket,record):
     write_api = client.write_api(write_options=SYNCHRONOUS)   
     write_api.write(bucket=bucket, org="SPHYNX", record=record)
     #time.sleep(1) # separate points by 1 second
-    print("Data written to InfluxDB")
+    #print("Data written to InfluxDB")
 
 # INFLUXDB CLIENT TO READ DATA
 def InfluxDBread(query):
@@ -287,7 +288,6 @@ if __name__ == "__main__":
     cherrypy.engine.block()
     try:
         while True:
-            time.sleep(0.5)
             #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
             current_time = time.time()
             if current_time - start_time > 5*60:
@@ -304,6 +304,7 @@ if __name__ == "__main__":
                     print(f"Error: {config.status_code} - {config.text}")
             else:
                 pass
+            #time.sleep(0.001)
     except KeyboardInterrupt:
         subscriber.StopSim()
         cherrypy.engine.stop()

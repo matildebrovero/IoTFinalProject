@@ -104,7 +104,6 @@ class ECGAnalysis:
         filtered = out["filtered"]
         rr_wave = np.diff(out["rpeaks"]/fc)
 
-
         # ECG filtered output
         filtered_data = [] # Accumulate all entries here
         for i, value in enumerate(filtered):
@@ -119,8 +118,7 @@ class ECGAnalysis:
             "bt": basetime,
             "e": filtered_data
         }
-        self.publish(filtered_output, topic_pubs[0])
-    
+
         # RR wave output
         rr_data = []  # Accumulate all entries here
         for i, value in enumerate(rr_wave):
@@ -133,10 +131,8 @@ class ECGAnalysis:
         rr_output = {
             "bn": topic_pubs[1],
             "bt": basetime,
-            "e": filtered_data
+            "e": rr_data
         }
-        self.publish(rr_output, topic_pubs[1])
-    
 
         # Heart rate output
         heart_rate_output = {
@@ -150,8 +146,16 @@ class ECGAnalysis:
                 }
             ]
         }   
+
+
         self.publish(heart_rate_output, topic_pubs[2])
         print(f"\nheart rate: {heart_rate} bpm\n")
+
+        self.publish(rr_output, topic_pubs[1])
+        print(f"\nRR wave: {rr_wave} ms\n")
+
+        self.publish(filtered_output, topic_pubs[0])
+
 
     def publish(self, output, topic_pub):
         self.ClientPublisher.myPublish(topic_pub, output)
@@ -174,18 +178,19 @@ if __name__ == "__main__":
     RegistrySystem = conf["RegistrySystem"]
 
     # Make POST request to the registry system
-    response = requests.post(f"{RegistrySystem}/service", json=conf)
+    response = requests.post(f"{RegistrySystem}/{conf['information']['uri']['add_service']}", json=conf['information'])
+    conf['information'] = response.json()
 
     # Check if the request was successful (status code 200)
     if response.status_code == 200:
         # Save the new configuration file
         with open("ECGAn_configuration.json", "w") as file:
-            json.dump(response.json(), file, indent=4)
+            json.dump(conf, file, indent=4)
     else:
         print(f"Error: {response.status_code} - {response.text}")
 
 
-    request = requests.get(f"{RegistrySystem}/broker") #get the broker info
+    request = requests.get(f"{RegistrySystem}/{conf['information']['uri']['broker_info']}") #get the broker info
     MQTTinfo = json.loads(request.text) 
 
     # Define the topics and the MQTT clientID, with the new configuration got from the RegistrySystem
@@ -204,9 +209,25 @@ if __name__ == "__main__":
     # Create an instance of ECGAnalysis
     myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis)
     myECGAnalysis.startSim()
+    start_time = time.time()
 
     try:
         while True:
+            current_time = time.time()
+            if current_time - start_time > 5*60:
+                config_file = json.load(open('ECGAn_configuration.json'))
+                config = requests.put(f"{RegistrySystem}/{conf['information']['uri']['add_service']}", json=config_file["information"])
+                if config.status_code == 200:
+                    print(f"information: {config}")
+                    config_file["information"] = config.json()
+                    # print the updated information about the service
+                    print(f"information: {config_file['information']}")
+                    json.dump(config_file, open("ECGAn_configuration.json", "w"), indent = 4)
+                    start_time = current_time
+                else:
+                    print(f"Error: {config.status_code} - {config.text}")
+            else:
+                pass
             time.sleep(2)
     except KeyboardInterrupt:
         myECGAnalysis.StopSim()

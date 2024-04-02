@@ -191,7 +191,7 @@ if __name__ == "__main__":
                     print(f"Error: {config.status_code} - {config.text}")
             i += 1
             # wait for 60 seconds
-            time.sleep(60)
+            time.sleep(120)
     except KeyboardInterrupt:
         # stop the publisher
         mySensors.StopPublish()
