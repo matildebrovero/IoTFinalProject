@@ -9,8 +9,6 @@ app = Flask(__name__)
 # Initial page
 @app.route('/')
 def index():
-    # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
-    # URI to ask configurqation file using data from the catalog
     # load the configuration file of the Webpage and convert it from a dictionary to a JSON object
     conf = read_config()
     print(conf)
@@ -20,13 +18,15 @@ def index():
     # read information from the configuration file and POST the information to the catalog
     config = conf["information"]
     print(config)
-    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", data=config)
+    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
     conf["information"] = config.json()
     save_config(conf)
     
+    # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
     # URI to ask to the registry system configuration file containing patients and data available 
-    uri = f"{urlCatalog}/{conf['uri']['get_configurations']}"
-    print(uri)
+    uri = f"{urlCatalog}/{conf['information']['uri']['get_configurations']}"
+    print("\n\n\n\n\n")
+    print(f"Requesting configuration file from {uri}")
     try:
         response = requests.get(uri)
         print(response)
@@ -71,10 +71,13 @@ def add_patient():
     # URI to post data in the catalog
     uri = f"{conf['RegistrySystem']}/patient"
     print(uri)
+    print("\n\n\n\n\n\n\n\n")
+    print("AGGIUNTO???")
+    print("\n\n\n\n\n\n\n\n")
 
     try:
         # Save the new patient data in the catalog
-        response = requests.post(uri, data=new_patient_data)
+        response = requests.post(uri, json=new_patient_data)
         print(response)
         response.raise_for_status()  # Raise an exception if the request was unsuccessful
         data = response.json()

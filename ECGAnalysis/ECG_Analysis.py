@@ -151,6 +151,7 @@ class ECGAnalysis:
             ]
         }   
         self.publish(heart_rate_output, topic_pubs[2])
+        print(f"\nheart rate: {heart_rate} bpm\n")
 
     def publish(self, output, topic_pub):
         self.ClientPublisher.myPublish(topic_pub, output)
