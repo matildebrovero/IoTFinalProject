@@ -54,7 +54,7 @@ class RegistrySystem(object):
                 pStatus = []
                 for p in self.catalog["patientsList"]:
                     pIDs.append(p["patientID"])
-                    pStatus.append(p["patientCondition"])
+                    pStatus.append(p["conditions"])
                 return json.dumps({"patientID": pIDs, "patientCondition": pStatus}, indent = 4)
             if params:  # Perform only if there are parameters
                 print(f"Received GET request for patient info with params: {params}")
@@ -63,10 +63,11 @@ class RegistrySystem(object):
                         return json.dumps(p, indent = 4)
                 print(f"Patient {params['patientID']} not found")
 
-        if uri[0] == "nurseInfo":
-            if uri[1] == "All":
+        # "http://localhost:8080/NurseInfo"
+        if uri[0] == "NurseInfo":
+            if uri[1] == "all":
                 print("Received GET request for all nurse info.")
-                response = self.catalog["nurseList"]
+                response = self.catalog["nursesList"]
                 return json.dumps(response, indent = 4)
 
     def POST(self,*uri,**params):
@@ -128,9 +129,13 @@ class RegistrySystem(object):
             # "http://localhost:8080/nurse"
             if uri[0] == "nurse":
                 print("Received POST request for nurse.")
-                ID = self.catalog["counter"]["nurseCounter"]
-                body["nurseID"] = ID
-                self.catalog["nurseList"].append(body)
+                #ID = self.catalog["counter"]["nurseCounter"]
+                #body["nurseID"] = ID
+                #self.catalog["nurseList"].append(body)
+                body["patients"] = ["1", "2", "37"]
+                for nurse in self.catalog["nursesList"]:
+                    if nurse["nurseID"] == body["nurseID"]:
+                        nurse["patients"] = body["patients"]
                 with open("catalog.json", "w") as file:
                     json.dump(self.catalog, file, indent = 4)
                 print("Catalog updated with nurse:", body)

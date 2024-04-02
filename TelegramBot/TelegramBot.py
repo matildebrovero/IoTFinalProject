@@ -47,7 +47,6 @@ class HospitalBot:
         # Local token
         self.tokenBot = token
         self.bot = telepot.Bot(self.tokenBot)
-        self.previousStatus = ""
         self.topic = topic
         self.configuration = configuration
         self.broker = broker
@@ -55,6 +54,8 @@ class HospitalBot:
         self.clientID = clientID
         MessageLoop(self.bot, {'chat': self.on_chat_message}).run_as_thread()
         self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_nurseInfo']}").json()
+        print("\n\n\n")
+        print(self.nurseInfo)
 
         # USED ONLY TO TEST THE BOT WITHOUT THE CATALOG
         #self.nurseInfo = json.load(open("nurseInfo.json"))
@@ -89,8 +90,12 @@ class HospitalBot:
                     # update chatID of the nurse in the nurseInfo file
                     nurse["chatID"] = self.chat_ID
                     print(nurse)
+                    print(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['post_nurseInfo']}")
                     # register the chatID of the nurse in the catalog using a POST request, in this way the nurse can receive updates about the patients, also, assign patients to the nurse
-                    nurse = requests.post(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['post_nurseInfo']}",data=json.dumps(nurse))
+                    nurse = requests.post(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['post_nurseInfo']}", json=nurse)
+                    print("\n\n\nNURSE")
+                    print(nurse.json())
+                    nurse = nurse.json()
                     patients = nurse["patients"]
             # send a message to the chat with the nurseID
             self.bot.sendMessage(self.chat_ID, text=f"Your ID is {nurseID} and you are in charge of the following patients: {patients}")
@@ -105,6 +110,8 @@ class HospitalBot:
 
     def notify(self, topic, msg):
         # convert the message in json format
+        print("\n\n\n")
+        print(msg)
         msg = json.loads(msg)
         ########################
         # print the message received from the topic
@@ -115,17 +122,21 @@ class HospitalBot:
         patientID = topic.split("/")[2] 
         onlyID = patientID.split("t")[2]
         # request patient name and surname via GET request to the catalog
-        patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}").json()
+        print(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}")
+        """patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}").json()
         patientName = patientInfo["firstName"]
-        patientSurname = patientInfo["lastName"]
+        patientSurname = patientInfo["lastName"]"""
 
         # check the message received from the topic and send an alert message to the correct chat
-        if msg["status"] == "bad":
+        if msg["e"][0]["v"] == "bad":
+            print("ALERT MESSAGE MUST BE SENT")
+            print(self.nurseInfo)
             # check to which nurse the patient is assigned
             for nurse in self.nurseInfo:
-                if onlyID in nurse["patients"]:
+                if onlyID in nurse["patients"] and nurse["chatID"] != "":
+                    print(nurse["chatID"])
                     # send the message to the chat of the nurse
-                    self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: {patientName} {patientSurname} with ID {onlyID} is in danger")
+                    self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: patient with ID {onlyID} is in danger")
 
         # NOT USED IN THIS VERSION. JUST THE MESSAGE ALERT WILL BE SENT
         """#if the status equal to regular and the previous status is also regular the patient may require attention, write a message to the chat
@@ -145,7 +156,6 @@ class HospitalBot:
         else:
             pass"""
                 
-        self.previousStatus = msg["status"]
         
 if __name__ == "__main__":
     # load the configuration file of the TelegramBot
@@ -160,7 +170,7 @@ if __name__ == "__main__":
     # read information from the configuration file
     config = conf["information"]
     # POST the configuration file to the catalog and get back the information (the Registry System will add the ID to the service information)
-    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", data=config)
+    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
     if config.status_code == 200:
         conf["information"] = config.json()
         # save the new configuration file
@@ -168,7 +178,7 @@ if __name__ == "__main__":
     else:
         print("Error in adding the service to the catalog")
     # GET the information about the MQTT broker from the Registry System using get requests
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['information']['uri']['broker_info']}"))
+    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['information']['uri']['broker_info']}").text)
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic = MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]

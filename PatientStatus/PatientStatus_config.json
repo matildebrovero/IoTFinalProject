@@ -1,14 +1,14 @@
 {
     "RegistrySystem": "http://localhost:8080",
     "information": {
-        "serviceID": "",
+        "serviceID": 89,
         "serviceName": "PatientStatus",
         "serviceType": [
             "MQTT",
             "REST"
         ],
         "pubish_topic": {
-            "base_topic": "/Monitoring/patient",
+            "base_topic": "Monitoring/patient",
             "status": "/status"
         },
         "uri_catalog": {
@@ -26,6 +26,6 @@
             "RR": "/RR/patient"
         },
         "params_DB": "range=300",
-        "lastUpdate": "2024-03-30T15:00:59"
+        "lastUpdate": "2024-04-02T17:42:12"
     }
 }

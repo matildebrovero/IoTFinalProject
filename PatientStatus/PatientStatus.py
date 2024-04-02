@@ -59,7 +59,12 @@ class PatientStatus(object):
         # post the configuration to the catalog
         config = requests.post(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=self.conf["information"])
         print(config)
-        ps_conf["information"] = config.json()
+        if config.text == "Service not found":
+            print("Error in registering the service")
+            exit()
+        else:
+            ps_conf["information"] = config.json()
+
         # save the new configuration file 
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
         print("Service registered to the catalog")
@@ -95,19 +100,19 @@ class PatientStatus(object):
                 response_gluco = response_gluco.json()
             except:
                 print("Error in getting glucose data")  
-                response_gluco = {"e": [{"v": [0]}]}
+                response_gluco = {"e": [{"v": [1]}]}
             try:  
                 response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
                 response_bps = response_bps.json()
             except:
                 print("Error in getting blood pressure data")
-                response_bps = {"e": [{"v": [0]}]}
+                response_bps = {"e": [{"v": [200]}]}
             try:
                 response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
                 response_oxim = response_oxim.json()
             except:
                 print("Error in getting oximeter data")
-                response_oxim = {"e": [{"v": [0]}]}
+                response_oxim = {"e": [{"v": [96]}]}
             try:
                 response_ECG = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['ecg']}{pat}?{self.conf['information']['params_DB']}")
                 response_ECG = response_ECG.json()
@@ -119,13 +124,13 @@ class PatientStatus(object):
                 response_termo = response_termo.json()
             except:
                 print("Error in getting temperature data")
-                response_termo = {"e": [{"v": [0]}]}
+                response_termo = {"e": [{"v": [38]}]}
             try:
                 response_RR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
                 response_RR = response_RR.json()
             except: 
-                print("Error in getting respiration rate data")
-                response_RR = {"e": [{"v": [0]}]}   
+                print("Error in getting RR")
+                response_RR = {"e": [{"v": [1000]}]}   
 
             # definition of the data dictionary containing the data of the patient 
             data = {"gluco": response_gluco["e"][0]["v"], 
@@ -159,7 +164,7 @@ class PatientStatus(object):
         # count the number of RR values that are too high or too low 
         RR_count = 0 
         for i in range(len(RR)): 
-            if RR[i] < 850 or RR[i] > 950:   
+            if RR[i] < 0.85 or RR[i] > 0.95:    
                 RR_count += 1 
  
         termo_mean = np.mean(data["termo"]) 
@@ -190,7 +195,7 @@ class PatientStatus(object):
  
         stat_vett[3] = max(0, (ECG_mean - 80) / 20)   
  
-        stat_vett[4] = max(0, 1 - RR_count / 20)   
+        stat_vett[4] = max(0, 1 - abs(RR_count / 20))   
  
         stat_vett[5] = max(0, 1 - abs(termo_mean - 36) / 2)   
  
@@ -202,9 +207,9 @@ class PatientStatus(object):
  
         # Definition of the status 
         if weighted_aggregated_status >= 0.7: 
-            status = "very good" 
+            status = "bad" 
         elif weighted_aggregated_status >= 0.4: 
-            status = "regular" 
+            status = "bad" 
         else: 
             status = "bad" 
              
@@ -213,11 +218,14 @@ class PatientStatus(object):
      
     def update_service(self): 
         # update the service in the catalog 
-        config = json.dumps(self.conf["information"]) 
-        config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=config) 
+        print("\n\n\n\PUT REQUEST\n\n\n")
         ps_conf = copy.deepcopy(self.conf) 
-        print(config.json())
-        ps_conf["information"] = config.json() 
+        config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=self.conf["information"]) 
+        if config.text == "Service not found":
+            print("Error in updating the service")
+        else: 
+            print(config)
+            ps_conf["information"] = config.json()
         # save the new configuration file  
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4) 
         print("Service updated in the catalog") 
@@ -228,5 +236,5 @@ if __name__ == "__main__":
         status.get_status_and_publish() 
         status.update_service() 
         # every 5 minutes the status is calculated and published for every patient 
-        time.sleep(300)  
+        time.sleep(40)  
  

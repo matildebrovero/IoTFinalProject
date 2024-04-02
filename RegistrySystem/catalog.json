@@ -3842,6 +3842,93 @@
                 ]
             },
             "lastUpdate": "2024-03-30T19:57:06"
+        },
+        {
+            "deviceConnectorID": 44,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-04-02T16:31:11"
         }
     ],
     "nursesList": [
@@ -3850,7 +3937,9 @@
             "nurseName": "Jake Blues",
             "nurseBirthDate": "2020-03-30",
             "patients": [
-                1
+                "1",
+                "2",
+                "37"
             ],
             "chatID": ""
         },
@@ -3859,7 +3948,9 @@
             "nurseName": "Elwood Blues",
             "nurseBirthDate": "2020-03-30",
             "patients": [
-                2
+                "1",
+                "2",
+                "37"
             ],
             "chatID": ""
         },
@@ -3875,1119 +3966,325 @@
     ],
     "serviceList": [
         {
-            "serviceID": 1,
+            "serviceID": 89,
             "serviceName": "PatientStatus",
             "serviceType": [
                 "MQTT",
                 "REST"
             ],
-            "serviceIP": "test.mosquitto.org",
-            "servicePort": 1883,
-            "serviceTopic": "MySmartThingy/1/temp",
-            "lastUpdate": "2024-03-19T18:43:48",
-            "pubish_topic": "/status"
+            "pubish_topic": {
+                "base_topic": "Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-04-02T17:42:12"
         },
         {
-            "serviceID": 2,
+            "serviceID": 90,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-04-02T17:18:02"
+        },
+        {
+            "serviceID": 91,
             "serviceName": "PatientStatus",
             "serviceType": [
                 "MQTT",
                 "REST"
             ],
-            "pubish_topic": "/status",
-            "lastUpdate": "2024-03-19T18:43:06"
+            "pubish_topic": {
+                "base_topic": "Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-04-02T17:18:07"
         },
         {
-            "serviceID": 4,
+            "serviceID": 92,
             "serviceName": "PatientStatus",
             "serviceType": [
                 "MQTT",
                 "REST"
             ],
-            "pubish_topic": "/status",
-            "lastUpdate": "2024-03-19T19:12:21"
+            "pubish_topic": {
+                "base_topic": "Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-04-02T17:18:46"
         },
         {
-            "serviceID": 5,
-            "serviceName": "ECG_Analysis",
+            "serviceID": 93,
+            "serviceName": "TelegramBot",
             "availableServices": [
                 "MQTT",
                 "REST"
-            ],
-            "subscribe_topic": "Monitoring/+/ecgData",
-            "publish_topic": "Monitoring",
-            "analysis": [
-                "ECG",
-                "RR",
-                "HR"
-            ],
-            "sampling_frequency": 100,
-            "lastUpdate": "2024-03-29T17:34:17"
-        },
-        {
-            "serviceID": 6,
-            "serviceName": "ECG_Analysis",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "subscribe_topic": "Monitoring/+/ecgData",
-            "publish_topic": "Monitoring",
-            "analysis": [
-                "ECG",
-                "RR",
-                "HR"
-            ],
-            "sampling_frequency": 100,
-            "lastUpdate": "2024-03-29T17:37:41"
-        },
-        {
-            "serviceID": 7,
-            "serviceName": "ECG_Analysis",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "subscribe_topic": "Monitoring/+/ecgData",
-            "publish_topic": "Monitoring",
-            "analysis": [
-                "ECG",
-                "RR",
-                "HR"
-            ],
-            "sampling_frequency": 100,
-            "lastUpdate": "2024-03-29T17:44:50"
-        },
-        {
-            "serviceID": 8,
-            "serviceName": "ECG_Analysis",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "subscribe_topic": "Monitoring/+/ecgData",
-            "publish_topic": "Monitoring",
-            "analysis": [
-                "ECG",
-                "RR",
-                "HR"
-            ],
-            "sampling_frequency": 100,
-            "lastUpdate": "2024-03-29T17:54:02"
-        },
-        {
-            "serviceID": 9,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
             ],
             "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
                 "add_service": "service",
                 "broker_info": "broker"
             },
-            "lastUpdate": "2024-03-29T18:01:24"
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-02T17:21:50"
         },
         {
-            "serviceID": 10,
-            "serviceName": "DB_adaptor",
+            "serviceID": 94,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-04-02T17:22:13"
+        },
+        {
+            "serviceID": 95,
+            "serviceName": "TelegramBot",
             "availableServices": [
                 "MQTT",
                 "REST"
             ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
             "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
                 "add_service": "service",
                 "broker_info": "broker"
             },
-            "lastUpdate": "2024-03-29T18:02:09"
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-02T17:22:59"
         },
         {
-            "serviceID": 11,
-            "serviceName": "DB_adaptor",
+            "serviceID": 96,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-04-02T17:23:17"
+        },
+        {
+            "serviceID": 97,
+            "serviceName": "TelegramBot",
             "availableServices": [
                 "MQTT",
                 "REST"
             ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
             "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
                 "add_service": "service",
                 "broker_info": "broker"
             },
-            "lastUpdate": "2024-03-29T18:03:27"
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-02T17:24:01"
         },
         {
-            "serviceID": 12,
-            "serviceName": "DB_adaptor",
+            "serviceID": 98,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/blood_pressure/patient",
+                "oxim": "/oximeter/patient",
+                "ecg": "/ECG/patient",
+                "temp": "/temperature/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=300",
+            "lastUpdate": "2024-04-02T17:24:24"
+        },
+        {
+            "serviceID": 99,
+            "serviceName": "TelegramBot",
             "availableServices": [
                 "MQTT",
                 "REST"
             ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
             "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
                 "add_service": "service",
                 "broker_info": "broker"
             },
-            "lastUpdate": "2024-03-29T18:05:45"
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-02T17:25:44"
         },
         {
-            "serviceID": 13,
-            "serviceName": "DB_adaptor",
+            "serviceID": 100,
+            "serviceName": "TelegramBot",
             "availableServices": [
                 "MQTT",
                 "REST"
             ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
             "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
                 "add_service": "service",
                 "broker_info": "broker"
             },
-            "lastUpdate": "2024-03-29T18:07:24"
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-02T17:27:31"
         },
         {
-            "serviceID": 14,
-            "serviceName": "DB_adaptor",
+            "serviceID": 101,
+            "serviceName": "TelegramBot",
             "availableServices": [
                 "MQTT",
                 "REST"
             ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
             "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
                 "add_service": "service",
                 "broker_info": "broker"
             },
-            "lastUpdate": "2024-03-29T18:07:59"
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-02T17:29:35"
         },
         {
-            "serviceID": 15,
-            "serviceName": "DB_adaptor",
+            "serviceID": 102,
+            "serviceName": "TelegramBot",
             "availableServices": [
                 "MQTT",
                 "REST"
             ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
             "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
                 "add_service": "service",
                 "broker_info": "broker"
             },
-            "lastUpdate": "2024-03-29T18:08:34"
-        },
-        {
-            "serviceID": 16,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:08:58"
-        },
-        {
-            "serviceID": 17,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:09:27"
-        },
-        {
-            "serviceID": 18,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:10:01"
-        },
-        {
-            "serviceID": 19,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:14:53"
-        },
-        {
-            "serviceID": 20,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:15:21"
-        },
-        {
-            "serviceID": 21,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:17:06"
-        },
-        {
-            "serviceID": 22,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:17:07"
-        },
-        {
-            "serviceID": 23,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:18:26"
-        },
-        {
-            "serviceID": 24,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:20:55"
-        },
-        {
-            "serviceID": 25,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:21:44"
-        },
-        {
-            "serviceID": 26,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:26:03"
-        },
-        {
-            "serviceID": 27,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:26:03"
-        },
-        {
-            "serviceID": 28,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:26:34"
-        },
-        {
-            "serviceID": 29,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:34:32"
-        },
-        {
-            "serviceID": 30,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:37:17"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": 8,
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 10,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 31,
-            "lastUpdate": "2024-03-29T18:39:32"
-        },
-        {
-            "serviceID": 32,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8085,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-03-29T18:39:59"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 33,
-            "lastUpdate": "2024-03-30T16:31:34"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 34,
-            "lastUpdate": "2024-03-30T16:49:42"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 35,
-            "lastUpdate": "2024-03-30T17:28:55"
-        },
-        {
-            "serviceID": 36,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:21:47"
-        },
-        {
-            "serviceID": 37,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:22:35"
-        },
-        {
-            "serviceID": 38,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:23:16"
-        },
-        {
-            "serviceID": 39,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:23:56"
-        },
-        {
-            "serviceID": 40,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:24:59"
-        },
-        {
-            "serviceID": 41,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:25:13"
-        },
-        {
-            "serviceID": 42,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:30:16"
-        },
-        {
-            "serviceID": 43,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:31:15"
-        },
-        {
-            "serviceID": 44,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:33:29"
-        },
-        {
-            "serviceID": 45,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:35:43"
-        },
-        {
-            "serviceID": 46,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T18:39:53"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 47,
-            "lastUpdate": "2024-03-30T19:09:05"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 48,
-            "lastUpdate": "2024-03-30T19:17:12"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 49,
-            "lastUpdate": "2024-03-30T19:18:04"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 50,
-            "lastUpdate": "2024-03-30T19:18:39"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 51,
-            "lastUpdate": "2024-03-30T19:22:46"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 52,
-            "lastUpdate": "2024-03-30T19:24:28"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 53,
-            "lastUpdate": "2024-03-30T19:41:19"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 54,
-            "lastUpdate": "2024-03-30T19:45:19"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 55,
-            "lastUpdate": "2024-03-30T19:47:56"
-        },
-        {
-            "RegistrySystem": "http://localhost:8080",
-            "information": {
-                "serviceID": "",
-                "serviceName": "ECG_Analysis",
-                "availableServices": [
-                    "MQTT",
-                    "REST"
-                ],
-                "subscribe_topic": "Monitoring/+/ecgData",
-                "publish_topic": "Monitoring",
-                "analysis": [
-                    "ECG",
-                    "RR",
-                    "HR"
-                ],
-                "sampling_frequency": 100,
-                "lastUpdate": "2024-03-29T17:54:02"
-            },
-            "serviceID": 56,
-            "lastUpdate": "2024-03-30T19:52:45"
-        },
-        {
-            "serviceID": 57,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T19:52:54"
-        },
-        {
-            "serviceID": 58,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "delete_patient": "patientID"
-            },
-            "host": "0.0.0.0",
-            "port": 5080,
-            "lastUpdate": "2024-03-30T19:58:01"
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-02T17:36:26"
         }
     ],
     "counter": {
-        "deviceConnectorCounter": 44,
-        "serviceCounter": 59,
+        "deviceConnectorCounter": 45,
+        "serviceCounter": 103,
         "nurseCounter": 0
     }
 }
