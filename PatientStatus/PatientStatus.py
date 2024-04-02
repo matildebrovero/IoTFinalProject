@@ -59,7 +59,12 @@ class PatientStatus(object):
         # post the configuration to the catalog
         config = requests.post(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=self.conf["information"])
         print(config)
-        ps_conf["information"] = config.json()
+        if config.text == "Service not found":
+            print("Error in registering the service")
+            exit()
+        else:
+            ps_conf["information"] = config.json()
+
         # save the new configuration file 
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
         print("Service registered to the catalog")
@@ -159,7 +164,7 @@ class PatientStatus(object):
         # count the number of RR values that are too high or too low 
         RR_count = 0 
         for i in range(len(RR)): 
-            if RR[i] < 850 or RR[i] > 950:   
+            if RR[i] < 0.85 or RR[i] > 0.95:    
                 RR_count += 1 
  
         termo_mean = np.mean(data["termo"]) 
@@ -190,7 +195,7 @@ class PatientStatus(object):
  
         stat_vett[3] = max(0, (ECG_mean - 80) / 20)   
  
-        stat_vett[4] = max(0, 1 - RR_count / 20)   
+        stat_vett[4] = max(0, 1 - abs(RR_count / 20))   
  
         stat_vett[5] = max(0, 1 - abs(termo_mean - 36) / 2)   
  
@@ -215,10 +220,13 @@ class PatientStatus(object):
         # update the service in the catalog 
         config = json.dumps(self.conf["information"]) 
         print(config)
-        config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=config) 
         ps_conf = copy.deepcopy(self.conf) 
-        print(config)
-        ps_conf["information"] = config.text 
+        config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=config) 
+        if config.text == "Service not found":
+            print("Error in updating the service")
+        else: 
+            print(config)
+            ps_conf["information"] = config.json()
         # save the new configuration file  
         json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4) 
         print("Service updated in the catalog") 
