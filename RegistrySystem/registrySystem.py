@@ -37,10 +37,11 @@ class RegistrySystem(object):
             dConnectors = []
             for patient in self.catalog["patientsList"]:
                 pIDs.append("patient"+ str(patient["patientID"]))
-                self.configWebPage["patientsID"] = pIDs
+            self.configWebPage["patientsID"] = pIDs
             for dC in self.catalog["deviceConnectorList"]:
-                dConnectors.append("device" + str(dC["deviceConnectorID"]))
-                self.configWebPage["deviceConnectors"] = dConnectors
+                if dC["patientLinked"] == "no":
+                    dConnectors.append("device" + str(dC["deviceConnectorID"]))
+            self.configWebPage["deviceConnectors"] = dConnectors
             self.configWebPage["data"] = self.catalog["dataList"]
             return json.dumps(self.configWebPage, indent = 4)
         
@@ -115,12 +116,15 @@ class RegistrySystem(object):
                 return json.dumps(body, indent = 4)
 
             # "http://localhost:8080/patient"
-
             if uri[0] == "patient":
                 print("Received POST request for patient.")
-                ID = self.catalog["counter"]["deviceConnectorCounter"]
-                body["patientID"] = ID
+                body["patientID"] = "patient"+str(body["deviceConnector"].split("e")[2])
                 self.catalog["patientsList"].append(body)
+                # Now the device connector is linked to a patient
+                for dC in self.catalog["deviceConnectorList"]:
+                    if dC["deviceConnectorID"] == int(body["deviceConnector"].split("e")[2]):
+                        dC["patientLinked"] = "yes"
+                        print(dC)
                 print("\n\n\n")
                 print(self.catalog["patientsList"])
                 print("\n\n\n")
@@ -138,7 +142,11 @@ class RegistrySystem(object):
                 #ID = self.catalog["counter"]["nurseCounter"]
                 #body["nurseID"] = ID
                 #self.catalog["nurseList"].append(body)
-                body["patients"] = ["1", "2", "37"]
+                # Assign every patient present in the lists to the nurse currently logged in the BOT so it can receive the alerts
+                patients = []
+                for p in self.catalog["patientsList"]:
+                    patients.append(p["patientID"].split("t")[2])
+                body["patients"] = patients
                 for nurse in self.catalog["nursesList"]:
                     if nurse["nurseID"] == body["nurseID"]:
                         nurse["patients"] = body["patients"]
@@ -225,6 +233,8 @@ if __name__=="__main__":
     App = RegistrySystem()
     catalog = App.catalog
 
+    config = json.load(open("catalog.json"))
+
     #Standard configuration to serve the url "localhost:8080"
     conf={
         '/':{
@@ -234,8 +244,8 @@ if __name__=="__main__":
         }
     }
     cherrypy.tree.mount(RegistrySystem(),'/',conf) 
-    cherrypy.config.update({'server.socket_port': 8080})
-    cherrypy.config.update({'server.socket_host':'0.0.0.0'})
+    cherrypy.config.update({'server.socket_port': config["RegistrySyseminfo"]["port"]})
+    cherrypy.config.update({'server.socket_host': config["RegistrySyseminfo"]["host"]})
     cherrypy.engine.start()
     cherrypy.engine.block()
 
