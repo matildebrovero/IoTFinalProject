@@ -1,0 +1,7 @@
+biosppy
+cherrypy
+influxdb-client
+numpy
+paho-mqtt<2
+requests
+telepot
