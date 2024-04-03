@@ -1,6 +1,7 @@
 biosppy
 cherrypy
 influxdb-client
+flask
 numpy
 paho-mqtt<2
 requests
