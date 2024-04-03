@@ -6,7 +6,7 @@
         "port": 1883,
         "main_topic": "SmartHospital308/"
     },
-    "RegistrySyseminfo":{
+    "RegistrySysteminfo": {
         "host": "0.0.0.0",
         "port": 8080
     },
@@ -30,6 +30,15 @@
             "deviceConnector": "device46",
             "conditions": "h",
             "patientID": "patient46"
+        },
+        {
+            "firstName": "hiu",
+            "lastName": "fe",
+            "birthdate": "",
+            "residence": "ASTI",
+            "deviceConnector": "device45",
+            "conditions": "h",
+            "patientID": "patient45"
         }
     ],
     "deviceConnectorList": [
@@ -44,7 +53,7 @@
                 "oxygen_saturation",
                 "ECG"
             ],
-            "patientLinked": "no",
+            "patientLinked": "yes",
             "availableServices": [
                 "MQTT",
                 "REST"

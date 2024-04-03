@@ -36,8 +36,10 @@ class RegistrySystem(object):
             pIDs = []
             dConnectors = []
             for patient in self.catalog["patientsList"]:
-                pIDs.append("patient"+ str(patient["patientID"]))
+                pIDs.append(patient["patientID"])
             self.configWebPage["patientsID"] = pIDs
+            print("\n\n\n")
+            print(pIDs)
             for dC in self.catalog["deviceConnectorList"]:
                 if dC["patientLinked"] == "no":
                     dConnectors.append("device" + str(dC["deviceConnectorID"]))
@@ -145,7 +147,7 @@ class RegistrySystem(object):
                 # Assign every patient present in the lists to the nurse currently logged in the BOT so it can receive the alerts
                 patients = []
                 for p in self.catalog["patientsList"]:
-                    patients.append(p["patientID"].split("t")[2])
+                    patients.append(p["patientID"])
                 body["patients"] = patients
                 for nurse in self.catalog["nursesList"]:
                     if nurse["nurseID"] == body["nurseID"]:
@@ -244,8 +246,8 @@ if __name__=="__main__":
         }
     }
     cherrypy.tree.mount(RegistrySystem(),'/',conf) 
-    cherrypy.config.update({'server.socket_port': config["RegistrySyseminfo"]["port"]})
-    cherrypy.config.update({'server.socket_host': config["RegistrySyseminfo"]["host"]})
+    cherrypy.config.update({'server.socket_port': config["RegistrySysteminfo"]["port"]})
+    cherrypy.config.update({'server.socket_host': config["RegistrySysteminfo"]["host"]})
     cherrypy.engine.start()
     cherrypy.engine.block()
 

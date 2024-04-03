@@ -2,9 +2,52 @@ from flask import Flask, render_template, request, jsonify
 import requests
 import json
 from configreader import read_config, save_config
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
 
 
 app = Flask(__name__)
+
+def update_config():
+    # load the configuration file of the Webpage and convert it from a dictionary to a JSON object
+    conf = read_config()
+    print(conf)
+    # load the registry system
+    urlCatalog = conf["RegistrySystem"]
+    print(urlCatalog)
+    # read information from the configuration file and PUT the information to the catalog
+    config = conf["information"]
+    
+    print("\n\n")
+    print("PUT REQUEST")
+    print(config)
+
+    config = requests.put(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
+    conf["information"] = config.json()
+    # save the configuration file
+    save_config(conf)
+    # Load the configuration file using a get request to
+
+@app.before_first_request
+def initialize():
+    # load the configuration file of the Webpage and convert it from a dictionary to a JSON object
+    conf = read_config()
+    print(conf)
+    # load the registry system
+    urlCatalog = conf["RegistrySystem"]
+    print(urlCatalog)
+    # read information from the configuration file and POST the information to the catalog
+    config = conf["information"]
+    
+    print("\n\n")
+    print("POST REQUEST")
+    print(config)
+
+    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
+    conf["information"] = config.json()
+    # save the configuration file
+    save_config(conf)
+
 
 # Initial page
 @app.route('/')
@@ -14,13 +57,6 @@ def index():
     print(conf)
     # load the registry system
     urlCatalog = conf["RegistrySystem"]
-    print(urlCatalog)
-    # read information from the configuration file and POST the information to the catalog
-    config = conf["information"]
-    print(config)
-    config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
-    conf["information"] = config.json()
-    save_config(conf)
     
     # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
     # URI to ask to the registry system configuration file containing patients and data available 
@@ -36,7 +72,7 @@ def index():
         return render_template('index.html', config=data)
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)})
-    
+        
 
 # Function to get the data from the server (GET REQUEST)
 @app.route('/getData', methods=['POST'])
@@ -71,9 +107,6 @@ def add_patient():
     # URI to post data in the catalog
     uri = f"{conf['RegistrySystem']}/patient"
     print(uri)
-    print("\n\n\n\n\n\n\n\n")
-    print("AGGIUNTO???")
-    print("\n\n\n\n\n\n\n\n")
 
     try:
         # Save the new patient data in the catalog
@@ -110,6 +143,9 @@ def delete_patient():
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=update_config, trigger="interval", seconds=300)
+    scheduler.start()
     config = read_config()
     app.run(debug=True, port=config["information"]["port"])
 
