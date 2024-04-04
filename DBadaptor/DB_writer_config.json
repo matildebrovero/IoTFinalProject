@@ -1,0 +1,37 @@
+{
+    "RegistrySystem": "http://localhost:8080",
+    "InfluxInformation": {
+        "INFLUX_TOKEN": "jZR2G9mCbHx1_2obB5nEn0EFcjVHVSXi4HjFyI4aQ1_4J7QRp8wVWCVjJFUVAou4Q22bjp_LQDJeBPi7HQXlwQ==",
+        "INFLUXDB_ORG": "SPHYNX",
+        "INFLUXDB_URL": "http://localhost:8086",
+        "bucket": "SmartHospital308",
+        "results": {
+            "bn": "InfluxData",
+            "e": {
+                "n": "",
+                "u": "",
+                "t": [],
+                "v": []
+            }
+        }
+    },
+    "ServiceInformation": {
+        "serviceID": 119,
+        "serviceName": "DB_writer",
+        "availableServices": [
+            "MQTT"
+        ],
+        "subscribe_topic": [
+            "Monitoring/+/status",
+            "Monitoring/+/ECG",
+            "Monitoring/+/sensorsData",
+            "Monitoring/+/RR",
+            "Monitoring/+/HR"
+        ],
+        "uri": {
+            "add_service": "service",
+            "broker_info": "broker"
+        },
+        "lastUpdate": "2024-04-04T17:50:11"
+    }
+}
