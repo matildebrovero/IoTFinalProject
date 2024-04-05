@@ -20,19 +20,20 @@ class RegistrySystem(object):
         # "http://localhost:8080/broker"
         if uri[0]=="broker":
             # Return the broker information
-            print("Received GET request for broker info.")
+            print("\nReceived GET request for broker info.")
             response = self.catalog["broker"]
             return json.dumps(response, indent = 4)
 
         # "http://localhost:8080/DBadaptor"
         if uri[0]=="DBadaptor":
+            print("\nReceived GET request for DB adaptor (DB reader) info.")
             for s in self.catalog["serviceList"]:
                 if s["serviceName"] == "DB_reader":
                     return json.dumps({"urlDB" : "http://"+s["serviceHost"]+":"+str(s["servicePort"])})
         
         # "http://localhost:8080/configwebpage"
         if uri[0] == "configwebpage":  
-            print("Received GET request for configwebpage.")
+            print("\nReceived GET request for configwebpage.")
             pIDs = []
             dConnectors = []
             for patient in self.catalog["patientsList"]:
@@ -48,40 +49,42 @@ class RegistrySystem(object):
             return json.dumps(self.configWebPage, indent = 4)
         
         # "http://localhost:8080/patientInfo"
-        if uri[0] == "patientInfo":  # TODO debug it
-            if uri[1] == "All":
-                print("Received GET request for all patient info.")
-                pIDs = []
-                pStatus = []
-                for p in self.catalog["patientsList"]:
-                    pIDs.append(p["patientID"])
-                    pStatus.append(p["conditions"])
-                return json.dumps({"patientID": pIDs, "patientCondition": pStatus}, indent = 4)
-            if params:  # Perform only if there are parameters
-                print(f"Received GET request for patient info with params: {params}")
-                for p in self.catalog["patientsList"]:
-                    if p["patientID"] == params["patientID"]:
-                        return json.dumps(p, indent = 4)
-                print(f"Patient {params['patientID']} not found")
+        if uri[0] == "patientInfo":  
+            if len(uri) == 2:
+                # "http://localhost:8080/patientInfo/All"
+                if uri[1] == "All":
+                    print("\nReceived GET request for all patient info.")
+                    pIDs = []
+                    pStatus = []
+                    for p in self.catalog["patientsList"]:
+                        pIDs.append(p["patientID"])
+                        pStatus.append(p["conditions"])
+                    return json.dumps({"patientID": pIDs, "patientCondition": pStatus}, indent = 4)
+            else:
+                # "http://localhost:8080/patientInfo?patientID=N"
+                if len(params) != 0:  # Perform only if there are parameters
+                    print(f"\nReceived GET request for patient info with params: {params}")
+                    for p in self.catalog["patientsList"]:
+                        if p["patientID"] == int(params["patientID"]):
+                            return json.dumps(p, indent = 4)
 
         # "http://localhost:8080/NurseInfo"
         if uri[0] == "NurseInfo":
             if uri[1] == "all":
-                print("Received GET request for all nurse info.")
+                print("\nReceived GET request for all nurse info.")
                 response = self.catalog["nursesList"]
                 return json.dumps(response, indent = 4)
             
         # "http://localhost:8080/availableData"
         if uri[0] == "availableData":
-            print("\n\n\n")
-            print("Received GET request for available data.")
+            print("\nReceived GET request for available data.")
             response = self.catalog["dataList"]
             print(response)
             return json.dumps(response, indent = 4)
 
     def POST(self,*uri,**params):
         rawBody = cherrypy.request.body.read()
-        print("Received POST request with body:", rawBody)
+        print("\nReceived POST request with body:", rawBody)
         if len(rawBody) > 0:
             try:
                 body = json.loads(rawBody)
@@ -92,7 +95,7 @@ class RegistrySystem(object):
             
             # "http://localhost:8080/service"
             if uri[0]=="service":
-                print("Received POST request for service.")
+                print("\nReceived POST request for service.")
                 ID = self.catalog["counter"]["serviceCounter"]
                 self.catalog["counter"]["serviceCounter"] += 1
                 body["serviceID"] = ID
@@ -105,7 +108,7 @@ class RegistrySystem(object):
             
             # "http://localhost:8080/DeviceConnector"
             if uri[0] == "DeviceConnector":
-                print("Received POST request for DeviceConnector.")
+                print("\nReceived POST request for DeviceConnector.")
                 ID = self.catalog["counter"]["deviceConnectorCounter"]
                 self.catalog["counter"]["deviceConnectorCounter"] += 1
                 body["deviceConnectorID"] = ID
@@ -119,7 +122,7 @@ class RegistrySystem(object):
 
             # "http://localhost:8080/patient"
             if uri[0] == "patient":
-                print("Received POST request for patient.")
+                print("\nReceived POST request for patient.")
                 body["patientID"] = int(body["deviceConnector"].split("e")[2])
                 self.catalog["patientsList"].append(body)
                 # Now the device connector is linked to a patient
@@ -140,7 +143,7 @@ class RegistrySystem(object):
             
             # "http://localhost:8080/nurse"
             if uri[0] == "nurse":
-                print("Received POST request for nurse.")
+                print("\nReceived POST request for nurse.")
                 #ID = self.catalog["counter"]["nurseCounter"]
                 #body["nurseID"] = ID
                 #self.catalog["nurseList"].append(body)
@@ -162,7 +165,7 @@ class RegistrySystem(object):
            
     def PUT(self,*uri,**params): 
         rawBody = cherrypy.request.body.read()
-        print("Received PUT request with body:", rawBody)
+        print("\nReceived PUT request with body:", rawBody)
         if len(rawBody) > 0:
             try:
                 body = json.loads(rawBody)
@@ -174,7 +177,8 @@ class RegistrySystem(object):
             #"http://localhost:8080/service"
             if uri[0]=="service":
                 # Debugging statement to ensure entering service condition
-                print("Inside Service Condition")
+                #print("Inside Service Condition")
+                print("\nReceived PUT request for service.")
                 #retrieve the unique ID from the request
                 ID = body["serviceID"]
                 print("ID:", ID)
@@ -191,7 +195,8 @@ class RegistrySystem(object):
             #"http://localhost:8080/DeviceConnector"
             if uri[0] == "DeviceConnector":
                 # Debugging statement to ensure entering devconn condition
-                print("Inside DeviceConnector Condition")
+                #print("Inside DeviceConnector Condition")
+                print("\nReceived PUT request for DeviceConnector.")
                 #retrieve the unique ID from the catalog
                 ID = body["deviceConnectorID"]
                 print("ID:", ID)
@@ -207,12 +212,8 @@ class RegistrySystem(object):
         else:
             return "Empty body"
         
-    def DELETE(self,*uri,**params): #TODO debug it
-        print(f"Received DELETE request with uri {uri} and params:{params}")
-        print("\n\n\n")
-        print("PARAMSSSSSSS")
-        print(params["patientID"])
-        print("\n\n\n")
+    def DELETE(self,*uri,**params):
+        print(f"\nReceived DELETE request with uri {uri} and params:{params}")
         if uri[0] == "patient":
             print("Received DELETE request for patient.")
             for patient in self.catalog["patientsList"]:
@@ -223,7 +224,6 @@ class RegistrySystem(object):
                     self.catalog["patientsList"].remove(patient)
                     print("\n\n\n")
                     print(self.catalog["patientsList"])
-                    print("\n\n\n")
                     with open("catalog.json", "w") as file:
                         json.dump(self.catalog, file, indent = 4)
                     print("Catalog updated without patient:", patient)
@@ -234,7 +234,6 @@ class RegistrySystem(object):
                     self.catalog["deviceConnectorList"].remove(dc)
                     print("\n\n\n")
                     print(self.catalog["deviceConnectorList"])
-                    print("\n\n\n")
                     with open("catalog.json", "w") as file:
                         json.dump(self.catalog, file, indent = 4)
                     print("Catalog updated with Device connector:", dc)

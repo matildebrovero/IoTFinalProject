@@ -132,7 +132,7 @@ class HospitalBot:
         print("Patient ID: %s" % onlyID)
 
         # request patient name and surname via GET request to the catalog
-        """print(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}")
+        print(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}")
         patientInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_patientInfo']}?{self.configuration['information']['uri']['single_patient']}={onlyID}").json()
         try:
             if patientInfo["firstName"] != "" and patientInfo["lastName"] != "":
@@ -143,7 +143,12 @@ class HospitalBot:
                 patientSurname = "Unknown"
         except:
             patientName = "Unknown"
-            patientSurname = "Unknown"""
+            patientSurname = "Unknown"
+
+        print("\n\n\n")
+        print(patientName)
+        print(patientSurname)
+        
         # check the message received from the topic and send an alert message to the correct chat
         if msg["e"][0]["v"] == "bad":
             print("ALERT MESSAGE MUST BE SENT")
@@ -160,7 +165,7 @@ class HospitalBot:
                     if onlyID in nurse["patients"]:
                         print(nurse["chatID"])
                         # send the message to the chat of the nurse
-                        self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: patient  with ID {onlyID} is in danger")
+                        self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: patient {patientName} {patientSurname} with ID {onlyID} is in danger")
 
         # NOT USED IN THIS VERSION. JUST THE MESSAGE ALERT WILL BE SENT
         ########### CODE ONLY USED TO DEUG 
@@ -176,7 +181,7 @@ class HospitalBot:
                     print(nurse["patients"])
                     print(onlyID in nurse["patients"])
                     if onlyID in nurse["patients"]:
-                        self.bot.sendMessage(nurse["chatID"], text=f" with ID {onlyID} is in a REGULAR status. MAY REQUIRE ATTENTION")
+                        self.bot.sendMessage(nurse["chatID"], text=f"patient {patientName} {patientSurname} with ID {onlyID} is in a REGULAR status. MAY REQUIRE ATTENTION")
         # if the status is regular and the previous status is bad the patient is now in a regular status, send a message to notify that
         elif msg["e"][0]["v"] == "good" :
             # check to which nurse the patient is assigned
@@ -191,7 +196,7 @@ class HospitalBot:
                     print(onlyID in nurse["patients"])
                     if onlyID in nurse["patients"]:
                         # send the message to the chat of the nurse
-                        self.bot.sendMessage(nurse["chatID"], text=f" with ID {onlyID} has normal parameters.")
+                        self.bot.sendMessage(nurse["chatID"], text=f"patient {patientName} {patientSurname} with ID {onlyID} has normal parameters.")
         else:
             pass
                 

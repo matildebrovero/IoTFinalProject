@@ -120,243 +120,247 @@
                 <button type="submit" class="btn" onclick="DeletePatient()">Delete</button>
             </form>
 
-    <script>
-
-        // load the config from the server
-        const config = JSON.parse('{{ config | tojson | safe }}');
-
-        // Function to populate patient select dropdown
-        function populatePatients() {
-            //DEBUG
-            console.log("Populating patients");
-            console.log(config.patientsID);
-            const select = document.getElementById("patientSelect");
-            config.patientsID.forEach(patient => {
-                const option = document.createElement("option");
-                option.text = patient;
-                option.value = patient;
-                select.add(option);
-            });
-        }
-
-        function deletingPatient() {
-            //DEBUG
-            console.log("Populating patients");
-            console.log(config.patientsID);
-            const select = document.getElementById("deletingPatient");
-            config.patientsID.forEach(patient => {
-                const option = document.createElement("option");
-                option.text = patient;
-                option.value = patient;
-                select.add(option);
-            });
-        }
-
-        // Function to populate data select dropdown
-        function populateData() {
-            const select = document.getElementById("dataSelect");
-            config.data.forEach(data => {
-                const option = document.createElement("option");
-                option.text = data;
-                option.value = data;
-                select.add(option);
-            });
-        }
-        
-        // Function to populate data select dropdown
-        function populateDevices() {
-            const select = document.getElementById("DeviceConnector");
-            config.deviceConnectors.forEach(deviceConnector => {
-                const option = document.createElement("option");
-                option.text = deviceConnector;
-                option.value = deviceConnector;
-                select.add(option);
-            });
-        }
-
-        // Function to handle GET request
-        function getData() {
-            const patientSelected = document.getElementById("patientSelect").value;
-            const dataSelected = document.getElementById("dataSelect").value;
-            const timeRange = document.getElementById("timeRange").value;
-
-            fetch('/getData', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `patientSelect=${patientSelected}&dataSelect=${dataSelected}&timeRange=${timeRange}`,
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            <script>
+                // Define myChart as a global variable
+                let myChart;
+            
+                // load the config from the server
+                const config = JSON.parse('{{ config | tojson | safe }}');
+            
+                // Function to populate patient select dropdown
+                function populatePatients() {
+                    //DEBUG
+                    console.log("Populating patients");
+                    console.log(config.patientsID);
+                    const select = document.getElementById("patientSelect");
+                    config.patientsID.forEach(patient => {
+                        const option = document.createElement("option");
+                        option.text = patient;
+                        option.value = patient;
+                        select.add(option);
+                    });
                 }
-                return response.json();
-            })
-            .then(data => {
-                // Data are received in this format:  { "bn": "InfluxDBdata", "patientID": "", "e":{ "n": "", "u": "", "t": "", "v": [] } }
-                let dataa = JSON.parse(data);
-                let patient = dataa.patientID;
-                let dataType = dataa.e.n;
-                let values = dataa.e.v;
-                // If no data is available, show an alert message
-                if (values.length == 0) {
-                    alert('No data available for the selected patient and data type');
+            
+                function deletingPatient() {
+                    //DEBUG
+                    console.log("Populating patients");
+                    console.log(config.patientsID);
+                    const select = document.getElementById("deletingPatient");
+                    config.patientsID.forEach(patient => {
+                        const option = document.createElement("option");
+                        option.text = patient;
+                        option.value = patient;
+                        select.add(option);
+                    });
                 }
-                // xaixs is a vector with the same length of values containing the index of the values
-                let xaxis = [];
-                for (let i = 0; i < values.length; i++) {
-                    xaxis.push(i);
+            
+                // Function to populate data select dropdown
+                function populateData() {
+                    const select = document.getElementById("dataSelect");
+                    config.data.forEach(data => {
+                        const option = document.createElement("option");
+                        option.text = data;
+                        option.value = data;
+                        select.add(option);
+                    });
                 }
                 
-                createChart(xaxis, values, patientSelected, dataSelected);
-            })
-        
-            // Function to create a line chart
-            function createChart(labels, data, patient, dataType) {
-                var ctx = document.getElementById('chartCanvas').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: `${patient} - ${dataType}`,
-                            data: data,
-                            borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1
-                        }]
+                // Function to populate data select dropdown
+                function populateDevices() {
+                    const select = document.getElementById("DeviceConnector");
+                    config.deviceConnectors.forEach(deviceConnector => {
+                        const option = document.createElement("option");
+                        option.text = deviceConnector;
+                        option.value = deviceConnector;
+                        select.add(option);
+                    });
+                }
+            
+                // Function to handle GET request
+                function getData() {
+                    const patientSelected = document.getElementById("patientSelect").value;
+                    const dataSelected = document.getElementById("dataSelect").value;
+                    const timeRange = document.getElementById("timeRange").value;
+            
+                    fetch('/getData', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `patientSelect=${patientSelected}&dataSelect=${dataSelected}&timeRange=${timeRange}`,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        let parsedData = JSON.parse(data);
+                        let patient = parsedData.patientID;
+                        let dataType = parsedData.e.n;
+                        let values = parsedData.e.v;
+            
+                        if (values.length == 0) {
+                            alert('No data available for the selected patient and data type');
+                            return;
+                        }
+            
+                        let xaxis = [];
+                        for (let i = 0; i < values.length; i++) {
+                            xaxis.push(i);
+                        }
+            
+                        // If myChart exists, update its data; otherwise, create a new chart
+                        if (myChart) {
+                            myChart.data.labels = xaxis;
+                            myChart.data.datasets[0].data = values;
+                            myChart.data.datasets[0].label = `${patient} - ${dataType}`;
+                            myChart.update();
+                        } else {
+                            createChart(xaxis, values, patientSelected, dataSelected);
+                        }
+                    })
+                }
+            
+                // Function to create a line chart
+                function createChart(labels, data, patient, dataType) {
+                    var ctx = document.getElementById('chartCanvas').getContext('2d');
+                    myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: `${patient} - ${dataType}`,
+                                data: data,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            }]
+                        }
+                    });
+                }
+            
+                // Populate dropdowns when the page loads
+                window.onload = function() {
+                    populatePatients();
+                    populateData();
+                    deletingPatient();
+                    populateDevices();
+                };
+            
+                // Function to show the new patient form
+                function showNewPatientForm() {
+                    document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page2').style.display = 'block';
+                }
+            
+                // Function to go back to the patient monitoring page
+                function goBack() {
+                    document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page3').style.display = 'none';
+                    document.getElementById('page1').style.display = 'block';
+                }
+            
+                document.getElementById('newPatientForm').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent form submission
+                    // Get form data
+                    const formData = new FormData(event.target);
+                    const patientData = {};
+                    for (const [key, value] of formData.entries()) {
+                        patientData[key] = value;
                     }
+                    console.log('New Patient Data:', patientData);
+                    // Reset form
+                    event.target.reset();
+                    // Hide form and show patient monitoring page
+                    document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page1').style.display = 'block';
                 });
-            };
-
-            // Display the container with the chart
-            document.getElementById('chartCanvas').style.display = 'block';
-        }    
-
-        // Populate dropdowns when the page loads
-        window.onload = function() {
-            populatePatients();
-            populateData();
-            deletingPatient();
-            populateDevices();
-
-        };
-    
-        // Function to show the new patient form
-        function showNewPatientForm() {
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'block';
-        }
-
-        // Function to go back to the patient monitoring page
-        function goBack() {
-            document.getElementById('page2').style.display = 'none';
-            document.getElementById('page3').style.display = 'none';
-            document.getElementById('page1').style.display = 'block';
-        }
-
-        document.getElementById('newPatientForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-            // Get form data
-            const formData = new FormData(event.target);
-            const patientData = {};
-            for (const [key, value] of formData.entries()) {
-                patientData[key] = value;
-            }
-            console.log('New Patient Data:', patientData);
-            // Reset form
-            event.target.reset();
-            // Hide form and show patient monitoring page
-            document.getElementById('page2').style.display = 'none';
-            document.getElementById('page1').style.display = 'block';
-        });
-
-        // Function to add a new patient
-        function AddPatient() {
-            const firstName = document.getElementById("firstName").value;
-            const lastName = document.getElementById("lastName").value;
-            const birthdate = document.getElementById("birthdate").value;
-            const residence = document.getElementById("residence").value;
-            const DeviceConnector = document.getElementById("DeviceConnector").value;
-            // I want conditions to be equal to an array with "n" = no patologies "d" = diabetic "h" = hypertention "c" = cardiatic desease
-            const conditions = [];
-            if (document.getElementById("diabetes").checked) {
-                conditions.push("d");
-            }
-            if (document.getElementById("hypertension").checked) {
-                conditions.push("h");
-            }
-            if (document.getElementById("heartDisease").checked) {
-                conditions.push("c");
-            }
-            if (document.getElementById("none").checked) {
-                conditions.push("n");
-            }
-
-            fetch('/addPatient', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `firstName=${firstName}&lastName=${lastName}&birthdate=${birthdate}&residence=${residence}&deviceConnector=${DeviceConnector}&conditions=${conditions}`,
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            
+                // Function to add a new patient
+                function AddPatient() {
+                    const firstName = document.getElementById("firstName").value;
+                    const lastName = document.getElementById("lastName").value;
+                    const birthdate = document.getElementById("birthdate").value;
+                    const residence = document.getElementById("residence").value;
+                    const DeviceConnector = document.getElementById("DeviceConnector").value;
+                    const conditions = [];
+                    if (document.getElementById("diabetes").checked) {
+                        conditions.push("d");
+                    }
+                    if (document.getElementById("hypertension").checked) {
+                        conditions.push("h");
+                    }
+                    if (document.getElementById("heartDisease").checked) {
+                        conditions.push("c");
+                    }
+                    if (document.getElementById("none").checked) {
+                        conditions.push("n");
+                    }
+            
+                    fetch('/addPatient', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `firstName=${firstName}&lastName=${lastName}&birthdate=${birthdate}&residence=${residence}&deviceConnector=${DeviceConnector}&conditions=${conditions}`,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Show success message
+                        alert('Patient added successfully');
+                        // Reset form
+                        document.getElementById('newPatientForm').reset();
+                        // Hide form and show patient monitoring page
+                        document.getElementById('page2').style.display = 'none';
+                        document.getElementById('page1').style.display = 'block';
+                        // Refresh the page to populate the new patient in the dropdown
+                        location.reload();
+            
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
                 }
-                // Show success message
-                alert('Patient added successfully');
-                // Reset form
-                document.getElementById('newPatientForm').reset();
-                // Hide form and show patient monitoring page
-                document.getElementById('page2').style.display = 'none';
-                document.getElementById('page1').style.display = 'block';
-                // Refresh the page to populate the new patient in the dropdown
-                location.reload();
-
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-            })
-        }
-
-        // Function to show the delete patient form
-        function deletePatient() {
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'none';
-            document.getElementById('page3').style.display = 'block';
-        }
-
-        // function to delete a patient by doing a delete request to the server
-        function DeletePatient() {
-            const selectedpatient = document.getElementById("deletingPatient").value;
-
-            fetch('/deletePatient', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `selectedpatient=${selectedpatient}`,
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            
+                // Function to show the delete patient form
+                function deletePatient() {
+                    document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page3').style.display = 'block';
                 }
-                // Show success message
-                alert('Patient deleted successfully');
-                // Reset form
-                document.getElementById('deletePatientForm').reset();
-                // Hide form and show patient monitoring page
-                document.getElementById('page3').style.display = 'none';
-                document.getElementById('page1').style.display = 'block';
-                // Refresh the page to populate the new patient in the dropdown
-                location.reload();
-
-                return response.json();
-            })
-        }
-
-    </script>
+            
+                // function to delete a patient by doing a delete request to the server
+                function DeletePatient() {
+                    const selectedpatient = document.getElementById("deletingPatient").value;
+            
+                    fetch('/deletePatient', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `selectedpatient=${selectedpatient}`,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Show success message
+                        alert('Patient deleted successfully');
+                        // Reset form
+                        document.getElementById('deletePatientForm').reset();
+                        // Hide form and show patient monitoring page
+                        document.getElementById('page3').style.display = 'none';
+                        document.getElementById('page1').style.display = 'block';
+                        // Refresh the page to populate the new patient in the dropdown
+                        location.reload();
+            
+                        return response.json();
+                    })
+                }
+            </script>
 </body>
 </html>

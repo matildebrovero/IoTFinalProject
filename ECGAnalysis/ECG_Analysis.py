@@ -5,11 +5,12 @@ import biosppy.signals.ecg as ecg
 import requests
 import numpy as np
 import time
+import scipy
 
 class ECGAnalysis:
 
     """
-    ECGAnalysis - SmartHospital IoT platform. Version 1.0.1
+    ECGAnalysis - SmartHospital IoT platform. Version 1.0.2
     This microservice is responsible for analyzing the ECG data and publishing the results to the Database Connector.
     The results are published according to the SenML format.
     
@@ -48,9 +49,15 @@ class ECGAnalysis:
 
             - "sampling_frequency": Sampling frequency of the ECG signal, in Hz. 
 
+            For the processed ECG data, after the RR wave detection we provide a snippet of it's morphology, with:
+
+                - "target_frequency": Target frequency of the resampled ECG signal, in Hz.
+
+                - "sample_duration": Duration of the sample to be taken from the resampled ECG signal, in seconds.
+
     """
 
-    def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis):
+    def __init__(self, clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis, target_frequency, sample_duration):
 
         self.broker = broker
         self.port = port
@@ -60,6 +67,9 @@ class ECGAnalysis:
 
         self.topic_sub = topic_sub
         self.servicepub = servicepub
+
+        self.target_frequency = target_frequency
+        self.sample_duration = sample_duration
 
         self.analysis = analysis
 
@@ -104,13 +114,23 @@ class ECGAnalysis:
         filtered = out["filtered"]
         rr_wave = np.diff(out["rpeaks"]/fc)
 
-        # ECG filtered output
-        filtered_data = [] # Accumulate all entries here
-        for i, value in enumerate(filtered):
+        # Resample ECGdata to the desired frequency (e.g., 40Hz), to keep morphology and minimize data.
+        resampled_ecg_data = scipy.signal.resample(filtered, int(len(filtered) * self.target_frequency / self.fc))
+
+        # Take the first 10 seconds of the resampled signal
+        snippet_length = min(len(resampled_ecg_data), self.sample_duration * self.target_frequency)
+        snippet_ecg_data = resampled_ecg_data[:snippet_length]
+
+        # Adjust timestamps for the snippet
+        snippet_timestamps = np.linspace(0, self.sample_duration, len(snippet_ecg_data), endpoint=False)
+
+        # ECG filtered output for the snippet
+        filtered_data = []
+        for i, value in enumerate(snippet_ecg_data):
             entry = {
                 "u": "mV",
                 "v": value,
-                "t": i * 1 / self.fc   # Adjust timestamp for each sample according to the "basetime"
+                "t": snippet_timestamps[i]  # Adjust timestamp for each sample in the snippet
             }
             filtered_data.append(entry)
         filtered_output = {
@@ -206,8 +226,10 @@ if __name__ == "__main__":
     # The sampling frequency of the ECG is a project choice, so it is defined considering that all physical device will have the same frequency.
 
     fc = conf["information"]["sampling_frequency"] 
+    target_frequency = conf["information"]["target_frequency"]
+    sample_duration = conf["information"]["sample_duration"]
     # Create an instance of ECGAnalysis
-    myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis)
+    myECGAnalysis = ECGAnalysis(clientID_sub, clientID_pub, broker, port, topic_sub, fc, servicepub, analysis, target_frequency, sample_duration)
     myECGAnalysis.startSim()
     start_time = time.time()
 

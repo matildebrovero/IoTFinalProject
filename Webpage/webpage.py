@@ -85,7 +85,7 @@ def getData():
     conf = read_config()
 
     # URI to ask data from the database for a certain patient and time range
-    uri = f"{conf['Database']}/{dataSelected}/{patientSelected}?range={timeRange}"
+    uri = f"{conf['Database']}/{dataSelected}/patient{patientSelected}?range={timeRange}"
     print(uri)
 
     try:
