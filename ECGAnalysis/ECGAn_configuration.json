@@ -1,7 +1,7 @@
 {
     "RegistrySystem": "http://localhost:8080",
     "information": {
-        "serviceID": "",
+        "serviceID": 63,
         "serviceName": "ECG_Analysis",
         "availableServices": [
             "MQTT",
@@ -14,11 +14,13 @@
             "RR",
             "HR"
         ],
-        "uri":{
+        "uri": {
             "add_service": "service",
             "broker_info": "broker"
         },
         "sampling_frequency": 100,
-        "lastUpdate": "2024-03-29T17:54:02"
+        "target_frequency": 25,
+        "sample_duration": 5,
+        "lastUpdate": "2024-04-05T16:37:41"
     }
 }
