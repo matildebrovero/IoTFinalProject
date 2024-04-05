@@ -13,14 +13,12 @@ import time
 
 """ 
     DB_writer - SmartHospital IoT platform. Version 1.0.1 
-    This microservice is responsible for reading the data from the sensors and writing them to the InfluxDB and for getting the data from the InfluxDB and returning them as a JSON to the services that request them. 
+    This microservice is responsible for reading the data from the sensors trough MQTT in SenML format and writing them to the InfluxDB.
      
         Input:  
             - Data from all the sensors and from the ECG Analysis service
-            - GET requests from the services that want to read the data from the InfluxDB
         Output:
             - Data written to the InfluxDB
-            - Data read from the InfluxDB and returned as a JSON to the services that requested them following the SenML standard
  
     -------------------------------------------------------------------------- 
     --------------         standard configuration          ------------------- 
@@ -42,17 +40,16 @@ import time
 
         - "ServiceInformation": 
             - "serviceID": ID of the service
-            - "availableServices": List of the communication protocol available for this service (MQTT, REST)
-            - "serviceName": Name of the service = "DB_adaptor" 
-            - "serviceHost": Host of the service = "localhost"
-            - "servicePort": Port of the service exposed to make get request to retrieve data
+            - "availableServices": List of the communication protocol available for this service (MQTT)
+            - "serviceName": Name of the service = "DB_writer" 
             - "subscribe_topic": Topic where the service will subscribe to read the data from the sensors
                     Example: "SmartHospitalN/Monitoring/patientN/ECG"
                     to get the data from every patient present the wildcard "+" is used
-            - "publish_topic": Topic where the service will publish the data to the sensors
             - "uri": 
                 - "add_service": URI to add the service to the Registry System
                 - "broker_info": URI to get the information about the MQTT broker from the Registry System           
+            - "lastUpdate": Last time the configuration file was updated
+
  
     """ 
 

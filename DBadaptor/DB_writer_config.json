@@ -15,6 +15,16 @@
             }
         }
     },
+    "SensorsAvailable": [
+        "ECG",
+        "glucometer",
+        "temperature",
+        "bloodpressure",
+        "oximeter",
+        "RR",
+        "status",
+        "HR"
+    ],
     "ServiceInformation": {
         "serviceID": 119,
         "serviceName": "DB_writer",

@@ -12,14 +12,12 @@ import requests
 import time
 
 """ 
-    DB_adaptor - SmartHospital IoT platform. Version 1.0.1 
-    This microservice is responsible for reading the data from the sensors and writing them to the InfluxDB and for getting the data from the InfluxDB and returning them as a JSON to the services that request them. 
+    DB_reader - SmartHospital IoT platform. Version 1.0.1 
+    This microservice is responsible for reading the data from influxDB if data are asked trough REST request.
      
         Input:  
-            - Data from all the sensors and from the ECG Analysis service
             - GET requests from the services that want to read the data from the InfluxDB
         Output:
-            - Data written to the InfluxDB
             - Data read from the InfluxDB and returned as a JSON to the services that requested them following the SenML standard
  
     -------------------------------------------------------------------------- 
@@ -46,14 +44,10 @@ import time
             - "serviceName": Name of the service = "DB_adaptor" 
             - "serviceHost": Host of the service = "localhost"
             - "servicePort": Port of the service exposed to make get request to retrieve data
-            - "subscribe_topic": Topic where the service will subscribe to read the data from the sensors
-                    Example: "SmartHospitalN/Monitoring/patientN/ECG"
-                    to get the data from every patient present the wildcard "+" is used
-            - "publish_topic": Topic where the service will publish the data to the sensors
             - "uri": 
                 - "add_service": URI to add the service to the Registry System
                 - "broker_info": URI to get the information about the MQTT broker from the Registry System           
- 
+            - "lastUpdate": Last time the configuration file was updated
     """ 
 
 # INFLUXDB CLIENT TO READ DATA
