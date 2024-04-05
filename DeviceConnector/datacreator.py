@@ -49,7 +49,7 @@ def read_blood_pressure():
         diastolic_pressure = random.randint(60, 80)  # Normal diastolic
     
     # Create a tuple with blood pressure values
-    blood_pressure = (systolic_pressure, diastolic_pressure)
+    blood_pressure = diastolic_pressure
     return blood_pressure
 
 # Global variables to keep track of glucose status
@@ -99,10 +99,10 @@ def read_oximeter():
     return oxygen_level
 
 # Function to generate simulated ECG data
-def generate_simulated_ecg(duration=60, sampling_rate=100, noise_level=0.5):
+def generate_simulated_ecg(duration=60, sampling_rate=100):
     """
     Function that simulates ECG data.
     """
-    ecg_signal = nk.ecg_simulate(duration=duration,sampling_rate=sampling_rate, noise=0.01, heart_rate=80, heart_rate_std=30, method='ecgsyn')
+    ecg_signal = nk.ecg_simulate(duration=duration,sampling_rate=sampling_rate, noise=0.01, heart_rate=70, heart_rate_std=5, method='ecgsyn')
 
     return ecg_signal.tolist(), sampling_rate

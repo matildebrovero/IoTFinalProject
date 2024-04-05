@@ -1,7 +1,7 @@
 {
-    "RegistrySystem": "http://localhost:8080",  
-    "information":{
-        "deviceConnectorID": "",
+    "RegistrySystem": "http://localhost:8080",
+    "information": {
+        "deviceConnectorID": 43,
         "serviceName": "DeviceConnector",
         "measureType": [
             "temperature",
@@ -11,82 +11,84 @@
             "oxygen_saturation",
             "ECG"
         ],
+        "patientLinked": "no",
         "availableServices": [
             "MQTT",
             "REST"
-            ],
-        "pubish_topic": {
-            "base_topic": "/Monitoring/patient",
+        ],
+        "publish_topic": {
+            "base_topic": "Monitoring/patient",
             "sensors": "/sensorsData",
             "ecg": "/ecgData"
         },
         "uri": {
-            "add_deviceconn": "deviceConnector",
+            "add_deviceconn": "DeviceConnector",
             "broker_info": "broker"
         },
-        "resources":{
-            "sensors":[{
-                "sensorName": "MLX90614",
-                "sensorID": "s1",
-                "pin": 1,
-                "measurementType": [
-                    "Temperature"
-                ],
-                "units": [
-                    "°C"
-                ]
-            },
-            {
-                "sensorName": "MAX30102",
-                "sensorID": "s2",
-                "pin": 2,
-                "measurementType": [
-                    "glucose"
-                ],
-                "units": [
-                    "mg/dL"
-                ]
-            },
-            {
-                "sensorName": "MPX5100DP",
-                "sensorID": "s3",
-                "pin": 3,
-                "measurementType": [
-                    "blood_pressure"
-                ],
-                "units": [
-                    "mmHg"
-                ]
-            },
-            {
-                "sensorName": "PULSE_SENSOR",
-                "sensorID": "s4",
-                "pin": 4,
-                "measurementType": [
-                    "pulse",
-                    "ECG"
-                ],
-                "units": [
-                    "bpm",
-                    "mV"
-                ]
-            },
-            {
-                "sensorName": "MAX30100",
-                "sensorID": "s5",
-                "pin": 5,
-                "measurementType": [
-                    "oxygen_saturation"
-                ],
-                "units": [
-                    "%"
-                ]
-            }
+        "resources": {
+            "sensors": [
+                {
+                    "sensorName": "MLX90614",
+                    "sensorID": "s1",
+                    "pin": 1,
+                    "measurementType": [
+                        "Temperature"
+                    ],
+                    "units": [
+                        "\u00c2\u00b0C"
+                    ]
+                },
+                {
+                    "sensorName": "MAX30102",
+                    "sensorID": "s2",
+                    "pin": 2,
+                    "measurementType": [
+                        "glucose"
+                    ],
+                    "units": [
+                        "mg/dL"
+                    ]
+                },
+                {
+                    "sensorName": "MPX5100DP",
+                    "sensorID": "s3",
+                    "pin": 3,
+                    "measurementType": [
+                        "blood_pressure"
+                    ],
+                    "units": [
+                        "mmHg"
+                    ]
+                },
+                {
+                    "sensorName": "PULSE_SENSOR",
+                    "sensorID": "s4",
+                    "pin": 4,
+                    "measurementType": [
+                        "pulse",
+                        "ECG"
+                    ],
+                    "units": [
+                        "bpm",
+                        "mV"
+                    ]
+                },
+                {
+                    "sensorName": "MAX30100",
+                    "sensorID": "s5",
+                    "pin": 5,
+                    "measurementType": [
+                        "oxygen_saturation"
+                    ],
+                    "units": [
+                        "%"
+                    ]
+                }
             ]
         },
-        "lastUpdate": "2019-11-20T14:00:00"
+        "lastUpdate": "2024-03-30T19:57:06"
     },
-    "sensorData":{
+    "sensorData": {
         "bn": "SensorsData",
         "e": [
             {
@@ -96,7 +98,7 @@
                 "v": ""
             },
             {
-                "n": "blood_pressure",
+                "n": "bloodpressure",
                 "u": "mmHg",
                 "t": "",
                 "v": ""
@@ -109,13 +111,13 @@
             },
             {
                 "n": "termometer",
-                "u": "°C",
+                "u": "\u00c2\u00b0C",
                 "t": "",
                 "v": ""
             }
         ]
     },
-    "ECGdata":{
+    "ECGdata": {
         "bn": "ECGData",
         "bt": "",
         "e": []
