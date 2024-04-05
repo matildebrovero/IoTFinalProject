@@ -124,12 +124,14 @@ def delete_patient():
     # Get the data from the form
     patient_id = request.form.to_dict()
     patient_id = patient_id['selectedpatient']
-    only_id = patient_id.split("t")[2]
     #print("Patient ID:", patient_id)
     conf = read_config()
     # URI to delete data in the catalog
-    uri = f"{conf['RegistrySystem']}?{conf['information']['uri']['delete_patient']}={only_id}"
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['patient']}?{conf['information']['uri']['delete_patient']}={patient_id}"
+    print("\n\n\n\n\n")
+    print("DELETING PATIENT")
     print(uri)
+    print("\n\n\n\n\n")
 
     try:
         # Delete the patient data in the catalog

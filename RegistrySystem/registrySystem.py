@@ -27,7 +27,7 @@ class RegistrySystem(object):
         # "http://localhost:8080/DBadaptor"
         if uri[0]=="DBadaptor":
             for s in self.catalog["serviceList"]:
-                if s["serviceName"] == "DB_adaptor":
+                if s["serviceName"] == "DB_reader":
                     return json.dumps({"urlDB" : "http://"+s["serviceHost"]+":"+str(s["servicePort"])})
         
         # "http://localhost:8080/configwebpage"
@@ -120,7 +120,7 @@ class RegistrySystem(object):
             # "http://localhost:8080/patient"
             if uri[0] == "patient":
                 print("Received POST request for patient.")
-                body["patientID"] = "patient"+str(body["deviceConnector"].split("e")[2])
+                body["patientID"] = int(body["deviceConnector"].split("e")[2])
                 self.catalog["patientsList"].append(body)
                 # Now the device connector is linked to a patient
                 for dC in self.catalog["deviceConnectorList"]:
@@ -147,11 +147,12 @@ class RegistrySystem(object):
                 # Assign every patient present in the lists to the nurse currently logged in the BOT so it can receive the alerts
                 patients = []
                 for p in self.catalog["patientsList"]:
-                    patients.append(p["patientID"])
+                    patients.append(str(p["patientID"]))
                 body["patients"] = patients
                 for nurse in self.catalog["nursesList"]:
                     if nurse["nurseID"] == body["nurseID"]:
                         nurse["patients"] = body["patients"]
+                        nurse["chatID"] = body["chatID"]
                 with open("catalog.json", "w") as file:
                     json.dump(self.catalog, file, indent = 4)
                 print("Catalog updated with nurse:", body)
@@ -207,18 +208,36 @@ class RegistrySystem(object):
             return "Empty body"
         
     def DELETE(self,*uri,**params): #TODO debug it
+        print(f"Received DELETE request with uri {uri} and params:{params}")
+        print("\n\n\n")
+        print("PARAMSSSSSSS")
+        print(params["patientID"])
+        print("\n\n\n")
         if uri[0] == "patient":
+            print("Received DELETE request for patient.")
             for patient in self.catalog["patientsList"]:
+                print("\n\n\n")
+                print(patient)
                 if patient["patientID"] == params["patientID"]:
+                    # delete patient from the list
                     self.catalog["patientsList"].remove(patient)
+                    print("\n\n\n")
+                    print(self.catalog["patientsList"])
+                    print("\n\n\n")
+                    with open("catalog.json", "w") as file:
+                        json.dump(self.catalog, file, indent = 4)
+                    print("Catalog updated without patient:", patient)
                 else:
                     return "Patient not found"
             for dc in self.catalog["deviceConnectorList"]:
                 if dc["deviceConnectorID"] == params["patientID"]:
                     self.catalog["deviceConnectorList"].remove(dc)
+                    print("\n\n\n")
+                    print(self.catalog["deviceConnectorList"])
+                    print("\n\n\n")
                     with open("catalog.json", "w") as file:
                         json.dump(self.catalog, file, indent = 4)
-                    return json.dumps(patient, indent = 4)
+                    print("Catalog updated with Device connector:", dc)
         pass
 
     def checkLastUpdate(self, lastUpdate): #TODO debug it

@@ -250,9 +250,9 @@ class PatientStatus(object):
  
         # Definition of the status 
         if weighted_aggregated_status >= 0.7: 
-            status = "bad" 
+            status = "good" 
         elif weighted_aggregated_status >= 0.4: 
-            status = "bad" 
+            status = "fair" 
         else: 
             status = "bad" 
              
@@ -280,5 +280,5 @@ if __name__ == "__main__":
         status.get_status_and_publish() 
         status.update_service() 
         # every 5 minutes the status is calculated and published for every patient 
-        time.sleep(40)  
+        time.sleep(300)  
  
