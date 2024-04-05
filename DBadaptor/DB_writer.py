@@ -87,7 +87,7 @@ class SensorSubscriber:
             InfluxDBwrite(bucket,point)
         
         # Read the ECG, RR signals from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] in ["RR"]: #, "ECG"]: #TODO Why my pc crashes when I add ECG?? :( (◡︵◡) :'-(
+        if self.topic.split('/')[3] in ["RR", "ECG"]: #, "ECG"]: #TODO Why my pc crashes when I add ECG?? :( (◡︵◡) :'-( - SOTTOCAMPIONARE
             #print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
@@ -106,6 +106,7 @@ class SensorSubscriber:
                 # Print the data that is written to the InfluxDB
                 #print(f"Writing to InfluxDB {point.to_line_protocol()}")
                 InfluxDBwrite(bucket,point)
+            print("finished writing ECG/RR data")
         
         # Read the sensors' data from the topic and write it to the InfluxDB
         if self.topic.split('/')[3] == "sensorsData":
@@ -179,6 +180,7 @@ if __name__ == "__main__":
 
     # read information from the configuration file and POST the information to the catalog
     config = config_file["ServiceInformation"]
+    print("\nPOST request to the catalog")
     config = requests.post(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['add_service']}", json=config_file["ServiceInformation"])
     if config.status_code == 200:
         print(f"Service Information: {config}")
@@ -228,6 +230,7 @@ if __name__ == "__main__":
             #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
             current_time = time.time()
             if current_time - start_time > 5*60:
+                print("\nPUT request to the catalog")
                 config_file = json.load(open('DB_writer_config.json'))
                 config = requests.put(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['add_service']}", json=config_file["ServiceInformation"])
                 if config.status_code == 200:
