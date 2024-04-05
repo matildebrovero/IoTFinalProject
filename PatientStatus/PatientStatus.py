@@ -114,77 +114,89 @@ class PatientStatus(object):
             print("\n\n\nGET REQUESTS TO DATABASE\n")
             # get the data from the database
             try:
-                response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}") 
+                response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}") 
                 if response_gluco.status_code == 200:
                     response_gluco = response_gluco.json()
+                    print(response_gluco)
                 else:
                     print(f"Error in getting glucose data: {response_gluco.status_code} - {response_gluco.text}")  
-                    exit()
+                    
             except:
                 print("Error in getting glucose data")
-                response_gluco = {"e": [{"v": [100]}]}
+                response_gluco = {"e": {"v": [100]}}
 
             try:
                 response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
                 if response_bps.status_code == 200:  
                     response_bps = response_bps.json()
+                    print(response_bps)
                 else:
                     print(f"Error in getting blood pressure data {response_bps.status_code} - {response_bps.text}")
                     exit()
             except:
                 print("Error in getting blood pressure data")
-                response_bps = {"e": [{"v": [200]}]}
+                response_bps = {"e": {"v": [200]}}
 
             try:
                 response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
                 if response_oxim.status_code == 200:
                     response_oxim = response_oxim.json()
+                    print(response_oxim)
                 else:
                     print(f"Error in getting oximeter data {response_oxim.status_code} - {response_oxim.text}")
                     exit()
             except:
                 print("Error in getting oximeter data")    
-                response_oxim = {"e": [{"v": [96]}]}
+                response_oxim = {"e": {"v": [96]}}
 
             try:
                 response_HR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['HR']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"{self.Database}{self.conf['information']['uri_DB']['HR']}{pat}?{self.conf['information']['params_DB']}")
                 if response_HR.status_code == 200:
                     response_HR = response_HR.json()
+                    print(response_HR)
                 else: 
                     print(f"Error in getting HR data {response_HR.status_code} - {response_HR.text}")
                     exit()
             except:
                 print("Error in getting HR data")    
-                response_HR = {"e": [{"v": [0]}]}
+                response_HR = {"e": {"v": [0]}}
 
             try:
                 response_termo = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"{self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}")
                 if response_termo.status_code == 200:
                     response_termo = response_termo.json()
+                    print(response_termo)
                 else:
                     print(f"Error in getting temperature data {response_termo.status_code} - {response_termo.text}") 
                     exit()
             except:
                 print("Error in getting temperature data")
-                response_termo = {"e": [{"v": [38]}]}
+                response_termo = {"e": {"v": [38]}}
             
             try:
                 response_RR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
                 if response_oxim.status_code == 200:
                     response_RR = response_RR.json()
+                    print(response_RR)
                 else: 
                     print(f"Error in getting RR data {response_RR.status_code} - {response_RR.text}")
                     exit()
             except:    
-                response_RR = {"e": [{"v": [1000]}]}   
+                response_RR = {"e": {"v": [1000]}}   
 
             # definition of the data dictionary containing the data of the patient 
-            data = {"gluco": response_gluco["e"][0]["v"], 
-                    "bps": response_bps["e"][0]["v"], 
-                    "oxim": response_oxim["e"][0]["v"], 
-                    "HR": response_HR["e"][0]["v"], 
-                    "termo": response_termo["e"][0]["v"],
-                    "RR": response_RR["e"][0]["v"], 
+            data = {"gluco": response_gluco["e"]["v"], 
+                    "bps": response_bps["e"]["v"], 
+                    "oxim": response_oxim["e"]["v"], 
+                    "HR": response_HR["e"]["v"], 
+                    "termo": response_termo["e"]["v"],
+                    "RR": response_RR["e"]["v"], 
                     "condition": condition[patID.index(pat)]}
             
             # calculate the status of the patient 
