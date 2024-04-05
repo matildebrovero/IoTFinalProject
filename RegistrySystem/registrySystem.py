@@ -27,7 +27,7 @@ class RegistrySystem(object):
         # "http://localhost:8080/DBadaptor"
         if uri[0]=="DBadaptor":
             for s in self.catalog["serviceList"]:
-                if s["serviceName"] == "DB_adaptor":
+                if s["serviceName"] == "DB_reader":
                     return json.dumps({"urlDB" : "http://"+s["serviceHost"]+":"+str(s["servicePort"])})
         
         # "http://localhost:8080/configwebpage"

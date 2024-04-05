@@ -60,6 +60,7 @@ class PatientStatus(object):
         # post the configuration to the catalog
         config = requests.post(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=self.conf["information"])
         if config.status_code == 200:
+            print("\n\n\nPOST REQUESTS\n")
             print(f"Service Information: {config}")
             ps_conf["information"] = config.json()
             # save the new configuration file 
@@ -86,6 +87,7 @@ class PatientStatus(object):
             self.clientID = self.conf["information"]["serviceName"]+str(self.conf["information"]["serviceID"])
             self.status_client = StatusManager(self.clientID, self.broker["IP"],self.broker["port"] )
             # start the mqtt publisher
+            print("\n\n\nStarting the mqtt client\n")
             self.status_client.startSim()
         else:
             print(f"Error: {b.status_code} - {b.text}")
@@ -94,21 +96,22 @@ class PatientStatus(object):
 
 
     def get_status_and_publish(self):
+        print("\n\n\nGET STATUS AND PUBLISH\n")
+        print("GETTING PATIENT LIST")
         patientList = requests.get(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['patient']}")
         if patientList.status_code != 200:
             print(f"Error in getting patient list: {patientList.status_code} - {patientList.text}")
             exit()
-        print("GETTING PATIENT LIST")
         print(patientList)
         print(patientList.json())
         patID = patientList.json()["patientID"]
+        patID = [49]
         condition = patientList.json()["patientCondition"]
-        print(condition)
         
         for pat in patID:
             print(f"Getting status for patient {pat}")
             print(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}")
-          
+            print("\n\n\nGET REQUESTS TO DATABASE\n")
             # get the data from the database
             try:
                 response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}") 
@@ -194,7 +197,9 @@ class PatientStatus(object):
                             "t": time.time(), 
                             "v": s 
                         }]} 
+            print(pat)
             topic = self.broker["main_topic"]+self.conf["information"]["pubish_topic"]["base_topic"]+str(pat)+self.conf["information"]["pubish_topic"]["status"] 
+            print(f"\n\n\nPUBLISHING STATUS ON TOPIC {topic}\n")
             self.status_client.publish(topic, stat)  
  
     def calculate_status(self, data): 
@@ -261,7 +266,7 @@ class PatientStatus(object):
      
     def update_service(self): 
         # update the service in the catalog 
-        print("\n\n\n\PUT REQUEST\n\n\n")
+        print("\n\n\n\PUT REQUEST\n")
         ps_conf = copy.deepcopy(self.conf) 
         config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=self.conf["information"]) 
         if config.status_code == 200:
@@ -280,5 +285,5 @@ if __name__ == "__main__":
         status.get_status_and_publish() 
         status.update_service() 
         # every 5 minutes the status is calculated and published for every patient 
-        time.sleep(40)  
+        time.sleep(300)  
  
