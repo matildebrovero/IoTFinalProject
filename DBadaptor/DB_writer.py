@@ -137,7 +137,7 @@ class SensorSubscriber:
             time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
             value = self.sensorData['e'][0]['v']
             unit = self.sensorData['e'][0]['u']
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(time))
+            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
             # Print the data that is written to the InfluxDB
             print(f"Writing to InfluxDB {point.to_line_protocol()}")
             InfluxDBwrite(bucket,point)   
