@@ -187,11 +187,16 @@ class RegistrySystem(object):
         pass
 
     def checkLastUpdate(self, lastUpdate): #TODO debug it
-        currentTime = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        currentTimestr = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         #convert the string to datetime
-        datetime.strptime(lastUpdate, "%Y-%m-%dT%H:%M:%S")
+        currentTime = datetime.strptime(currentTimestr, "%Y-%m-%dT%H:%M:%S")
+        lastUpdateobj = datetime.strptime(lastUpdate, "%Y-%m-%dT%H:%M:%S")
         #check if the last update was more than 5 minutes ago
-        if (currentTime - lastUpdate).total_seconds() > 300:
+        print(f"Current time: {currentTime}")
+        timeDiff = currentTime - lastUpdateobj
+        print(f"Time difference: {timeDiff.total_seconds()}")
+        if timeDiff > timedelta(minutes=5) or timeDiff.total_seconds() < 0:
+            print("True")
             return True
         return False
     
@@ -199,6 +204,7 @@ if __name__=="__main__":
 
     App = RegistrySystem()
     catalog = App.catalog
+    print("Catalog loaded")
 
     #Standard configuration to serve the url "localhost:8080"
     conf={
@@ -209,61 +215,53 @@ if __name__=="__main__":
         }
     }
     cherrypy.tree.mount(RegistrySystem(),'/',conf) 
-    cherrypy.config.update({'server.socket_port': 8080})
+    cherrypy.config.update({'server.socket_port': 8081})
     cherrypy.config.update({'server.socket_host':'0.0.0.0'})
     cherrypy.engine.start()
-    cherrypy.engine.block()
 
-    while True: #TODO debug it
-        try:
-            # Iterate over serviceList
-            for service in catalog.get("serviceList", []):
-                toDelete = App.checkLastUpdate(service.get("lastUpdate"))
-                if toDelete:
-                    ID = service["serviceID"]
-                    print(f"Service {ID} is going to be deleted")
-                    catalog["serviceList"].remove(service)
-                    with open("catalog.json", "w") as file:
-                        json.dump(catalog, file, indent = 4)
-            # Iterate over deviceConnectorList
-            for deviceConnector in catalog.get("deviceConnectorList", []):
-                toDelete = App.checkLastUpdate(deviceConnector.get("lastUpdate"))
-                if toDelete:
-                    ID = deviceConnector["deviceConnectorID"]
-                    print(f"DeviceConnector {ID} is going to be deleted")
-                    catalog["deviceConnectorList"].remove(deviceConnector)
-                    with open("catalog.json", "w") as file:
-                        json.dump(catalog, file, indent = 4)
-        except:
-            print("Error in the main loop")
 
-# Alternativa di chat
-# while True:
-#     try:
-#         # Create a new list with services that need to be deleted
-#         services_to_delete = [service for service in catalog.get("serviceList", []) if App.checkLastUpdate(service.get("lastUpdate"))]
+    print("Server started")
+
+    # Alternativa di chat
+    while True:
+        print("Main loop")
+        # Create a new list with services that need to be deleted
+        services_to_delete = [service for service in catalog.get("serviceList", []) if App.checkLastUpdate(service.get("lastUpdate"))]
         
-#         # Remove the services from the catalog
-#         for service in services_to_delete:
-#             ID = service["serviceID"]
-#             print(f"Service {ID} is going to be deleted")
-#             catalog["serviceList"].remove(service)
+        # Remove the services from the catalog
+        for service in services_to_delete:
+            ID = service["serviceID"]
+            print(f"Service {ID} is going to be deleted")
+            catalog["serviceList"].remove(service)
 
-#         # Create a new list with device connectors that need to be deleted
-#         connectors_to_delete = [connector for connector in catalog.get("deviceConnectorList", []) if App.checkLastUpdate(connector.get("lastUpdate"))]
+        # Create a new list with device connectors that need to be deleted
+        connectors_to_delete = [connector for connector in catalog.get("deviceConnectorList", []) if App.checkLastUpdate(connector.get("lastUpdate"))]
         
-#         # Remove the device connectors from the catalog
-#         for connector in connectors_to_delete:
-#             ID = connector["deviceConnectorID"]
-#             print(f"DeviceConnector {ID} is going to be deleted")
-#             catalog["deviceConnectorList"].remove(connector)
+        # Remove the device connectors from the catalog
+        for connector in connectors_to_delete:
+            ID = connector["deviceConnectorID"]
+            print(f"DeviceConnector {ID} is going to be deleted")
+            catalog["deviceConnectorList"].remove(connector)
 
-#         # Write the updated catalog to the file
-#         with open("catalog.json", "w") as file:
-#             json.dump(catalog, file, indent=4)
+        # Write the updated catalog to the file
+        with open("catalog.json", "w") as file:
+            json.dump(catalog, file, indent=4)
 
-#     except KeyError as e:
-#         print(f"Error: Key not found - {e}")
-
-#     except Exception as e:
-#         print(f"Error in the main loop: {e}")
+    # while True: #TODO debug it
+    #     #print("Main loop")
+    #     # Iterate over serviceList
+    #     for service in catalog.get("serviceList", []):
+    #         toDelete = App.checkLastUpdate(service.get("lastUpdate"))
+    #         if toDelete:
+    #             ID = service["serviceID"]
+    #             #print(f"Service {ID} is going to be deleted")
+    #             catalog["serviceList"].remove(service)
+    #     # Iterate over deviceConnectorList
+    #     for deviceConnector in catalog.get("deviceConnectorList", []):
+    #         toDelete = App.checkLastUpdate(deviceConnector.get("lastUpdate"))
+    #         if toDelete:
+    #             ID = deviceConnector["deviceConnectorID"]
+    #             #print(f"DeviceConnector {ID} is going to be deleted")
+    #             catalog["deviceConnectorList"].remove(deviceConnector)
+    #    with open("catalog.json", "w") as file:
+    #    json.dump(catalog, file, indent = 4)
