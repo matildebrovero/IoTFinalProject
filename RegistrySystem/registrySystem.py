@@ -31,19 +31,20 @@ class RegistrySystem(object):
                     return json.dumps({"urlDB" : "http://"+s["serviceHost"]+":"+str(s["servicePort"])})
         
         # "http://localhost:8080/configwebpage"
-        if uri[0] == "configwebpage":  # TODO debug it
+        if uri[0] == "configwebpage":  
             print("Received GET request for configwebpage.")
             pIDs = []
-            data = []
             dConnectors = []
             for patient in self.catalog["patientsList"]:
-                pIDs.append("patient"+ str(patient["patientID"]))
-                self.configWebPage["patientsID"] = pIDs
+                pIDs.append(patient["patientID"])
+            self.configWebPage["patientsID"] = pIDs
+            print("\n\n\n")
+            print(pIDs)
             for dC in self.catalog["deviceConnectorList"]:
-                dConnectors.append("device" + str(dC["deviceConnectorID"]))
-                data.append(dC["measureType"])
-                self.configWebPage["deviceConnectors"] = dConnectors
-                self.configWebPage["data"] = data[-1]
+                if dC["patientLinked"] == "no":
+                    dConnectors.append("device" + str(dC["deviceConnectorID"]))
+            self.configWebPage["deviceConnectors"] = dConnectors
+            self.configWebPage["data"] = self.catalog["dataList"]
             return json.dumps(self.configWebPage, indent = 4)
         
         # "http://localhost:8080/patientInfo"
@@ -69,6 +70,14 @@ class RegistrySystem(object):
                 print("Received GET request for all nurse info.")
                 response = self.catalog["nursesList"]
                 return json.dumps(response, indent = 4)
+            
+        # "http://localhost:8080/availableData"
+        if uri[0] == "availableData":
+            print("\n\n\n")
+            print("Received GET request for available data.")
+            response = self.catalog["dataList"]
+            print(response)
+            return json.dumps(response, indent = 4)
 
     def POST(self,*uri,**params):
         rawBody = cherrypy.request.body.read()
@@ -109,12 +118,15 @@ class RegistrySystem(object):
                 return json.dumps(body, indent = 4)
 
             # "http://localhost:8080/patient"
-
             if uri[0] == "patient":
                 print("Received POST request for patient.")
-                ID = self.catalog["counter"]["deviceConnectorCounter"]
-                body["patientID"] = ID
+                body["patientID"] = "patient"+str(body["deviceConnector"].split("e")[2])
                 self.catalog["patientsList"].append(body)
+                # Now the device connector is linked to a patient
+                for dC in self.catalog["deviceConnectorList"]:
+                    if dC["deviceConnectorID"] == int(body["deviceConnector"].split("e")[2]):
+                        dC["patientLinked"] = "yes"
+                        print(dC)
                 print("\n\n\n")
                 print(self.catalog["patientsList"])
                 print("\n\n\n")
@@ -132,7 +144,11 @@ class RegistrySystem(object):
                 #ID = self.catalog["counter"]["nurseCounter"]
                 #body["nurseID"] = ID
                 #self.catalog["nurseList"].append(body)
-                body["patients"] = ["1", "2", "37"]
+                # Assign every patient present in the lists to the nurse currently logged in the BOT so it can receive the alerts
+                patients = []
+                for p in self.catalog["patientsList"]:
+                    patients.append(p["patientID"])
+                body["patients"] = patients
                 for nurse in self.catalog["nursesList"]:
                     if nurse["nurseID"] == body["nurseID"]:
                         nurse["patients"] = body["patients"]
@@ -219,6 +235,8 @@ if __name__=="__main__":
     App = RegistrySystem()
     catalog = App.catalog
 
+    config = json.load(open("catalog.json"))
+
     #Standard configuration to serve the url "localhost:8080"
     conf={
         '/':{
@@ -228,8 +246,8 @@ if __name__=="__main__":
         }
     }
     cherrypy.tree.mount(RegistrySystem(),'/',conf) 
-    cherrypy.config.update({'server.socket_port': 8080})
-    cherrypy.config.update({'server.socket_host':'0.0.0.0'})
+    cherrypy.config.update({'server.socket_port': config["RegistrySysteminfo"]["port"]})
+    cherrypy.config.update({'server.socket_host': config["RegistrySysteminfo"]["host"]})
     cherrypy.engine.start()
     cherrypy.engine.block()
 

@@ -11,6 +11,7 @@
             "oxygen_saturation",
             "ECG"
         ],
+        "patientLinked": "no",
         "availableServices": [
             "MQTT",
             "REST"

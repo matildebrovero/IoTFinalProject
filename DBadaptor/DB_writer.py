@@ -1,4 +1,4 @@
-# COMMAND TO INSTALL INFLUXDB CLIENT
+# DB WRITER
 # pip install influxdb-client
 
 # Import libraries
@@ -12,7 +12,7 @@ import requests
 import time
 
 """ 
-    DB_adaptor - SmartHospital IoT platform. Version 1.0.1 
+    DB_writer - SmartHospital IoT platform. Version 1.0.1 
     This microservice is responsible for reading the data from the sensors and writing them to the InfluxDB and for getting the data from the InfluxDB and returning them as a JSON to the services that request them. 
      
         Input:  
@@ -75,7 +75,7 @@ class SensorSubscriber:
             print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+            bucket = json.load(open('DB_writer_config.json'))["InfluxInformation"]["bucket"]
             # Read the bucket from the DB adaptor config file 
             basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
             time = basetime + self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
@@ -90,11 +90,11 @@ class SensorSubscriber:
             InfluxDBwrite(bucket,point)
         
         # Read the ECG, RR signals from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] in ["RR", "ECG"]:
+        if self.topic.split('/')[3] in ["RR"]: #, "ECG"]: #TODO Why my pc crashes when I add ECG?? :( (◡︵◡) :'-(
             #print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+            bucket = json.load(open('DB_writer_config.json'))["InfluxInformation"]["bucket"]
             # Read the bucket from the DB adaptor config file 
             basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
             #print(f"basetime: {basetime}")
@@ -117,7 +117,7 @@ class SensorSubscriber:
             print(sensorList)
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+            bucket = json.load(open('DB_writer_config.json'))["InfluxInformation"]["bucket"]
             for sensor in sensorList:
                 print(sensor)
                 time = sensor['t'] * 1000000000 # convert to nanoseconds
@@ -135,7 +135,7 @@ class SensorSubscriber:
             print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+            bucket = json.load(open('DB_writer_config.json'))["InfluxInformation"]["bucket"]
             # Read the bucket from the DB adaptor config file 
             time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
             value = self.sensorData['e'][0]['v']
@@ -159,64 +159,17 @@ class SensorSubscriber:
 # INFLUXDB CLIENT TO WRITE DATA
 def InfluxDBwrite(bucket,record):
     # read bucket from a config file
-    write_api = client.write_api(write_options=SYNCHRONOUS)   
+  try:
+    write_api = client.write_api(write_options=SYNCHRONOUS)
     write_api.write(bucket=bucket, org="SPHYNX", record=record)
-    #time.sleep(1) # separate points by 1 second
-    #print("Data written to InfluxDB")
-
-# INFLUXDB CLIENT TO READ DATA
-def InfluxDBread(query):
-    query_api = client.query_api()
-    tables = query_api.query(org="SPHYNX", query=query)
-    results = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["results"]
-    for table in tables:
-        for record in table.records:
-            results["e"]["v"].append(record.get_value())
-            results["e"]["n"] = record.get_field()
-            results["e"]["t"].append(record.get_time().isoformat()) #convert object datetime to isoformat which is "YYYY-MM-DDTHH:MM:SS.ffffff+00:00"
-            results["e"]["u"] = record.values.get("unit")
-            results["patientID"] = record.get_measurement()
-    print(f"Data read from InfluxDB {json.dumps(results, indent=4)}")
-    return json.dumps(results)
-    
-
-# REST API
-class rest_API(object):
-    exposed = True
-    def __init__(self):
-        print("REST API created")
-    def GET(self, *uri, **params):
-        print("GET request received")
-        bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-        availableSensor = requests.get(f"{urlCatalog}/availableData")
-        print("\n\n\n\n")
-        print(f"Available sensors: {availableSensor.text}")
-        # Read data from InfluxDB and return them as a JSON
-        if uri[0] in availableSensor:
-            print(f"Reading {uri[0]} data from InfluxDB")
-            patientID = uri[1]
-            range = params["range"]
-            query = f"""from(bucket: "{bucket}")
-            |> range(start: -{range}m)
-            |> filter(fn: (r) => r._measurement == "{str(patientID)}")
-            |> filter(fn: (r) => r._field == "{uri[0]}")"""
-            print(query)
-            print(f"Reading {uri[0]} data for patient {patientID} from InfluxDB")
-            return json.dumps(InfluxDBread(query))
-        else:
-            raise(cherrypy.HTTPError(404, "Resource not found"))
-    def POST(self, *uri, **params):
-        pass
-    def PUT(self, *uri, **params):
-        pass
-    def DELETE(self, *uri, **params):
-        pass
+  except Exception as e:
+    print(f"Error writing to InfluxDB: {e}")
 
 
 if __name__ == "__main__":
     start_time = time.time()
     # Open configuration file to read InfluxDB token, org and url and MQTT clientID, broker, port and base topic
-    config_file = json.load(open('DBadaptor_config.json'))
+    config_file = json.load(open('DB_writer_config.json'))
 
     # load the url of the registry system from the configuration file
     urlCatalog = config_file["RegistrySystem"]
@@ -236,7 +189,7 @@ if __name__ == "__main__":
         # print the updated information about the service
         print(f"Service Information: {config_file['ServiceInformation']}")
         # save the new configuration file
-        json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
+        json.dump(config_file, open("DB_writer_config.json", "w"), indent = 4)
     else:
         print(f"Error: {config.status_code} - {config.text}")
     
@@ -272,36 +225,20 @@ if __name__ == "__main__":
         #final_topic = MQTTinfo["main_topic"] + topic  
         #final_topic = topic
         subscriber.startSim(topic)
-    
-    # Start the REST API
-    #get the information about host and port from the configuration file
-    host = config_file["ServiceInformation"]["serviceHost"]
-    port = config_file["ServiceInformation"]["servicePort"]
-    conf={
-        '/':{
-        'request.dispatch':cherrypy.dispatch.MethodDispatcher(), #this line must be here
-        'tools.sessions.on':True
-        }
-    }
-    cherrypy.tree.mount(rest_API(), '/', conf)
-    #http://{host}:{port} 
-    cherrypy.config.update({'server.socket_host': host})
-    cherrypy.config.update({'server.socket_port': port})
-    cherrypy.engine.start()
-    cherrypy.engine.block()
+
     try:
         while True:
             #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
             current_time = time.time()
             if current_time - start_time > 5*60:
-                config_file = json.load(open('DBadaptor_config.json'))
-                config = requests.put(f"{urlCatalog}/{config_file['uri']['broker_info']}", json=config_file["ServiceInformation"])
+                config_file = json.load(open('DB_writer_config.json'))
+                config = requests.put(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['add_service']}", json=config_file["ServiceInformation"])
                 if config.status_code == 200:
                     print(f"Service Information: {config}")
                     config_file["ServiceInformation"] = config.json()
                     # print the updated information about the service
                     print(f"Service Information: {config_file['ServiceInformation']}")
-                    json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
+                    json.dump(config_file, open("DB_writer_config.json", "w"), indent = 4)
                     start_time = current_time
                 else:
                     print(f"Error: {config.status_code} - {config.text}")
@@ -310,6 +247,5 @@ if __name__ == "__main__":
             #time.sleep(0.001)
     except KeyboardInterrupt:
         subscriber.StopSim()
-        cherrypy.engine.stop()
 
 

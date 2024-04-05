@@ -1,4 +1,4 @@
-# COMMAND TO INSTALL INFLUXDB CLIENT
+# DB READER
 # pip install influxdb-client
 
 # Import libraries
@@ -56,119 +56,11 @@ import time
  
     """ 
 
-# MQTT SUBSCRIBER
-class SensorSubscriber:
-    def __init__(self, clientID, broker, port):
-        self.SensorData = None
-        self.topic = None
-        self.ClientSubscriber = MyMQTT(clientID, broker, port, self)
-        self.ClientSubscriber.start()
-
-    def notify(self, topic, payload):
-        self.topic = topic
-        self.sensorData = json.loads(payload)
-        #print(f"Received new status: {self.sensorData}")
-        print(f"Topic: {self.topic}")
-
-        # Read the HR data from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] == "HR":
-            print(f"{self.topic.split('/')[3]} Data received")
-            patientID = self.topic.split('/')[2]
-            # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-            # Read the bucket from the DB adaptor config file 
-            basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
-            time = basetime + self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
-            print(f"basetime: {basetime}")
-            value = self.sensorData['e'][0]['v']
-            unit = self.sensorData['e'][0]['u']
-            print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
-            # Write to InfluxDB  
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
-            # Print the data that is written to the InfluxDB
-            print(f"Writing to InfluxDB {point.to_line_protocol()}")
-            InfluxDBwrite(bucket,point)
-        
-        # Read the ECG, RR signals from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] in ["RR", "ECG"]:
-            #print(f"{self.topic.split('/')[3]} Data received")
-            patientID = self.topic.split('/')[2]
-            # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-            # Read the bucket from the DB adaptor config file 
-            basetime = self.sensorData['bt'] * 1000000000 # convert to nanoseconds
-            #print(f"basetime: {basetime}")
-            print(len(self.sensorData['e']))
-            for i in range(len(self.sensorData['e'])):
-                time = basetime + self.sensorData['e'][i]['t'] * 1000000000 # convert to nanoseconds
-                value = self.sensorData['e'][i]['v']
-                unit = self.sensorData['e'][i]['u']
-                #print(f'{self.topic} measured a value of {value} {unit} at the time {time}') 
-                # Write to InfluxDB  
-                point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(int(time)))
-                # Print the data that is written to the InfluxDB
-                #print(f"Writing to InfluxDB {point.to_line_protocol()}")
-                InfluxDBwrite(bucket,point)
-        
-        # Read the sensors' data from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] == "sensorsData":
-            print(f"{self.topic.split('/')[3]} Data received")
-            sensorList = self.sensorData['e']
-            print(sensorList)
-            patientID = self.topic.split('/')[2]
-            # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-            for sensor in sensorList:
-                print(sensor)
-                time = sensor['t'] * 1000000000 # convert to nanoseconds
-                value = sensor['v']
-                unit = sensor['u']
-                print(f'{sensor["n"]} measured a value of {value} {unit} at the time {time}') 
-                # Write to InfluxDB  
-                point = (Point(sensor["n"]).measurement(patientID).tag("unit", unit).field(sensor['n'], value).time(int(time)))
-                # Print the data that is written to the InfluxDB
-                print(f"Writing {sensor} to InfluxDB {point.to_line_protocol()}")
-                InfluxDBwrite(bucket,point)
-
-        # Read the status from the topic and write it to the InfluxDB        
-        if self.topic.split('/')[3] == "status":
-            print(f"{self.topic.split('/')[3]} Data received")
-            patientID = self.topic.split('/')[2]
-            # Read the bucket from the DB adaptor config file
-            bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
-            # Read the bucket from the DB adaptor config file 
-            time = self.sensorData['e'][0]['t'] * 1000000000 # convert to nanoseconds
-            value = self.sensorData['e'][0]['v']
-            unit = self.sensorData['e'][0]['u']
-            point = (Point(self.topic.split('/')[3]).measurement(patientID).tag("unit", unit).field(self.topic.split('/')[3],value).time(time))
-            # Print the data that is written to the InfluxDB
-            print(f"Writing to InfluxDB {point.to_line_protocol()}")
-            InfluxDBwrite(bucket,point)   
-        
-        else:
-            pass
-
-    def startSim(self, topic):
-        self.topic = topic
-        self.ClientSubscriber.mySubscribe(self.topic)
-    
-    def StopSim(self):
-        self.ClientSubscriber.unsubscribe() 
-        self.ClientSubscriber.stop()
-
-# INFLUXDB CLIENT TO WRITE DATA
-def InfluxDBwrite(bucket,record):
-    # read bucket from a config file
-    write_api = client.write_api(write_options=SYNCHRONOUS)   
-    write_api.write(bucket=bucket, org="SPHYNX", record=record)
-    #time.sleep(1) # separate points by 1 second
-    #print("Data written to InfluxDB")
-
 # INFLUXDB CLIENT TO READ DATA
 def InfluxDBread(query):
     query_api = client.query_api()
     tables = query_api.query(org="SPHYNX", query=query)
-    results = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["results"]
+    results = json.load(open('DB_reader_config.json'))["InfluxInformation"]["results"]
     for table in tables:
         for record in table.records:
             results["e"]["v"].append(record.get_value())
@@ -187,12 +79,16 @@ class rest_API(object):
         print("REST API created")
     def GET(self, *uri, **params):
         print("GET request received")
-        bucket = json.load(open('DBadaptor_config.json'))["InfluxInformation"]["bucket"]
+        bucket = json.load(open('DB_reader_config.json'))["InfluxInformation"]["bucket"]
         availableSensor = requests.get(f"{urlCatalog}/availableData")
         print("\n\n\n\n")
         print(f"Available sensors: {availableSensor.text}")
         # Read data from InfluxDB and return them as a JSON
-        if uri[0] in availableSensor:
+        # print(uri)
+        # print(params)
+        # print(availableSensor.json())
+        if uri[0] in availableSensor.json():
+            print("\n\n\n\AAAAAAAAAAAAAAAAAAA\n\n\n\n")
             print(f"Reading {uri[0]} data from InfluxDB")
             patientID = uri[1]
             range = params["range"]
@@ -216,7 +112,7 @@ class rest_API(object):
 if __name__ == "__main__":
     start_time = time.time()
     # Open configuration file to read InfluxDB token, org and url and MQTT clientID, broker, port and base topic
-    config_file = json.load(open('DBadaptor_config.json'))
+    config_file = json.load(open('DB_reader_config.json'))
 
     # load the url of the registry system from the configuration file
     urlCatalog = config_file["RegistrySystem"]
@@ -236,7 +132,7 @@ if __name__ == "__main__":
         # print the updated information about the service
         print(f"Service Information: {config_file['ServiceInformation']}")
         # save the new configuration file
-        json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
+        json.dump(config_file, open("DB_reader_config.json", "w"), indent = 4)
     else:
         print(f"Error: {config.status_code} - {config.text}")
     
@@ -247,17 +143,6 @@ if __name__ == "__main__":
     # Create an instance of the InfluxDB client
     client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
-
-    # get the information about the MQTT broker from the catalog using get requests
-    MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['broker_info']}").text)
-    broker = MQTTinfo["IP"]
-    port = MQTTinfo["port"]
-    print(config_file["ServiceInformation"]["subscribe_topic"])
-    topics = []
-    for topic in config_file["ServiceInformation"]["subscribe_topic"]:
-        topics.append(MQTTinfo["main_topic"] + topic)
-    clientID = config_file["ServiceInformation"]['serviceName'] + str(config_file["ServiceInformation"]['serviceID'])
-
     ###############
     ### LINES USED TO TEST THE CODE WITHOUT THE CATALOG
     ###############
@@ -266,13 +151,7 @@ if __name__ == "__main__":
     port = RegistrySystem["broker"]["port"]
     topics =  ["SmartHospital308/Monitoring/+/ECG", "SmartHospital308/Monitoring/+/RR", "SmartHospital308/Monitoring/+/sensorsData", "SmartHospital308/Monitoring/+/status"]"""
 
-    # Create an instance of the SensorSubscriber
-    subscriber = SensorSubscriber(clientID, broker, port)
-    for topic in topics:
-        #final_topic = MQTTinfo["main_topic"] + topic  
-        #final_topic = topic
-        subscriber.startSim(topic)
-    
+
     # Start the REST API
     #get the information about host and port from the configuration file
     host = config_file["ServiceInformation"]["serviceHost"]
@@ -289,19 +168,20 @@ if __name__ == "__main__":
     cherrypy.config.update({'server.socket_port': port})
     cherrypy.engine.start()
     cherrypy.engine.block()
+        
     try:
         while True:
             #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
             current_time = time.time()
             if current_time - start_time > 5*60:
-                config_file = json.load(open('DBadaptor_config.json'))
+                config_file = json.load(open('DB_reader_config.json'))
                 config = requests.put(f"{urlCatalog}/{config_file['uri']['broker_info']}", json=config_file["ServiceInformation"])
                 if config.status_code == 200:
                     print(f"Service Information: {config}")
                     config_file["ServiceInformation"] = config.json()
                     # print the updated information about the service
                     print(f"Service Information: {config_file['ServiceInformation']}")
-                    json.dump(config_file, open("DBadaptor_config.json", "w"), indent = 4)
+                    json.dump(config_file, open("DB_reader_config.json", "w"), indent = 4)
                     start_time = current_time
                 else:
                     print(f"Error: {config.status_code} - {config.text}")
@@ -309,7 +189,6 @@ if __name__ == "__main__":
                 pass
             #time.sleep(0.001)
     except KeyboardInterrupt:
-        subscriber.StopSim()
         cherrypy.engine.stop()
 
 
