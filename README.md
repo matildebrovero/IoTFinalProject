@@ -26,7 +26,7 @@ To summarize, the main features of this platform will be:
 
 The microservices present in are the following:
 * **RegistrySystem** that takes care of updating the Registry System and manage the requests from the other microservices
-* **DBwriter** and DBreader that compose the DB adaptor microservices which manages the data in the InfluxDB database
+* **DBwriter** and **DBreader** that compose the DB adaptor microservices which manages the data in the InfluxDB database
 * **ECG Analysis** which computes analysis on the raw ecg data to get RR intervals, Heart Rate variability and filters the ECG signal to get a clearer signal
 * **DeviceConnector** emulates the sensor linked to each device connector. Each patient has its own device connector with all the sensor mentioned above.
 * **Webpage** is a GUI from which nurses and doctors can access to the patients data, can add a patient when a new one is registered to the hospital or delete if the patient is no longer hospitalized.
