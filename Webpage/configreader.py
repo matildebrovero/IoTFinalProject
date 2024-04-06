@@ -1,4 +1,5 @@
 import json
+# FUNCTION TO READ THE CONFIGURATION FILE
 def read_config():
     # Read the configuration file
     config = json.load(open("webpage_configuration.json"))

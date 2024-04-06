@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <div id="page1">
-            <!--insert image-->
+            <!-- Image -->
             <img src="{{ url_for('static', filename='images/sphynx.png') }}" width="600" >
             <h1>Patient Monitoring</h1>
             <h2>Welcome to the website for Hospital to Monitor your patients' data in real-time</h2>
@@ -24,6 +24,7 @@
 
             <br><br>
 
+            <!-- Page 1: Patient Monitoring Form -->
             <div class="form-group">
                 <label for="patientSelect">Select a Patient:</label>
                 <select id="patientSelect" class="select-box">
@@ -51,8 +52,10 @@
 
         </div>
 
+        <!-- Page 2: New Patient Form -->
         <div id="page2" style="display: none;">
-            <!-- Add button to navigate to the new patient form -->
+
+            <!-- Add button to go back to the initial page -->
             <button onclick="goBack()" class="btn">Go Back</button>
 
             <!-- Page 2: New Patient Form -->
@@ -80,6 +83,7 @@
                         <!-- Options will be populated dynamically with JavaScript -->
                     </select>
                 </div>
+                <!-- Add checkboxes for selecting patient conditions -->
                 <div class="checkbox-container">
                     <label for="conditions">Conditions:</label><br>
                     <label class="custom-checkbox-label" for="diabetes">
@@ -103,8 +107,10 @@
             </form>
         </div>
 
+        <!-- Page 3: Delete Patient Form -->
         <div id="page3" style="display: none;">
-            <!-- Add button to navigate to the new patient form -->
+
+            <!-- Add button to go back to the initial page -->
             <button onclick="goBack()" class="btn">Go Back</button>
 
             <!-- Page 3: Delete Patient Form -->
@@ -124,7 +130,7 @@
                 // Define myChart as a global variable
                 let myChart;
             
-                // load the config from the server
+                // Load the config from the registry system
                 const config = JSON.parse('{{ config | tojson | safe }}');
             
                 // Function to populate patient select dropdown
@@ -140,7 +146,8 @@
                         select.add(option);
                     });
                 }
-            
+                
+                // Function to populate patient to delete select dropdown
                 function deletingPatient() {
                     //DEBUG
                     console.log("Populating patients");
@@ -176,7 +183,7 @@
                     });
                 }
             
-                // Function to handle GET request
+                // Function to handle data GET request
                 function getData() {
                     const patientSelected = document.getElementById("patientSelect").value;
                     const dataSelected = document.getElementById("dataSelect").value;
@@ -187,6 +194,7 @@
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
+                        // Send the selected patient, data type, and time range to the server
                         body: `patientSelect=${patientSelected}&dataSelect=${dataSelected}&timeRange=${timeRange}`,
                     })
                     .then(response => {
@@ -195,6 +203,7 @@
                         }
                         return response.json();
                     })
+                    // Parse the JSON response and update the chart
                     .then(data => {
                         let parsedData = JSON.parse(data);
                         let patient = parsedData.patientID;
@@ -260,7 +269,8 @@
                     document.getElementById('page3').style.display = 'none';
                     document.getElementById('page1').style.display = 'block';
                 }
-            
+                
+                // Add event listener to the new patient form
                 document.getElementById('newPatientForm').addEventListener('submit', function(event) {
                     event.preventDefault(); // Prevent form submission
                     // Get form data
@@ -303,6 +313,7 @@
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
+                        // Send the new patient data to the registry system
                         body: `firstName=${firstName}&lastName=${lastName}&birthdate=${birthdate}&residence=${residence}&deviceConnector=${DeviceConnector}&conditions=${conditions}`,
                     })
                     .then(response => {
@@ -333,7 +344,7 @@
                     document.getElementById('page3').style.display = 'block';
                 }
             
-                // function to delete a patient by doing a delete request to the server
+                // function to delete a patient by doing a DELETE request to the server
                 function DeletePatient() {
                     const selectedpatient = document.getElementById("deletingPatient").value;
             
