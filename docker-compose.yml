@@ -16,15 +16,13 @@ services:
     volumes: 
       - myInfluxVolume:/var/lib/influxdb 
   registrysystem:
-    build: ./registrySystem
+    build: ./RegistrySystem
     expose:
       - "8080"
     ports:
       - "8080:8080"
   dbadaptor:
-    build: 
-      - ./DB_writer
-      - ./DB_reader
+    build: ./DBadaptor
     expose:
       - "8081"
     ports:
@@ -36,7 +34,7 @@ services:
       - influxdb
       - registrysystem
   ecganalysis:
-    build: ./ECG_analysis
+    build: ./ECGAnalysis
     depends_on:
       - influxdb
       - registrysystem
@@ -54,7 +52,7 @@ services:
       - registrysystem
       - ecganalysis
   webpage:
-    build: ./webpage
+    build: ./Webpage
     expose:
       - "8090"
     ports:
@@ -83,6 +81,6 @@ services:
       - influxdb
       - registrysystem
       - patientstatus 
-
+      
 volumes: 
   myInfluxVolume:
