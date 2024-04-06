@@ -273,11 +273,11 @@ class RegistrySystem(object):
         #convert the string to datetime
         currentTime = datetime.strptime(currentTimestr, "%Y-%m-%dT%H:%M:%S")
         lastUpdateobj = datetime.strptime(lastUpdate, "%Y-%m-%dT%H:%M:%S")
-        #check if the last update was more than 5 minutes ago
+        #check if the last update was more than 6 minutes ago
         print(f"Current time: {currentTime}")
         timeDiff = currentTime - lastUpdateobj
         print(f"Time difference: {timeDiff.total_seconds()}")
-        if timeDiff > timedelta(minutes=5) or timeDiff.total_seconds() < 0:
+        if timeDiff > timedelta(minutes=6) or timeDiff.total_seconds() < 0:
             print("True")
             return True
         return False
@@ -307,14 +307,17 @@ if __name__=="__main__":
 
 
     while True:
-        print("Main loop")
+        print("\nMain loop to check if any service was down for more than 5 min")
+        catalog = json.load(open("catalog.json"))
+
         # Create a new list with services that need to be deleted
         services_to_delete = [service for service in catalog.get("serviceList", []) if App.checkLastUpdate(service.get("lastUpdate"))]
         
         # Remove the services from the catalog
         for service in services_to_delete:
             ID = service["serviceID"]
-            print(f"Service {ID} is going to be deleted")
+            name = service["serviceName"]
+            print(f"Service {ID} {name} is going to be deleted")
             catalog["serviceList"].remove(service)
 
         # Create a new list with device connectors that need to be deleted
@@ -330,7 +333,7 @@ if __name__=="__main__":
         with open("catalog.json", "w") as file:
             json.dump(catalog, file, indent=4)
         
-        # Sleep for 5 minutes
+        # Sleep for 1 minute
         time.sleep(60)
 
 
