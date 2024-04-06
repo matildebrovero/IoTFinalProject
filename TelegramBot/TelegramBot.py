@@ -19,7 +19,7 @@ from MyMQTT import *
     --------------         standard configuration          ------------------- 
     -------------------------------------------------------------------------- 
  
-    Standard Configuration file provided: ECGAn_configuration.json 
+    Standard Configuration file provided: TB_configuration.json
     The parameters of the configuration file are: 
  
         - "RegistrySystem": URL of the Registry System 
@@ -63,6 +63,7 @@ class HospitalBot:
         # get the names of the nurses from the nurseInfo file
         self.Names = [nurse["nurseName"] for nurse in self.nurseInfo]
         print(self.Names)
+
     def on_chat_message(self, msg):      
         content_type, chat_type,self.chat_ID = telepot.glance(msg)
 
@@ -167,8 +168,9 @@ class HospitalBot:
                         # send the message to the chat of the nurse
                         self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: patient {patientName} {patientSurname} with ID {onlyID} is in danger")
 
+        ########## TODO: COMMENT THIS PART
         # NOT USED IN THIS VERSION. JUST THE MESSAGE ALERT WILL BE SENT
-        ########### CODE ONLY USED TO DEUG 
+        ########### CODE ONLY USED TO DEUG - WE WANTED TO RECEIVE MESSAGE ALSO FOR FAIR AND GOOD STATUS TO CHECK IF THE CODE WORKS
         #if the status equal to regular and the previous status is also regular the patient may require attention, write a message to the chat
         elif msg["e"][0]["v"] == "fair":
             for nurse in self.nurseInfo:
@@ -213,6 +215,7 @@ if __name__ == "__main__":
 
     # read information from the configuration file
     config = conf["information"]
+    print("\n\nPOST REQUEST")
     # POST the configuration file to the catalog and get back the information (the Registry System will add the ID to the service information)
     config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
     if config.status_code == 200:
@@ -220,9 +223,13 @@ if __name__ == "__main__":
         # save the new configuration file
         json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
     else:
-        print("Error in adding the service to the catalog")
+        print("\NError in adding the service to the catalog")
+
     # GET the information about the MQTT broker from the Registry System using get requests
     MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['information']['uri']['broker_info']}").text)
+
+    print(f"\n GET REQUEST to get the MQTT broker information from {MQTTinfo}")
+
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic = MQTTinfo["main_topic"] + conf["information"]["subscribe_topic"]
@@ -236,7 +243,7 @@ if __name__ == "__main__":
     topic = RegistrySystem["broker"]["main_topic"] + conf["information"]["subscribe_topic"]"""
     ###################################################  
     
-    print(topic)
+    print(f"TOPIC: {topic}")
     # create an instance of the HospitalBot
     SmartHospitalBot = HospitalBot(token, broker, port, clientID, topic, conf)
     
@@ -250,6 +257,7 @@ while True:
     # check if 5 minutes have passed
     if current_time - start_time > 5*60:
         config_file = json.load(open('TB_configuration.json'))
+        print("\n\nPUT REQUEST")
         config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_service']}", json=config_file["information"])
         if config.status_code == 200:
             config_file["information"] = config
@@ -257,5 +265,5 @@ while True:
             # update the start time
             start_time = current_time
         else:
-            print(f"Error: {config.status_code} - {config.text}")
+            print(f"\nError: {config.status_code} - {config.text}")
     time.sleep(0.5)

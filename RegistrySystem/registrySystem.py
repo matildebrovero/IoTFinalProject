@@ -1,6 +1,35 @@
 import cherrypy
 import json
 from datetime import datetime, timedelta
+import time
+
+""" 
+    RegistrySystem - SmartHospital IoT platform. Version 1.0.1 
+    This microservice exposes REST API to read and read and write information about the services, patients, nurses, and device connectors in the Smart Hospital.
+    It keeps track of them and provides the information to the other services when requested.
+    It is also responsible for deleting the services and device connectors that have not been updated for more than 5 minutes.
+
+    All the information is stored in a JSON file called catalog.json. 
+
+    --------------------------------------------------------------------------
+    
+        Input:
+            - GET requests from the services that want to read the information about the services, patients, nurses, and device connectors
+            - POST requests from the services that want to add a new service, patient, nurse, or device connector
+            - PUT requests from the services that want to update the information about the services, patients, nurses, or device connectors
+            - DELETE requests from the services that want to delete a patient or device connector
+
+        Output:  
+            - Information about the services, patients, nurses, and device connectors in the Smart Hospital
+            - Confirmation of the addition, update, or deletion of a service, patient, nurse, or device connector
+
+    -------------------------------------------------------------------------- 
+    --------------         standard configuration          ------------------- 
+    -------------------------------------------------------------------------- 
+ 
+    Its configuration file is integrated in the the catalog.json
+ 
+    """ 
 
 class RegistrySystem(object):
     exposed=True 
@@ -270,14 +299,13 @@ if __name__=="__main__":
         }
     }
     cherrypy.tree.mount(RegistrySystem(),'/',conf) 
-    cherrypy.config.update({'server.socket_port': 8081})
-    cherrypy.config.update({'server.socket_host':'0.0.0.0'})
+    cherrypy.config.update({'server.socket_port': config["RegistrySysteminfo"]["port"]})
+    cherrypy.config.update({'server.socket_host': config["RegistrySysteminfo"]["host"]})
     cherrypy.engine.start()
-
 
     print("Server started")
 
-    # Alternativa di chat
+
     while True:
         print("Main loop")
         # Create a new list with services that need to be deleted
@@ -301,22 +329,8 @@ if __name__=="__main__":
         # Write the updated catalog to the file
         with open("catalog.json", "w") as file:
             json.dump(catalog, file, indent=4)
+        
+        # Sleep for 5 minutes
+        time.sleep(60)
 
-    # while True: #TODO debug it
-    #     #print("Main loop")
-    #     # Iterate over serviceList
-    #     for service in catalog.get("serviceList", []):
-    #         toDelete = App.checkLastUpdate(service.get("lastUpdate"))
-    #         if toDelete:
-    #             ID = service["serviceID"]
-    #             #print(f"Service {ID} is going to be deleted")
-    #             catalog["serviceList"].remove(service)
-    #     # Iterate over deviceConnectorList
-    #     for deviceConnector in catalog.get("deviceConnectorList", []):
-    #         toDelete = App.checkLastUpdate(deviceConnector.get("lastUpdate"))
-    #         if toDelete:
-    #             ID = deviceConnector["deviceConnectorID"]
-    #             #print(f"DeviceConnector {ID} is going to be deleted")
-    #             catalog["deviceConnectorList"].remove(deviceConnector)
-    #    with open("catalog.json", "w") as file:
-    #    json.dump(catalog, file, indent = 4)
+

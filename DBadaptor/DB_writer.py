@@ -24,7 +24,7 @@ import time
     --------------         standard configuration          ------------------- 
     -------------------------------------------------------------------------- 
  
-    Standard Configuration file provided: ECGAn_configuration.json 
+    Standard Configuration file provided: DB_writer_config.json
     The parameters of the configuration file are: 
  
         - "RegistrySystem": URL of the Registry System 
@@ -87,7 +87,7 @@ class SensorSubscriber:
             InfluxDBwrite(bucket,point)
         
         # Read the ECG, RR signals from the topic and write it to the InfluxDB
-        if self.topic.split('/')[3] in ["RR", "ECG"]: #, "ECG"]: #TODO Why my pc crashes when I add ECG?? :( (◡︵◡) :'-( - SOTTOCAMPIONARE
+        if self.topic.split('/')[3] in ["RR", "ECG"]:
             #print(f"{self.topic.split('/')[3]} Data received")
             patientID = self.topic.split('/')[2]
             # Read the bucket from the DB adaptor config file
