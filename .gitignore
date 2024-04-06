@@ -12,3 +12,5 @@ PatientStatus/__pycache__/
 ECGAnalysis/__pycache__/
 
 finalvenv/
+
+*.pyc
