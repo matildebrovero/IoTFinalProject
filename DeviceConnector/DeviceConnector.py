@@ -18,7 +18,7 @@ from datacreator import * #importing the functions to fake the data from the sen
     --------------         standard configuration          ------------------- 
     -------------------------------------------------------------------------- 
  
-    Standard Configuration file provided: ECGAn_configuration.json 
+    Standard Configuration file provided: deviceconnector_config.json
     The parameters of the configuration file are: 
  
         - "RegistrySystem": URL of the Registry System 
@@ -178,7 +178,7 @@ if __name__ == "__main__":
             current_time = time.time()
             # check if 5 minutes have passed
             if current_time - start_time > 5*60:
-                print("\n\n\nPut request to update the configuration file\n\n\n")
+                print("\n\n\PUT request to update the configuration file\n\n\n")
                 config_file = json.load(open('deviceconnector_config.json'))
                 config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_deviceconn']}", json=config_file["information"])
                 if config.status_code == 200:
