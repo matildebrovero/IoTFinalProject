@@ -26,17 +26,22 @@
         "HR"
     ],
     "ServiceInformation": {
-        "serviceID": 119,
-        "serviceName": "DB_reader",
+        "serviceID": 120,
+        "serviceName": "DB_writer",
         "availableServices": [
-            "REST"
+            "MQTT"
         ],
-        "serviceHost": "localhost",
-        "servicePort": 8081,
+        "subscribe_topic": [
+            "Monitoring/+/status",
+            "Monitoring/+/ECG",
+            "Monitoring/+/sensorsData",
+            "Monitoring/+/RR",
+            "Monitoring/+/HR"
+        ],
         "uri": {
             "add_service": "service",
             "broker_info": "broker"
         },
-        "lastUpdate": "2024-04-05T22:46:30"
+        "lastUpdate": "2024-04-06T14:56:24"
     }
 }
