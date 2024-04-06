@@ -34,6 +34,7 @@ import time
                 - "get_configurations": URI to get the configuration file from the Registry System
                 - "patient": URI to delete a patient from the Registry System  
                 - "delete_patient": params to delete a patient from the Registry System  
+                - "DB_adaptor": URI to get the information about the DB adaptor from the Registry System
             - "port": Port of the service exposed to show the Webpage
             - "host": Host of the service = "localhost"
             - "lastUpdate": Last time the configuration file was updated
