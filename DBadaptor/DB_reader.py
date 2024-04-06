@@ -24,7 +24,7 @@ import time
     --------------         standard configuration          ------------------- 
     -------------------------------------------------------------------------- 
  
-    Standard Configuration file provided: ECGAn_configuration.json 
+    Standard Configuration file provided: DB_reader_config.json
     The parameters of the configuration file are: 
  
         - "RegistrySystem": URL of the Registry System 
