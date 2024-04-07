@@ -123,7 +123,7 @@ def getData():
     conf = read_config()
 
     # URI to get the DB adaptor information from the registry system
-    DBuri = f"{conf['Database']}/{conf['information']['uri']['DB_adaptor']}"
+    DBuri = f"{conf['RegistrySystem']}/{conf['information']['uri']['DB_adaptor']}"
     print(f"\n\nGET requesto to get DB adaptor information from {DBuri}")
 
     DB = requests.get(DBuri)
@@ -136,7 +136,7 @@ def getData():
     # URI to ask data from the database for a certain patient and time range
     uri = f"{Database}/{dataSelected}/patient{patientSelected}?range={timeRange}"
 
-    print(f"\nRequesting data from {conf['Database']} for patient {patientSelected} and data {dataSelected} in the last {timeRange} minutes")
+    print(f"\nRequesting data from {Database} for patient {patientSelected} and data {dataSelected} in the last {timeRange} minutes")
 
     try:
         response = requests.get(uri)
