@@ -48,6 +48,7 @@ class MyMQTT:
             
     def stop (self):
         if (self._isSubscriber):
+            print("STOPPED SUBSCRIPTION")
             # remember to unsuscribe if it is working also as subscriber 
             self._paho_mqtt.unsubscribe(self._topic)
  

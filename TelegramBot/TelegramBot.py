@@ -52,6 +52,13 @@ class HospitalBot:
         self.broker = broker
         self.port = port
         self.clientID = clientID
+        self.startedIDs = []
+        self.nurseIDs = []
+
+        # create an instance of the MyMQTT class 
+        self.client = MyMQTT(self.clientID, self.broker, self.port, self)
+        self.client.start()
+
         MessageLoop(self.bot, {'chat': self.on_chat_message}).run_as_thread()
         self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_nurseInfo']}").json()
         print("\n\n\n")
@@ -66,28 +73,33 @@ class HospitalBot:
 
     def on_chat_message(self, msg):      
         content_type, chat_type,self.chat_ID = telepot.glance(msg)
-
         print(content_type, chat_type, self.chat_ID)
-
         message = msg['text']
+
         # check wich message has been received from the bot
         if message == "/start":
-            # create an instance of the MyMQTT class 
-            self.client = MyMQTT(self.clientID, self.broker, self.port, self)
-            self.client.start()
+            
+            # subscribe to the topic
+            self.client.mySubscribe(self.topic)   
+
             # welcome message     
             self.bot.sendMessage(self.chat_ID, text="Welcome to the Hospital Bot. From now on the bot is turned on and you can receive updates about the patients.")
             self.bot.sendMessage(self.chat_ID, text="Insert your name and surname to start receiving updates about the patients.")
+            
             # print the possible names of the nurses
             self.bot.sendMessage(self.chat_ID, text="The possible names are: " + str(self.Names))
-            # subscribe to the topic
-            self.client.mySubscribe(self.topic)   
+            
+
         elif message in self.Names: 
             # if the message is the name of a nurse, send a message to the chat
             self.bot.sendMessage(self.chat_ID, text=f"Hello {message}. You are now registered to receive updates about the patients.")
             for nurse in self.nurseInfo:
                 if nurse["nurseName"] == message:
-                    nurseID = nurse["nurseID"]
+                    self.nurseID = nurse["nurseID"]
+                    # added nurse ID to the list of active nurses
+                    self.nurseIDs.append(self.nurseID)
+                    # added chatID to the list of started chats
+                    self.startedIDs.append(self.chat_ID)
                     # update chatID of the nurse in the nurseInfo file
                     nurse["chatID"] = self.chat_ID
                     print(nurse)
@@ -99,20 +111,31 @@ class HospitalBot:
                     nurse = nurse.json()
                     patients = nurse["patients"]
             # send a message to the chat with the nurseID
-            self.bot.sendMessage(self.chat_ID, text=f"Your ID is {nurseID} and you are in charge of the following patients: {patients}")
+            self.bot.sendMessage(self.chat_ID, text=f"Your ID is {self.nurseID} and you are in charge of the following patients: {patients}")
         elif message not in [self.Names, "/start", "/stop"]:
             self.bot.sendMessage(self.chat_ID, text="Please insert a valid name")
         # stop the bot
         elif message == "/stop":
+            for chatID in self.startedIDs:
+                if self.chat_ID == chatID:
+                    self.startedIDs.remove(chatID)
+            print(f"\n\nSTARTEDIDS: {self.startedIDs}")
+            for nurse_ID in self.nurseIDs:
+                if self.nurseID == nurse_ID:
+                    self.nurseIDs.remove(nurse_ID)
+            print(f"\nactive nurses: {self.nurseIDs}")
             self.bot.sendMessage(self.chat_ID, text="The bot has been turned off")
-            self.client.stop()
+            if self.startedIDs == [] or self.nurseIDs == []:
+                self.client.stop()
         else:
             self.bot.sendMessage(self.chat_ID, text="Command not supported")
 
     def notify(self, topic, msg):
+
         self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_nurseInfo']}").json()
         print("\n\n\n")
         print(self.nurseInfo)
+
         # convert the message in json format
         print("\n\n\n")
         print(msg)
@@ -120,15 +143,15 @@ class HospitalBot:
         ########################
         # print the message received from the topic
         ########################
-        print("Received message from topic: %s" % topic)
-        print("Message: %s" % msg)
+        print("\nReceived message from topic: %s" % topic)
+        print("\nMessage: %s" % msg)
+
         # get the patientID from the topic which is SmartHospital308/Monitoring/PatientID/status
         patientID = topic.split("/")[2] 
         print("\n\n\n")
         print("Patient ID: %s" % patientID)
 
         onlyID = patientID.split("t")[2]
-        
         print("\n\n\n")
         print("Patient ID: %s" % onlyID)
 
@@ -146,9 +169,8 @@ class HospitalBot:
             patientName = "Unknown"
             patientSurname = "Unknown"
 
-        print("\n\n\n")
-        print(patientName)
-        print(patientSurname)
+        print(f"\n\nPATIENT NAME: {patientName}")
+        print(f"\n\nPATIENT SURNAME: {patientSurname}")
         
         # check the message received from the topic and send an alert message to the correct chat
         if msg["e"][0]["v"] == "bad":
@@ -158,7 +180,8 @@ class HospitalBot:
                 print(nurse["patients"])
                 print(nurse["chatID"])
                 print(type(onlyID))
-                if nurse["patients"] != [] and nurse["chatID"] != "":
+                print(f"\n\nSTARTEDIDS: {self.startedIDs}")
+                if nurse["nurseID"] in self.nurseIDs and nurse["patients"] != [] and nurse["chatID"] != "" and nurse["chatID"] in self.startedIDs:
                     print("INSIDE")
                     print(onlyID)
                     print(nurse["patients"])
@@ -167,12 +190,14 @@ class HospitalBot:
                         print(nurse["chatID"])
                         # send the message to the chat of the nurse
                         self.bot.sendMessage(nurse["chatID"], text=f"ALERT MESSAGE: patient {patientName} {patientSurname} with ID {onlyID} is in danger")
+        else:
+            pass
 
-        ########## TODO: COMMENT THIS PART
-        # NOT USED IN THIS VERSION. JUST THE MESSAGE ALERT WILL BE SENT
-        ########### CODE ONLY USED TO DEUG - WE WANTED TO RECEIVE MESSAGE ALSO FOR FAIR AND GOOD STATUS TO CHECK IF THE CODE WORKS
-        #if the status equal to regular and the previous status is also regular the patient may require attention, write a message to the chat
-        elif msg["e"][0]["v"] == "fair":
+        ##################################
+        ########### CODE ONLY USED TO DEBUG - WE WANTED TO RECEIVE MESSAGE ALSO FOR REGULAR AND GOOD STATUS TO CHECK IF THE CODE WORKS
+        ##################################
+        
+        """""elif msg["e"][0]["v"] == "regular":
             for nurse in self.nurseInfo:
                 print(nurse["patients"])
                 print(nurse["chatID"])
@@ -185,7 +210,7 @@ class HospitalBot:
                     if onlyID in nurse["patients"]:
                         self.bot.sendMessage(nurse["chatID"], text=f"patient {patientName} {patientSurname} with ID {onlyID} is in a REGULAR status. MAY REQUIRE ATTENTION")
         # if the status is regular and the previous status is bad the patient is now in a regular status, send a message to notify that
-        elif msg["e"][0]["v"] == "good" :
+        elif msg["e"][0]["v"] == "very good" :
             # check to which nurse the patient is assigned
             for nurse in self.nurseInfo:
                 print(nurse["patients"])
@@ -198,12 +223,13 @@ class HospitalBot:
                     print(onlyID in nurse["patients"])
                     if onlyID in nurse["patients"]:
                         # send the message to the chat of the nurse
-                        self.bot.sendMessage(nurse["chatID"], text=f"patient {patientName} {patientSurname} with ID {onlyID} has normal parameters.")
-        else:
-            pass
+                        self.bot.sendMessage(nurse["chatID"], text=f"patient {patientName} {patientSurname} with ID {onlyID} has normal parameters.")"
+        """
+
                 
         
 if __name__ == "__main__":
+
     # load the configuration file of the TelegramBot
     conf = json.load(open("TB_configuration.json"))
     token = conf["telegramToken"]
@@ -243,27 +269,29 @@ if __name__ == "__main__":
     topic = RegistrySystem["broker"]["main_topic"] + conf["information"]["subscribe_topic"]"""
     ###################################################  
     
-    print(f"TOPIC: {topic}")
+    print(f"\nTOPIC: {topic}")
     # create an instance of the HospitalBot
     SmartHospitalBot = HospitalBot(token, broker, port, clientID, topic, conf)
     
     # get the start time
     start_time = time.time()
 
-while True:
-    #update the configuration file every 5 minutes by doing a PUT request to the catalog
-    # get the current time
-    current_time = time.time()
-    # check if 5 minutes have passed
-    if current_time - start_time > 5*60:
-        config_file = json.load(open('TB_configuration.json'))
-        print("\n\nPUT REQUEST")
-        config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_service']}", json=config_file["information"])
-        if config.status_code == 200:
-            config_file["information"] = config
-            json.dump(config_file, open("TB_configuration.json", "w"), indent = 4)
-            # update the start time
-            start_time = current_time
-        else:
-            print(f"\nError: {config.status_code} - {config.text}")
-    time.sleep(0.5)
+    while True:
+        #update the configuration file every 5 minutes by doing a PUT request to the catalog
+        # get the current time
+        current_time = time.time()
+        # check if 5 minutes have passed
+        if current_time - start_time > 5*60:
+            config_file = json.load(open('TB_configuration.json'))
+            print("\n\nPUT REQUEST")
+            config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_service']}", json=config_file["information"])
+            if config.status_code == 200:
+                config_file["information"] = config
+                json.dump(config_file, open("TB_configuration.json", "w"), indent = 4)
+                # update the start time
+                start_time = current_time
+            else:
+                print(f"\nError: {config.status_code} - {config.text}")
+        time.sleep(10)
+
+        
