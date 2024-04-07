@@ -223,7 +223,7 @@ if __name__ == "__main__":
         # save the new configuration file
         json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
     else:
-        print("\NError in adding the service to the catalog")
+        print("\nError in adding the service to the catalog")
 
     # GET the information about the MQTT broker from the Registry System using get requests
     MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['information']['uri']['broker_info']}").text)
