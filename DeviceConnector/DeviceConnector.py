@@ -3,6 +3,11 @@ import time
 import json
 import requests
 from datacreator import * #importing the functions to fake the data from the sensors
+from colorama import init, Style, Fore
+
+
+
+
 
 """ 
     DeviceConnector - SmartHospital IoT platform. Version 1.0.1 
@@ -113,6 +118,7 @@ class SensorsPublisher:
         self.ClientPublisher.stop()
 
 if __name__ == "__main__":
+    init()
     # Open configuration file to read InfluxDB token, org and url and MQTT clientID, broker, port and base topic
     config_file = json.load(open('deviceconnector_config.json'))
     # load the registry system
@@ -144,9 +150,9 @@ if __name__ == "__main__":
     broker = MQTTinfo["IP"]
     port = MQTTinfo["port"]
     topic_sensor = MQTTinfo["main_topic"] + config_file["information"]["publish_topic"]["base_topic"] + str(patientID) + config_file["information"]["publish_topic"]["sensors"]
-    print(topic_sensor)
+    #print(topic_sensor)
     topic_ecg = MQTTinfo["main_topic"] + config_file["information"]["publish_topic"]["base_topic"] + str(patientID) + config_file["information"]["publish_topic"]["ecg"]
-    print(topic_ecg)
+    #print(topic_ecg)
     clientID = config_file["information"]['serviceName'] + str(config_file["information"]['deviceConnectorID'])
 
     ###########
@@ -161,9 +167,13 @@ if __name__ == "__main__":
     # create an instance of the publisher to publish the data coming from the sensors
     mySensors = SensorsPublisher(clientID, broker, port)
     mySensors.start()
+
+    print(f"\n\n{Fore.GREEN}{Style.BRIGHT}DeviceConnector {patientID} just started!{Style.RESET_ALL}")
     
     # get the start time
     start_time = time.time()
+
+    time.sleep(2)
 
     try:
         i = 0
