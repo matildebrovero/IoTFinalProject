@@ -26,7 +26,7 @@
         "HR"
     ],
     "ServiceInformation": {
-        "serviceID": 119,
+        "serviceID": 120,
         "serviceName": "DB_writer",
         "availableServices": [
             "MQTT"
@@ -42,6 +42,6 @@
             "add_service": "service",
             "broker_info": "broker"
         },
-        "lastUpdate": "2024-04-04T17:50:11"
+        "lastUpdate": "2024-04-06T14:56:24"
     }
 }

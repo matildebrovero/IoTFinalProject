@@ -26,17 +26,17 @@
         "HR"
     ],
     "ServiceInformation": {
-        "serviceID": 125,
+        "serviceID": 119,
         "serviceName": "DB_reader",
         "availableServices": [
             "REST"
         ],
-        "serviceHost": "0.0.0.0",
+        "serviceHost": "localhost",
         "servicePort": 8081,
         "uri": {
             "add_service": "service",
             "broker_info": "broker"
         },
-        "lastUpdate": "2024-04-04T17:47:54"
+        "lastUpdate": "2024-04-05T21:55:23"
     }
 }
