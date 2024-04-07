@@ -30,7 +30,7 @@ The microservices present in are the following:
 * **ECG Analysis** which computes analysis on the raw ecg data to get RR intervals, Heart Rate variability and filters the ECG signal to get a clearer signal
 * **DeviceConnector** emulates the sensor linked to each device connector. Each patient has its own device connector with all the sensor mentioned above.
 * **Webpage** is a GUI from which nurses and doctors can access to the patients data, can add a patient when a new one is registered to the hospital or delete if the patient is no longer hospitalized.
-* **Patient Status** gets all the data from the database as long as information about the patient like its comorbidities and computer trough fuzzy logic rules the current status of the patient (possible one are "good", "fair" and "bad")
+* **Patient Status** gets all the data from the database as long as information about the patient like its comorbidities and computer trough fuzzy logic rules the current status of the patient (possible one are "very good", "regular" and "bad")
 * **Telegram Bot** is a bot that the nurse must start to get an ALERT message when a patient is in a dangerous condition (status equal to "bad"). It can be found at https://t.me/smarthospital_examplebot 
 
 Link to the proposal: https://drive.google.com/file/d/1I2hT3Znlvx2par_VTro0zsUHHKj5O8eV/view?usp=sharing
