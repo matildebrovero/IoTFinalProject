@@ -24,8 +24,8 @@
     "patientsList": [
         {
             "firstName": "pippo",
-            "lastName": "Trione",
-            "birthdate": "6666-09-08",
+            "lastName": "pippo",
+            "birthdate": "6126-09-08",
             "residence": "lollimon",
             "deviceConnector": "device2",
             "conditions": "d,c",
