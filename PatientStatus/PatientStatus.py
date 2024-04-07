@@ -108,7 +108,7 @@ class PatientStatus(object):
         print(patientList)
         print(patientList.json())
         patID = patientList.json()["patientID"]
-        patID = [48] # for testing purposes TODO: remove this line
+        #patID = [48] # for testing purposes TODO: remove this line
         condition = patientList.json()["patientCondition"]
         
         for pat in patID:

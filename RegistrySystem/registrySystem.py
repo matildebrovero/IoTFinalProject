@@ -265,7 +265,7 @@ class RegistrySystem(object):
                 for patient in self.catalog["patientsList"]:
                     print("\n\n\n")
                     print(patient)
-                    if patient["patientID"] == params["patientID"]:
+                    if patient["patientID"] == int(params["patientID"]):
                         # delete patient from the list
                         self.catalog["patientsList"].remove(patient)
                         print("\n\n\n")
@@ -276,7 +276,7 @@ class RegistrySystem(object):
                     else:
                         return "Patient not found"
                 for dc in self.catalog["deviceConnectorList"]:
-                    if dc["deviceConnectorID"] == params["patientID"]:
+                    if dc["deviceConnectorID"] == int(params["patientID"]):
                         self.catalog["deviceConnectorList"].remove(dc)
                         print("\n\n\n")
                         print(self.catalog["deviceConnectorList"])
