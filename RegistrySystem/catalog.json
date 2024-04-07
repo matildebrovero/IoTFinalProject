@@ -90,8 +90,8 @@
     ],
     "serviceList": [],
     "counter": {
-        "deviceConnectorCounter": 7,
-        "serviceCounter": 55,
+        "deviceConnectorCounter": 0,
+        "serviceCounter": 0,
         "nurseCounter": 0
     }
 }
