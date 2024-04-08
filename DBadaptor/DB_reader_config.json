@@ -18,7 +18,7 @@
     "SensorsAvailable": [
         "ECG",
         "glucometer",
-        "temperature",
+        "termometer",
         "bloodpressure",
         "oximeter",
         "RR",
