@@ -29,7 +29,7 @@
             "residence": "lollimon",
             "deviceConnector": "device2",
             "conditions": "d,c",
-            "patientID": 2
+            "patientID": 0
         },
         {
             "firstName": "hiu",

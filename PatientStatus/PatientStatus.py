@@ -120,7 +120,7 @@ class PatientStatus(object):
             #### GLUCOSE ####
             try:
                 response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}")
-                print(f"\nGet request on: {self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}") 
+                print(f"\n\n\nGLUCOMETER\nGet request on: {self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}") 
                 # control on the response of the get request
                 if response_gluco.status_code == 200:
                     response_gluco = json.loads(response_gluco.json())
@@ -135,7 +135,7 @@ class PatientStatus(object):
             #### BLOOD PRESSURE ####
             try:
                 response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
-                print(f"\nGet request on: {self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"\n\n\nBLOOD PRESSURE\nGet request on: {self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
                 if response_bps.status_code == 200:  
                     response_bps = json.loads(response_bps.json())
                     print(response_bps)
@@ -149,7 +149,7 @@ class PatientStatus(object):
             #### OXIMETER ####
             try:
                 response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
-                print(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"\n\n\nOXIMETER\nGet request on:{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
                 if response_oxim.status_code == 200:
                     response_oxim = json.loads(response_oxim.json())
                     print(response_oxim)
@@ -163,7 +163,7 @@ class PatientStatus(object):
             #### HEART RATE ####
             try:
                 response_HR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['HR']}{pat}?{self.conf['information']['params_DB']}")
-                print(f"\nGet request on: {self.Database}{self.conf['information']['uri_DB']['HR']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"\n\n\nHEART RATE\nGet request on: {self.Database}{self.conf['information']['uri_DB']['HR']}{pat}?{self.conf['information']['params_DB']}")
                 # control on the response of the get request
                 if response_HR.status_code == 200:
                     response_HR = json.loads(response_HR.json())
@@ -178,7 +178,7 @@ class PatientStatus(object):
             #### TEMPERATURE ####
             try:
                 response_termo = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}")
-                print(f"\nGet request on: {self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"\n\n\nTEMPERATURE\nGet request on: {self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}")
                 # control on the response of the get request
                 if response_termo.status_code == 200:
                     response_termo = json.loads(response_termo.json())
@@ -193,7 +193,7 @@ class PatientStatus(object):
             #### RR ####
             try:
                 response_RR = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
-                print(f"\nGet request on: {self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
+                print(f"\n\n\nRR\nGet request on: {self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
                 # control on the response of the get request
                 if response_oxim.status_code == 200:
                     response_RR = json.loads(response_RR.json())
@@ -307,6 +307,7 @@ class PatientStatus(object):
         # control on the response of the put request
         if config.status_code == 200:
             print(f"Service Information: {config}")
+            print(config.json())
             ps_conf["information"] = config.json()
             # save the new configuration file 
             json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
