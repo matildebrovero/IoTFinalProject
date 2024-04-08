@@ -15,14 +15,16 @@ services:
       - 8086:8086 
     volumes: 
       - myInfluxVolume:/var/lib/influxdb 
+
   registrysystem:
     build: ./RegistrySystem
     expose:
       - "8080"
     ports:
       - "8080:8080"
+  
   dbadaptor:
-    build: ./DBadaptor
+    build: ./DBAdaptor
     expose:
       - "8081"
     ports:
@@ -33,6 +35,7 @@ services:
     links:
       - influxdb
       - registrysystem
+  
   ecganalysis:
     build: ./ECGAnalysis
     depends_on:
@@ -41,16 +44,34 @@ services:
     links:
       - influxdb
       - registrysystem
+  
   deviceconnector:
     build: ./DeviceConnector
     depends_on:
       - influxdb
       - registrysystem
-      - ecganalysis
     links:
       - influxdb
       - registrysystem
-      - ecganalysis
+  
+  patientstatus:
+    build: ./PatientStatus
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+
+  telegrambot:
+    build: ./TelegramBot
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+  
   webpage:
     build: ./Webpage
     expose:
@@ -63,24 +84,7 @@ services:
     links:
       - influxdb
       - registrysystem
-  patientstatus:
-    build: ./PatientStatus
-    depends_on:
-      - influxdb
-      - registrysystem
-    links:
-      - influxdb
-      - registrysystem
-  telegrambot:
-    build: ./TelegramBot
-    depends_on:
-      - influxdb
-      - registrysystem
-      - patientstatus
-    links:
-      - influxdb
-      - registrysystem
-      - patientstatus 
+  
       
 volumes: 
   myInfluxVolume:

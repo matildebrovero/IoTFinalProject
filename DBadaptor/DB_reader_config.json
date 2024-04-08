@@ -1,9 +1,9 @@
 {
-    "RegistrySystem": "http://localhost:8080",
+    "RegistrySystem": "http://registrysystem:8080",
     "InfluxInformation": {
         "INFLUX_TOKEN": "jZR2G9mCbHx1_2obB5nEn0EFcjVHVSXi4HjFyI4aQ1_4J7QRp8wVWCVjJFUVAou4Q22bjp_LQDJeBPi7HQXlwQ==",
         "INFLUXDB_ORG": "SPHYNX",
-        "INFLUXDB_URL": "http://localhost:8086",
+        "INFLUXDB_URL": "http://influxdb:8086",
         "bucket": "SmartHospital308",
         "results": {
             "bn": "InfluxData",

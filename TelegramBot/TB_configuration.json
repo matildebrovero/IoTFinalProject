@@ -1,5 +1,5 @@
 {
-    "RegistrySystem": "http://localhost:8080",
+    "RegistrySystem": "http://registrysystem:8080",
     "telegramToken": "6824620442:AAFE2pjzeuOCli8As2RMcdEGrJuJWqIZObw",
     "information": {
         "serviceID": 52,
