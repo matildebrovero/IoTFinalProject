@@ -1,0 +1,5 @@
+biosppy==2.1.2
+numpy==1.22.4
+paho_mqtt==1.6.1
+Requests==2.31.0
+scipy==1.7.3

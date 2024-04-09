@@ -1,14 +1,26 @@
 {
-    "RegistrySystem": "../RegistrySystem/catalog.json",    
-    "serviceName": "ECG_Analysis",
-    "information":[{
-        "serviceID": "",
+    "RegistrySystem": "http://localhost:8080",
+    "information": {
+        "serviceID": 63,
+        "serviceName": "ECG_Analysis",
         "availableServices": [
             "MQTT",
             "REST"
-            ],
-        "subscribe_topic": "Patient1/ECG",
-        "sampling_frequency": 250
-        }
-    ]
+        ],
+        "subscribe_topic": "Monitoring/+/ecgData",
+        "publish_topic": "Monitoring",
+        "analysis": [
+            "ECG",
+            "RR",
+            "HR"
+        ],
+        "uri": {
+            "add_service": "service",
+            "broker_info": "broker"
+        },
+        "sampling_frequency": 100,
+        "target_frequency": 25,
+        "sample_duration": 5,
+        "lastUpdate": "2024-04-05T16:37:41"
+    }
 }

@@ -1,0 +1,16 @@
+
+DBadaptor/__pycache__/
+
+DeviceConnector/__pycache__/
+
+TelegramBot/__pycache__/
+
+Webpage/__pycache__/
+
+PatientStatus/__pycache__/
+
+ECGAnalysis/__pycache__/
+
+finalvenv/
+
+*.pyc

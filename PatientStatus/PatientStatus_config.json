@@ -1,14 +1,31 @@
 {
     "RegistrySystem": "http://localhost:8080",
-    "information": [
-        {
-            "serviceID": 45,
-            "serviceName": "PatientStatus",
-            "serviceType": [
-                "MQTT",
-                "REST"
-            ],
-            "pubish_topic": "/status"
-        }
-    ]
+    "information": {
+        "serviceID": 124,
+        "serviceName": "PatientStatus",
+        "serviceType": [
+            "MQTT",
+            "REST"
+        ],
+        "pubish_topic": {
+            "base_topic": "Monitoring/patient",
+            "status": "/status"
+        },
+        "uri_catalog": {
+            "service": "/service",
+            "DB": "/DBadaptor",
+            "broker": "/broker",
+            "patient": "/patientInfo/All"
+        },
+        "uri_DB": {
+            "gluco": "/glucometer/patient",
+            "bps": "/bloodpressure/patient",
+            "oxim": "/oximeter/patient",
+            "HR": "/HR/patient",
+            "temp": "/termometer/patient",
+            "RR": "/RR/patient"
+        },
+        "params_DB": "range=5",
+        "lastUpdate": "2024-04-08T10:37:38"
+    }
 }

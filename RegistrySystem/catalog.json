@@ -1,136 +1,97 @@
 {
-    "projectOwner": "Jake Blues",
-    "projectName": "MySmartThingy",
-    "lastUpdate": "2020-03-30 12:58",
+    "projectOwner": "SPHINX",
+    "projectName": "SmartHospital IoT Sevice",
     "broker": {
-      "IP": "mqtt.eclipseprojects.io",
-      "port": 1883,
-      "main_topic": "SmartHospital308/"
+        "IP": "mqtt.eclipseprojects.io",
+        "port": 1883,
+        "main_topic": "SmartHospital308/"
+    },
+    "RegistrySysteminfo": {
+        "host": "0.0.0.0",
+        "port": 8080
     },
     "IPaddress": " ",
-    "patientsList":[
+    "dataList": [
+        "ECG",
+        "glucometer",
+        "termometer",
+        "bloodpressure",
+        "oximeter",
+        "RR",
+        "status",
+        "HR"
+    ],
+    "patientsList": [
         {
-            "patientID": 1,
-            "patient_topic": "patient1/",
-            "patientName": "Jake Blues",
-            "patientSurname": "Blues",
-            "patientBirthDate": "2020-03-30",
-            "patientGender": "M",
-            "patientAddress": "Via Roma 1",
-            "patientCity": "Roma",
-            "patientProvince": "RM",
-            "patientCountry": "Italy",
-            "patientPhone": "1234567890",
-            "patientEmail": "",
-            "deviceConnectorID": "3"
+            "firstName": "pippo",
+            "lastName": "pippo",
+            "birthdate": "6126-09-08",
+            "residence": "lollimon",
+            "deviceConnector": "device2",
+            "conditions": "d,c",
+            "patientID": 0
+        },
+        {
+            "firstName": "hiu",
+            "lastName": "fe",
+            "birthdate": "",
+            "residence": "ASTI",
+            "deviceConnector": "device1",
+            "conditions": "n",
+            "patientID": 1
         }
     ],
-    "deviceConnectorList":[
-        {
-            "deviceConnectorID": "",
-            "measureType": [
-                "temperature",
-                "glucose",
-                "blood_pressure",
-                "heart_rate",
-                "oxygen_saturation",
-                "ECG"
-            ],
-            "availableServices": [
-                "MQTT",
-                "REST"
-                ],
-            "pubish_topic": [{
-                "base_topic": "/Monitoring/patient",
-                "sensors": "/sensorsData",
-                "ecg": "/ECG"
-            }],
-            "resources":{
-                "sensors":[{
-                    "sensorName": "MLX90614",
-                    "sensorID": "s1",
-                    "pin": 1,
-                    "measurementType": [
-                        "Temperature"
-                    ],
-                    "units": [
-                        "°C"
-                    ]
-                },
-                {
-                    "sensorName": "MAX30102",
-                    "sensorID": "s2",
-                    "pin": 2,
-                    "measurementType": [
-                        "glucose"
-                    ],
-                    "units": [
-                        "mg/dL"
-                    ]
-                },
-                {
-                    "sensorName": "MPX5100DP",
-                    "sensorID": "s3",
-                    "pin": 3,
-                    "measurementType": [
-                        "blood_pressure"
-                    ],
-                    "units": [
-                        "mmHg"
-                    ]
-                },
-                {
-                    "sensorName": "PULSE_SENSOR",
-                    "sensorID": "s4",
-                    "pin": 4,
-                    "measurementType": [
-                        "pulse",
-                        "ECG"
-                    ],
-                    "units": [
-                        "bpm",
-                        "mV"
-                    ]
-                },
-                {
-                    "sensorName": "MAX30100",
-                    "sensorID": "s5",
-                    "pin": 5,
-                    "measurementType": [
-                        "oxygen_saturation"
-                    ],
-                    "units": [
-                        "%"
-                    ]
-                }
-                ]
-            },
-            "lastUpdate": "2020-03-30"
-            } 
-    ],
-    "nursesList":[
+    "deviceConnectorList": [],
+    "nursesList": [
         {
             "nurseID": 1,
-            "nurseName": "Jake Blues",
-            "nurseSurname": "Blues",
-            "nurseBirthDate": "2020-03-30",
+            "nurseName": "Gini Bertens",
+            "nurseBirthDate": "1978-06-09",
             "patients": [
-                1
-            ]
-        }
-    ],
-    "serviceList":[
+                "2",
+                "1"
+            ],
+            "chatID": 704532910
+        },
         {
-            "serviceID": 1,
-            "serviceName": "MQTT",
-            "serviceType": "MQTT",
-            "serviceIP": "test.mosquitto.org",
-            "servicePort": 1883,
-            "serviceTopic": "MySmartThingy/1/temp"
+            "nurseID": 2,
+            "nurseName": "Elvin Holmberg",
+            "nurseBirthDate": "1996-12-15",
+            "patients": [
+                "2",
+                "1"
+            ],
+            "chatID": ""
+        },
+        {
+            "nurseID": 3,
+            "nurseName": "Sophie Campbell",
+            "nurseBirthDate": "1987-08-13",
+            "patients": [
+                "2",
+                "1"
+            ],
+            "chatID": 704532910
+        },
+        {
+            "nurseID": 4,
+            "nurseName": "Karina Samsonova",
+            "nurseBirthDate": "1995-10-19",
+            "patients": [],
+            "chatID": ""
+        },
+        {
+            "nurseID": 5,
+            "nurseName": "Anders Hilstad",
+            "nurseBirthDate": "1963-11-05",
+            "patients": [],
+            "chatID": ""
         }
     ],
+    "serviceList": [],
     "counter": {
         "deviceConnectorCounter": 0,
-        "serviceCounter": 0
+        "serviceCounter": 0,
+        "nurseCounter": 0
     }
 }

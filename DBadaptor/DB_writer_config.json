@@ -15,15 +15,22 @@
             }
         }
     },
+    "SensorsAvailable": [
+        "ECG",
+        "glucometer",
+        "temperature",
+        "bloodpressure",
+        "oximeter",
+        "RR",
+        "status",
+        "HR"
+    ],
     "ServiceInformation": {
-        "serviceID": 110,
-        "serviceName": "DB_adaptor",
+        "serviceID": 120,
+        "serviceName": "DB_writer",
         "availableServices": [
-            "MQTT",
-            "REST"
+            "MQTT"
         ],
-        "serviceHost": "0.0.0.0",
-        "servicePort": 8081,
         "subscribe_topic": [
             "Monitoring/+/status",
             "Monitoring/+/ECG",
@@ -35,6 +42,6 @@
             "add_service": "service",
             "broker_info": "broker"
         },
-        "lastUpdate": "2024-04-02T19:01:10"
+        "lastUpdate": "2024-04-06T14:56:24"
     }
 }
