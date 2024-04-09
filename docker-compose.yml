@@ -22,9 +22,10 @@ services:
       - "8080"
     ports:
       - "8080:8080"
+    restart: always
   
-  dbadaptor:
-    build: ./DBAdaptor
+  dbreader:
+    build: ./DBreader
     expose:
       - "8081"
     ports:
@@ -35,6 +36,17 @@ services:
     links:
       - influxdb
       - registrysystem
+    restart: always
+
+  dbwriter:
+    build: ./DBwriter
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+    restart: always
   
   ecganalysis:
     build: ./ECGAnalysis
@@ -44,6 +56,7 @@ services:
     links:
       - influxdb
       - registrysystem
+    restart: always
   
   deviceconnector:
     build: ./DeviceConnector
@@ -53,6 +66,27 @@ services:
     links:
       - influxdb
       - registrysystem
+    restart: always
+
+  deviceconnector2:
+    build: ./DeviceConnector
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+    restart: always
+
+  deviceconnector3:
+    build: ./DeviceConnector
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+    restart: always
   
   patientstatus:
     build: ./PatientStatus
@@ -62,6 +96,7 @@ services:
     links:
       - influxdb
       - registrysystem
+      - dbreader
 
   telegrambot:
     build: ./TelegramBot
@@ -84,6 +119,8 @@ services:
     links:
       - influxdb
       - registrysystem
+      - dbreader
+    
   
       
 volumes: 

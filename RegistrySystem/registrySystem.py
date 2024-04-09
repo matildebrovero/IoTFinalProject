@@ -59,7 +59,7 @@ class RegistrySystem(object):
                 print("\nReceived GET request for DB adaptor (DB reader) info.")
                 for s in self.catalog["serviceList"]:
                     if s["serviceName"] == "DB_reader":
-                        return json.dumps({"urlDB" : "http://"+s["serviceHost"]+":"+str(s["servicePort"])})
+                        return json.dumps({"urlDB" : "http://"+s["serviceHost_docker"]+":"+str(s["servicePort"])})
             
             # "http://localhost:8080/configwebpage"
             elif uri[0] == "configwebpage":  
