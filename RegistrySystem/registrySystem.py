@@ -69,8 +69,6 @@ class RegistrySystem(object):
                 for patient in self.catalog["patientsList"]:
                     pIDs.append(patient["patientID"])
                 self.configWebPage["patientsID"] = pIDs
-                print("\n\n\n")
-                print(pIDs)
                 for dC in self.catalog["deviceConnectorList"]:
                     if dC["patientLinked"] == "no":
                         dConnectors.append("device" + str(dC["deviceConnectorID"]))
@@ -152,7 +150,6 @@ class RegistrySystem(object):
                     self.catalog["deviceConnectorList"].append(body)
                     with open("catalog.json", "w") as file:
                         json.dump(self.catalog, file, indent = 4)
-                        print("Catalog updated with Device connector:", body)
                     print("Catalog updated with Device connector:", body)
                     return json.dumps(body, indent = 4)
 
@@ -180,9 +177,6 @@ class RegistrySystem(object):
                 # "http://localhost:8080/nurse"
                 elif uri[0] == "nurse":
                     print("\nReceived POST request for nurse.")
-                    #ID = self.catalog["counter"]["nurseCounter"]
-                    #body["nurseID"] = ID
-                    #self.catalog["nurseList"].append(body)
                     # Assign every patient present in the lists to the nurse currently logged in the BOT so it can receive the alerts
                     patients = []
                     for p in self.catalog["patientsList"]:
@@ -217,8 +211,6 @@ class RegistrySystem(object):
             if len(uri) > 0:
                 #"http://localhost:8080/service"
                 if uri[0]=="service":
-                    # Debugging statement to ensure entering service condition
-                    #print("Inside Service Condition")
                     print("\nReceived PUT request for service.")
                     #retrieve the unique ID from the request
                     ID = body["serviceID"]
@@ -282,24 +274,21 @@ class RegistrySystem(object):
                         print(self.catalog["deviceConnectorList"])
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
-                        print("Catalog updated with Device connector:", dc)
+                        print("Catalog updated without Device connector:", dc)
             else:
                 raise cherrypy.HTTPError(404, "Page doesn't exist") 
         else:
             raise cherrypy.HTTPError(400, "You have to insert a command as uri")
         pass
 
-    def checkLastUpdate(self, lastUpdate): #TODO debug it
+    def checkLastUpdate(self, lastUpdate):
         currentTimestr = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         #convert the string to datetime
         currentTime = datetime.strptime(currentTimestr, "%Y-%m-%dT%H:%M:%S")
         lastUpdateobj = datetime.strptime(lastUpdate, "%Y-%m-%dT%H:%M:%S")
         #check if the last update was more than 6 minutes ago
-        print(f"Current time: {currentTime}")
         timeDiff = currentTime - lastUpdateobj
-        print(f"Time difference: {timeDiff.total_seconds()}")
         if timeDiff > timedelta(minutes=6) or timeDiff.total_seconds() < 0:
-            print("True")
             return True
         return False
     
