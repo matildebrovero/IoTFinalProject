@@ -64,7 +64,7 @@ class PatientStatus(object):
             ps_conf["information"] = config.json()
             # save the new configuration file 
             json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
-            print("Service registered to the catalog")
+            print("\nService registered to the catalog")
         else:
             print(f"Error: {config.status_code} - {config.text}")
             exit()
@@ -72,9 +72,10 @@ class PatientStatus(object):
         # get the database information from the catalog
         DB = requests.get(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['DB']}")
         # control on the response of the get request
+        print("\n\n\nGET REQUESTS for DB and broker information\n")
         if DB.status_code == 200:
             self.Database = DB.json()["urlDB"]
-            print(f"Database Information: {DB}")
+            print(f"\nDatabase Information: {DB}")
         else:
             print(f"Error: {DB.status_code} - {DB.text}")
             exit()
@@ -83,7 +84,7 @@ class PatientStatus(object):
         b = requests.get(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['broker']}")
         # control on the response of the get request
         if b.status_code == 200:
-            print(f"Broker Information: {b}")
+            print(f"\nBroker Information: {b}")
             self.broker = b.json()
             self.clientID = self.conf["information"]["serviceName"]+str(self.conf["information"]["serviceID"])
             self.status_client = StatusManager(self.clientID, self.broker["IP"],self.broker["port"] )
@@ -97,7 +98,7 @@ class PatientStatus(object):
 
 
     def get_status_and_publish(self):
-        print("\n\n\nGET STATUS AND PUBLISH\n")
+        print("\n\n\nSTARTING THE COMPUTATION OF THE STATUS\n")
         print("GETTING PATIENT LIST")
         # get the list of the patients from the catalog
         patientList = requests.get(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['patient']}")
@@ -105,16 +106,16 @@ class PatientStatus(object):
         if patientList.status_code != 200:
             print(f"Error in getting patient list: {patientList.status_code} - {patientList.text}")
             exit()
-        print(patientList)
-        print(patientList.json())
+        print(f"\nPatient list: {patientList}")
+        print(patientList.json(), pretty_print=True)
         patID = patientList.json()["patientID"]
         #patID = [48] # for testing purposes TODO: remove this line
         condition = patientList.json()["patientCondition"]
         
         for pat in patID:
-            print(f"Getting status for patient {pat}")
+            print(f"\n\nComputing status for patient {pat}")
             print(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}")
-            print("\n\n\nGET REQUESTS TO DATABASE\n")
+            print("\nGET REQUESTS TO DATABASE\n")
             # get the data from the database
 
             #### GLUCOSE ####
@@ -123,7 +124,7 @@ class PatientStatus(object):
                 print(f"\n\n\nGLUCOMETER\nGet request on: {self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}") 
                 # control on the response of the get request
                 if response_gluco.status_code == 200:
-                    response_gluco = json.loads(response_gluco.json())
+                    response_gluco = json.loads(response_gluco.json(), indent=4)
                     print(response_gluco)
                 else:
                     print(f"\nError in getting glucose data: {response_gluco.status_code} - {response_gluco.text}")  
@@ -137,7 +138,7 @@ class PatientStatus(object):
                 response_bps = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
                 print(f"\n\n\nBLOOD PRESSURE\nGet request on: {self.Database}{self.conf['information']['uri_DB']['bps']}{pat}?{self.conf['information']['params_DB']}")
                 if response_bps.status_code == 200:  
-                    response_bps = json.loads(response_bps.json())
+                    response_bps = json.loads(response_bps.json(), indent=4)
                     print(response_bps)
                 else:
                     print(f"\nError in getting blood pressure data {response_bps.status_code} - {response_bps.text}")
@@ -151,7 +152,7 @@ class PatientStatus(object):
                 response_oxim = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
                 print(f"\n\n\nOXIMETER\nGet request on:{self.Database}{self.conf['information']['uri_DB']['oxim']}{pat}?{self.conf['information']['params_DB']}")
                 if response_oxim.status_code == 200:
-                    response_oxim = json.loads(response_oxim.json())
+                    response_oxim = json.loads(response_oxim.json(), indent=4)
                     print(response_oxim)
                 else:
                     print(f"\nError in getting oximeter data {response_oxim.status_code} - {response_oxim.text}")
@@ -166,7 +167,7 @@ class PatientStatus(object):
                 print(f"\n\n\nHEART RATE\nGet request on: {self.Database}{self.conf['information']['uri_DB']['HR']}{pat}?{self.conf['information']['params_DB']}")
                 # control on the response of the get request
                 if response_HR.status_code == 200:
-                    response_HR = json.loads(response_HR.json())
+                    response_HR = json.loads(response_HR.json(), indent=4)
                     print(response_HR)
                 else: 
                     print(f"\nError in getting HR data {response_HR.status_code} - {response_HR.text}")
@@ -181,7 +182,7 @@ class PatientStatus(object):
                 print(f"\n\n\nTEMPERATURE\nGet request on: {self.Database}{self.conf['information']['uri_DB']['temp']}{pat}?{self.conf['information']['params_DB']}")
                 # control on the response of the get request
                 if response_termo.status_code == 200:
-                    response_termo = json.loads(response_termo.json())
+                    response_termo = json.loads(response_termo.json(), indent=4)
                     print(response_termo)
                 else:
                     print(f"\nError in getting temperature data {response_termo.status_code} - {response_termo.text}") 
@@ -196,7 +197,7 @@ class PatientStatus(object):
                 print(f"\n\n\nRR\nGet request on: {self.Database}{self.conf['information']['uri_DB']['RR']}{pat}?{self.conf['information']['params_DB']}")
                 # control on the response of the get request
                 if response_oxim.status_code == 200:
-                    response_RR = json.loads(response_RR.json())
+                    response_RR = json.loads(response_RR.json(), indent=4)
                     print(response_RR)
                 else: 
                     print(f"Error in getting RR data {response_RR.status_code} - {response_RR.text}")
@@ -227,7 +228,7 @@ class PatientStatus(object):
             
             # publish the status on the mqtt broker 
             topic = self.broker["main_topic"]+self.conf["information"]["pubish_topic"]["base_topic"]+str(pat)+self.conf["information"]["pubish_topic"]["status"] 
-            print(f"\n\n\nPUBLISHING STATUS ON TOPIC {topic}\n")
+            print(f"\n\n\nPUBLISHING STATUS\nTOPIC: {topic}\nMESSAGE: {stat}")
             self.status_client.publish(topic, stat)  
  
     def calculate_status(self, data): 
@@ -306,8 +307,7 @@ class PatientStatus(object):
         config = requests.put(f"{self.urlRegistrySystem}{self.conf['information']['uri_catalog']['service']}",json=self.conf["information"]) 
         # control on the response of the put request
         if config.status_code == 200:
-            print(f"Service Information: {config}")
-            print(config.json())
+            print(f"Update Service Information: {config}")
             ps_conf["information"] = config.json()
             # save the new configuration file 
             json.dump(ps_conf, open("PatientStatus_config.json", "w"), indent=4)
