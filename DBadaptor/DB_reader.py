@@ -82,7 +82,6 @@ class rest_API(object):
         # print(params)
         # print(availableSensor.json())
         if uri[0] in availableSensor.json():
-            print("\n\n\n\AAAAAAAAAAAAAAAAAAA\n\n\n\n")
             print(f"Reading {uri[0]} data from InfluxDB")
             patientID = uri[1]
             range = params["range"]
