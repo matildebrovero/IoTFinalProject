@@ -211,7 +211,6 @@ class PatientStatus(object):
                     
                     # publish the status on the mqtt broker 
                     topic = self.broker["main_topic"]+self.conf["information"]["pubish_topic"]["base_topic"]+str(pat)+self.conf["information"]["pubish_topic"]["status"] 
-                    print(f"\nPUBLISHING STATUS\nTOPIC: {topic}\nMESSAGE: {stat}")
                     self.status_client.publish(topic, stat)
 
         else:
