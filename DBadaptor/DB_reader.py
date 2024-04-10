@@ -160,15 +160,14 @@ if __name__ == "__main__":
     cherrypy.config.update({'server.socket_host': host})
     cherrypy.config.update({'server.socket_port': port})
     cherrypy.engine.start()
-    cherrypy.engine.block()
-        
+   
     try:
         while True:
             #update the configuration file every 5 minutes (PUT REQUEST TO THE CATALOG)
             current_time = time.time()
             if current_time - start_time > 5*60:
                 config_file = json.load(open('DB_reader_config.json'))
-                config = requests.put(f"{urlCatalog}/{config_file['uri']['broker_info']}", json=config_file["ServiceInformation"])
+                config = requests.put(f"{urlCatalog}/{config_file['ServiceInformation']['uri']['add_service']}", json=config_file["ServiceInformation"])
                 if config.status_code == 200:
                     print(f"Service Information: {config}")
                     config_file["ServiceInformation"] = config.json()
@@ -180,8 +179,10 @@ if __name__ == "__main__":
                     print(f"Error: {config.status_code} - {config.text}")
             else:
                 pass
-            #time.sleep(0.001)
+            time.sleep(10)
     except KeyboardInterrupt:
+        print("DB_reader is stopped")
         cherrypy.engine.stop()
+
 
 
