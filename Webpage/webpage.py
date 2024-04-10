@@ -159,12 +159,37 @@ def add_patient():
     conf = read_config()
 
     # URI to post data in the catalog
-    uri = f"{conf['RegistrySystem']}/patient"
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['patient']}"
 
     print(f"\n\nAdding new patient to registry system to {uri}")
     try:
         # Save the new patient data in the catalog
         response = requests.post(uri, json=new_patient_data)
+        print(response)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        data = response.json()
+        print(data)
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        print(f"\n\nERROR {e}")
+        return jsonify({'error': str(e)})
+    
+# Function to add a new Nurse to the registry system (POST REQUEST) 
+@app.route('/addNurse', methods=['POST'])
+def add_nurse():
+    # Get the data from the form
+    new_nurse_data = request.form.to_dict()
+    print("\n\nNew Nurse Data:", new_nurse_data)
+
+    conf = read_config()
+
+    # URI to post data in the catalog
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['add_nurse']}"
+
+    print(f"\n\nAdding new nurse to registry system to {uri}")
+    try:
+        # Save the new nurse data in the catalog
+        response = requests.post(uri, json=new_nurse_data)
         print(response)
         response.raise_for_status()  # Raise an exception if the request was unsuccessful
         data = response.json()
@@ -186,6 +211,31 @@ def delete_patient():
     uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['patient']}?{conf['information']['uri']['delete_patient']}={patient_id}"
 
     print(f"\n\nDELETING PATIENT {patient_id} by doing DELETE request to {uri}")
+
+    try:
+        # Delete the patient data in the catalog
+        response = requests.delete(uri)
+        print(response)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        data = response.json()
+        print(data)
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        print(f"\n\nERROR {e}")
+        return jsonify({'error': str(e)})
+    
+# Function to delete a nurse from the registry system (DELETE REQUEST)
+@app.route('/deleteNurse', methods=['POST'])
+def delete_nurse():
+    # Get the data from the form
+    nurse_id = request.form.to_dict()
+    nurse_id = nurse_id['selectednurse']
+    #print("nurse ID:", nurse_id)
+    conf = read_config()
+    # URI to delete data in the catalog
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['nurse']}?{conf['information']['uri']['delete_nurse']}={nurse_id}"
+
+    print(f"\n\nDELETING NURSE {nurse_id} by doing DELETE request to {uri}")
 
     try:
         # Delete the patient data in the catalog

@@ -10,17 +10,30 @@
 </head>
 <body>
     <div class="container">
+        <!-- Image -->
+        <img src="{{ url_for('static', filename='images/logo2.png') }}" width="600" >
+        <br><br>
         <div id="page1">
-            <!-- Image -->
-            <img src="{{ url_for('static', filename='images/sphynx.png') }}" width="600" >
+            
             <h1>Patient Monitoring</h1>
             <h2>Welcome to the website for Hospital to Monitor your patients' data in real-time</h2>
 
             <!-- Add button to navigate to the new patient form -->
             <button onclick="showNewPatientForm()" class="btn">Add New Patient</button>
 
+            <!-- Add button to navigate to the new nurse form -->
+            <button onclick="showNewNurseForm()" class="btn">Add New Nurse</button>
+
+            <!-- Add button to navigate to modify nurse patients -->
+            <button onclick="showNurseForm()" class="btn">Modify Nurse</button>
+            
+            <br><br>
+
             <!-- Add a button on the right to delete a patient from the server -->
-            <button onclick="deletePatient()" class="btn">Delete Patient</button>
+            <button onclick="deletePatient()" class="btndelete">Delete Patient</button>
+
+            <!-- Add a button on the right to delete a nurse from the server -->
+            <button onclick="deleteNurse()" class="btndelete">Delete Nurse</button>
 
             <br><br>
 
@@ -56,7 +69,7 @@
         <div id="page2" style="display: none;">
 
             <!-- Add button to go back to the initial page -->
-            <button onclick="goBack()" class="btn">Go Back</button>
+            <button onclick="goBack()" class="btndelete">Go Back</button>
 
             <!-- Page 2: New Patient Form -->
             <h1>Add New Patient</h1>
@@ -111,7 +124,7 @@
         <div id="page3" style="display: none;">
 
             <!-- Add button to go back to the initial page -->
-            <button onclick="goBack()" class="btn">Go Back</button>
+            <button onclick="goBack()" class="btndelete">Go Back</button>
 
             <!-- Page 3: Delete Patient Form -->
             <h1>Delete Patient</h1>
@@ -125,6 +138,77 @@
                 <br> <br>
                 <button type="submit" class="btn" onclick="DeletePatient()">Delete</button>
             </form>
+        </div>
+
+        <!-- Page 4: New Nurse Form -->
+        <div id="page4" style="display: none;">
+
+            <!-- Add button to go back to the initial page -->
+            <button onclick="goBack()" class="btndelete">Go Back</button>
+
+            <!-- Page 4: New Nurse Form -->
+            <h1>Add New Nurse</h1>
+            <form id="newNurseForm">
+                <div>
+                    <label for="firstNurseName" >First Name:</label>
+                    <input type="text" id="firstNurseName" name="firstName" class="input-box">
+                </div>
+                <div>
+                    <label for="lastNurseName">Last Name:</label>
+                    <input type="text" id="lastNurseName" name="lastName" class="input-box">
+                </div>
+                
+                <!-- Container for the checkboxes -->
+                <div id="patient-list"></div>
+                
+                <button type="submit" class="btn" onclick="AddNurse()">Submit</button>
+            </form>
+        </div>
+
+        <!-- Page 5: Delete Nurse Form -->
+        <div id="page5" style="display: none;">
+
+            <!-- Add button to go back to the initial page -->
+            <button onclick="goBack()" class="btndelete">Go Back</button>
+
+            <!-- Page 5: Delete Nurse Form -->
+            <h1>Delete Nurse</h1>
+            <form id="deleteNurseForm">
+                <div>
+                    <label for="deletingNurse">Select a Nurse:</label>
+                    <select id="deletingNurse" class="select-box">
+                        <!-- Options will be populated dynamically with JavaScript -->
+                    </select>
+                </div>
+                <br> <br>
+                <button type="submit" class="btn" onclick="DeleteNurse()">Delete</button>
+            </form>
+        </div>
+
+        <!-- Page 6: Modify Nurse Form -->
+        <div id="page6" style="display: none;">
+
+            <!-- Add button to go back to the initial page -->
+            <button onclick="goBack()" class="btndelete">Go Back</button>
+
+            <!-- Page 6: New Nurse Form -->
+            <h1>Modify Nurse</h1>
+            <form id="NurseForm">
+                <!-- Dropdown to choose the nurse to modify -->
+                <div>
+                    <label for="nurseSelect">Select a Nurse:</label>
+                    <select id="nurseSelect" class="select-box">
+                        <!-- Options will be populated dynamically with JavaScript -->
+                    </select>
+                </div>
+                
+                <!-- Container for the checkboxes -->
+                <div id="patient-list"></div>
+                
+                <button type="submit" class="btn" onclick="ModifyNurse()">Submit</button>
+            </form>
+        </div>
+    
 
             <script>
                 // Define myChart as a global variable
@@ -179,6 +263,35 @@
                         const option = document.createElement("option");
                         option.text = deviceConnector;
                         option.value = deviceConnector;
+                        select.add(option);
+                    });
+                }
+
+                // Function to populate nurse select dropdown
+                function populateNurses() {
+                    //DEBUG
+                    console.log("Populating nurses");
+                    console.log(config.nursesID);
+                    const select = document.getElementById("nurseSelect");
+                    config.nursesID.forEach(nurse => {
+                        const option = document.createElement("option");
+                        option.text = nurse;
+                        option.value = nurse;
+                        select.add(option);
+                    });
+                
+                }
+
+                // Function to populate nurse to delete select dropdown
+                function deletingNurse() {
+                    //DEBUG
+                    console.log("Populating nurses");
+                    console.log(config.nursesID);
+                    const select = document.getElementById("deletingNurse");
+                    config.nursesID.forEach(nurse => {
+                        const option = document.createElement("option");
+                        option.text = nurse;
+                        option.value = nurse;
                         select.add(option);
                     });
                 }
@@ -255,12 +368,74 @@
                     populateData();
                     deletingPatient();
                     populateDevices();
+                    populateNurses();
+                    deletingNurse();
                 };
             
                 // Function to show the new patient form
                 function showNewPatientForm() {
                     document.getElementById('page1').style.display = 'none';
                     document.getElementById('page2').style.display = 'block';
+                }
+
+                // Function to show the update nurse form
+                function showNurseForm() {
+                    document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page6').style.display = 'block';
+
+                    // Assuming you have an array of patients
+                    var patients = config.patientsID;
+
+                    // Get the element where you want to add the checkboxes
+                    var patientList = document.getElementById('patient-list');
+
+                    // Create a checkbox for each patient
+                    patients.forEach(function(patient) {
+                    // Create a new checkbox
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'patient';
+                    checkbox.value = patient;
+
+                    // Create a label for the checkbox
+                    var label = document.createElement('label');
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(patient));
+
+                    // Add the checkbox to the patient list
+                    patientList.appendChild(label);
+                    patientList.appendChild(document.createElement('br')); // Add a line break for readability
+                    });
+                }
+
+                // Function to show the new nurse form
+                function showNewNurseForm() {
+                    document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page4').style.display = 'block';
+
+                    // Assuming you have an array of patients
+                    var patients = config.patientsID;
+
+                    // Get the element where you want to add the checkboxes
+                    var patientList = document.getElementById('patient-list');
+
+                    // Create a checkbox for each patient
+                    patients.forEach(function(patient) {
+                    // Create a new checkbox
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'patient';
+                    checkbox.value = patient;
+
+                    // Create a label for the checkbox
+                    var label = document.createElement('label');
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(patient));
+
+                    // Add the checkbox to the patient list
+                    patientList.appendChild(label);
+                    patientList.appendChild(document.createElement('br')); // Add a line break for readability
+                    });
                 }
             
                 // Function to go back to the patient monitoring page
@@ -336,6 +511,99 @@
                         console.log(data);
                     })
                 }
+
+                // Function to add a new nurse
+                function AddNurse() {
+                    const firstNurseName = document.getElementById("firstNurseName").value;
+                    const lastNurseName = document.getElementById("lastNurseName").value;
+                    console.log(firstNurseName);
+                    console.log(lastNurseName);
+                    // Get all checked checkboxes within patient-list
+                    var checkboxes = document.querySelectorAll('#patient-list input[type="checkbox"]:checked');
+
+                    // Create an array for the patients
+                    var patients = [];
+
+                    // Add the value of each checked checkbox to the patients array
+                    checkboxes.forEach(function(checkbox) {
+                        patients.push(checkbox.value);
+                    });
+
+                    console.log(patients); // This will log an array of the values of the checked checkboxes
+                    
+                    fetch('/addNurse', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        // Send the new patient data to the registry system
+                        body: `firstName=${firstNurseName}&lastName=${lastNurseName}&patients=${patients}`,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Show success message
+                        alert('Nurse added successfully');
+                        // Reset form
+                        document.getElementById('newNurseForm').reset();
+                        // Hide form and show patient monitoring page
+                        document.getElementById('page4').style.display = 'none';
+                        document.getElementById('page1').style.display = 'block';
+                        // Refresh the page to populate the new patient in the dropdown
+                        location.reload();
+            
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                }
+
+                // Function to add a new nurse
+                function ModifyNurse() {
+                    const ID = document.getElementById("nurseSelect").value;
+                    // Get all checked checkboxes within patient-list
+                    var checkboxes = document.querySelectorAll('#patient-list input[type="checkbox"]:checked');
+
+                    // Create an array for the patients
+                    var patients = [];
+
+                    // Add the value of each checked checkbox to the patients array
+                    checkboxes.forEach(function(checkbox) {
+                        patients.push(checkbox.value);
+                    });
+
+                    console.log(patients); // This will log an array of the values of the checked checkboxes
+                    
+                    fetch('/modifyNurse', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        // Send the new patient data to the registry system
+                        body: `nurseID=${ID}&patients=${patients}`,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Show success message
+                        alert('Nurse added successfully');
+                        // Reset form
+                        document.getElementById('newNurseForm').reset();
+                        // Hide form and show patient monitoring page
+                        document.getElementById('page6').style.display = 'none';
+                        document.getElementById('page1').style.display = 'block';
+                        // Refresh the page to populate the new patient in the dropdown
+                        location.reload();
+            
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                }
             
                 // Function to show the delete patient form
                 function deletePatient() {
@@ -367,6 +635,42 @@
                         document.getElementById('page3').style.display = 'none';
                         document.getElementById('page1').style.display = 'block';
                         // Refresh the page to populate the new patient in the dropdown
+                        location.reload();
+            
+                        return response.json();
+                    })
+                }
+
+                // Function to show the delete nurse form
+                function deleteNurse() {
+                    document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page5').style.display = 'block';
+                }
+            
+                // function to delete a nurse by doing a DELETE request to the server
+                function DeleteNurse() {
+                    const selectednurse = document.getElementById("deletingNurse").value;
+            
+                    fetch('/deleteNurse', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `selectednurse=${selectednurse}`,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // Show success message
+                        alert('Nurse deleted successfully');
+                        // Reset form
+                        document.getElementById('deleteNurseForm').reset();
+                        // Hide form and show nurse monitoring page
+                        document.getElementById('page5').style.display = 'none';
+                        document.getElementById('page1').style.display = 'block';
+                        // Refresh the page to populate the new nurse in the dropdown
                         location.reload();
             
                         return response.json();

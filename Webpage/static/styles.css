@@ -32,8 +32,8 @@ label {
 }
 
 .btn {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #64EBB6;
+    color: #000;
     border: none;
     border-radius: 4px;
     padding: 10px 20px;
@@ -42,11 +42,29 @@ label {
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: #00BFA6;
 }
 
 .btn:active {
-    background-color: #004080;
+    background-color: #004D40;
+}
+
+.btndelete {
+    background-color: #FF4956;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btndelete:hover {
+    background-color: #FF0000;
+}
+
+.btndelete:active {
+    background-color: #800000;
 }
 
 input[type="text"],
