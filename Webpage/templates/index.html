@@ -157,6 +157,10 @@
                     <label for="lastNurseName">Last Name:</label>
                     <input type="text" id="lastNurseName" name="lastName" class="input-box">
                 </div>
+                <div>
+                    <label for="birthdate">Date of Birth:</label>
+                    <input type="date" id="birthdate" name="birthdate" class="input-box">
+                </div>
                 
                 <!-- Container for the checkboxes -->
                 <div id="patient-list"></div>
@@ -516,6 +520,7 @@
                 function AddNurse() {
                     const firstNurseName = document.getElementById("firstNurseName").value;
                     const lastNurseName = document.getElementById("lastNurseName").value;
+                    const Birthdate = document.getElementById("birthdate").value;
                     console.log(firstNurseName);
                     console.log(lastNurseName);
                     // Get all checked checkboxes within patient-list
@@ -537,7 +542,7 @@
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
                         // Send the new patient data to the registry system
-                        body: `firstName=${firstNurseName}&lastName=${lastNurseName}&patients=${patients}`,
+                        body: `firstName=${firstNurseName}&lastName=${lastNurseName}&birthdate=${Birthdate}&patients=${patients}`,
                     })
                     .then(response => {
                         if (!response.ok) {

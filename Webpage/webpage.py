@@ -179,8 +179,16 @@ def add_patient():
 def add_nurse():
     # Get the data from the form
     new_nurse_data = request.form.to_dict()
-    print("\n\nNew Nurse Data:", new_nurse_data)
 
+    name = new_nurse_data['firstName']
+    surname = new_nurse_data['lastName']
+    birthdate = new_nurse_data['birthdate']
+    patients = []
+    for patient in new_nurse_data['patients']:
+        patients.append(patient)
+    new_nurse_data = {'nurseName': name + ' ' + surname, 'nurseBirthDate': birthdate, 'patients': patients}
+
+    print("\n\nNew Nurse Data:", new_nurse_data)
     conf = read_config()
 
     # URI to post data in the catalog
@@ -190,6 +198,39 @@ def add_nurse():
     try:
         # Save the new nurse data in the catalog
         response = requests.post(uri, json=new_nurse_data)
+        
+        print(response)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        data = response.json()
+        print(data)
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        print(f"\n\nERROR {e}")
+        return jsonify({'error': str(e)})
+
+# Function to modify a nurse from the registry system (PUT REQUEST)
+@app.route('/modifyNurse', methods=['POST'])
+def delete_nurse():
+    # Get the data from the form
+    nurse_data = request.form.to_dict()
+
+    ID = nurse_data['nurseID']
+    patients = []
+    for patient in nurse_data['patients']:
+        patients.append(patient)
+    
+    nurse_data = {'nurseID': ID, 'patients': patients}
+    print("nurse data:", nurse_data)
+
+    conf = read_config()
+    # URI to delete data in the catalog
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['nurse']}"
+
+    print(f"\n\nUPDATING NURSE {nurse_data} by doing POST request to {uri}")
+
+    try:
+        # Delete the patient data in the catalog
+        response = requests.put(uri, json=nurse_data)
         print(response)
         response.raise_for_status()  # Raise an exception if the request was unsuccessful
         data = response.json()
@@ -248,6 +289,8 @@ def delete_nurse():
     except requests.exceptions.RequestException as e:
         print(f"\n\nERROR {e}")
         return jsonify({'error': str(e)})
+    
+
 
 if __name__ == '__main__':
     # Define the scheduler to update the configuration file every 5 minutes by doing a PUT request to the registry system
