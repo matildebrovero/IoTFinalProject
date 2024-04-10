@@ -248,6 +248,7 @@ class RegistrySystem(object):
                 
                 #"http://localhost:8080/nurse"
                 elif uri[0] == "nurse":
+                    #TODO: uri modifypatient
                     print("\nReceived PUT request for nurse.")
                     # Assign every patient present in the lists if there is no patient assigned yet
                     if body["patients"] == []:

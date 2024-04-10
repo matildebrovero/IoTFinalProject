@@ -183,9 +183,11 @@ def add_nurse():
     name = new_nurse_data['firstName']
     surname = new_nurse_data['lastName']
     birthdate = new_nurse_data['birthdate']
+    print(birthdate)
     patients = []
     for patient in new_nurse_data['patients']:
-        patients.append(patient)
+        if patient != ',':
+            patients.append(patient)
     new_nurse_data = {'nurseName': name + ' ' + surname, 'nurseBirthDate': birthdate, 'patients': patients}
 
     print("\n\nNew Nurse Data:", new_nurse_data)
@@ -210,7 +212,7 @@ def add_nurse():
 
 # Function to modify a nurse from the registry system (PUT REQUEST)
 @app.route('/modifyNurse', methods=['POST'])
-def delete_nurse():
+def modify_nurse():
     # Get the data from the form
     nurse_data = request.form.to_dict()
 
