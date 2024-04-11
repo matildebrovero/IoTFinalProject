@@ -183,13 +183,12 @@ class RegistrySystem(object):
                     print("Catalog updated with patient:", body)
                     return json.dumps(body, indent = 4)
                 
-                # "http://localhost:8080/AddNurse"    #modificato questo
-                elif uri[0] == "AddNurse":
+                # "http://localhost:8080/addNurse"    
+                elif uri[0] == "addNurse":
                     print("\nReceived POST request for nurse.")
                     ID = self.catalog["counter"]["nurseCounter"]
                     self.catalog["counter"]["nurseCounter"] += 1
                     body["nurseID"] = ID
-                    body["lastUpdate"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
                     self.catalog["nursesList"].append(body)
                     with open("catalog.json", "w") as file:
                         json.dump(self.catalog, file, indent = 4)
