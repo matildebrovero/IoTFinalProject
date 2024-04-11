@@ -32,8 +32,8 @@ label {
 }
 
 .btn {
-    background-color: #64EBB6;
-    color: #000;
+    background-color: #034172;
+    color: #fff;
     border: none;
     border-radius: 4px;
     padding: 10px 20px;
@@ -42,7 +42,7 @@ label {
 }
 
 .btn:hover {
-    background-color: #00BFA6;
+    background-color: #2f5980;
 }
 
 .btn:active {
