@@ -171,6 +171,8 @@ class RegistrySystem(object):
                         if dC["deviceConnectorID"] == int(body["deviceConnector"].split("e")[2]):
                             dC["patientLinked"] = "yes"
                             print(dC)
+                    body["deviceConnector"] = int(body["deviceConnector"].split("e")[2])
+                    
                     print("\n\n\n")
                     print(self.catalog["patientsList"])
                     print("\n\n\n")
