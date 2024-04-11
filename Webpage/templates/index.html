@@ -381,11 +381,19 @@
                 function showNewPatientForm() {
                     document.getElementById('page1').style.display = 'none';
                     document.getElementById('page2').style.display = 'block';
+                    document.getElementById('page3').style.display = 'none';
+                    document.getElementById('page4').style.display = 'none';
+                    document.getElementById('page5').style.display = 'none';
+                    document.getElementById('page6').style.display = 'none';
                 }
 
                 // Function to show the update nurse form
                 function showNurseForm() {
                     document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page3').style.display = 'none';
+                    document.getElementById('page4').style.display = 'none';
+                    document.getElementById('page5').style.display = 'none';
                     document.getElementById('page6').style.display = 'block';
 
                     // Assuming you have an array of patients
@@ -416,7 +424,11 @@
                 // Function to show the new nurse form
                 function showNewNurseForm() {
                     document.getElementById('page1').style.display = 'none';
+                    document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page3').style.display = 'none';
                     document.getElementById('page4').style.display = 'block';
+                    document.getElementById('page5').style.display = 'none';
+                    document.getElementById('page6').style.display = 'none';
 
                     // Assuming you have an array of patients
                     var patients = config.patientsID;
@@ -445,12 +457,12 @@
             
                 // Function to go back to the patient monitoring page
                 function goBack() {
+                    document.getElementById('page1').style.display = 'block';
                     document.getElementById('page2').style.display = 'none';
                     document.getElementById('page3').style.display = 'none';
                     document.getElementById('page4').style.display = 'none';
                     document.getElementById('page5').style.display = 'none';
                     document.getElementById('page6').style.display = 'none';
-                    document.getElementById('page1').style.display = 'block';
                 }
                 
                 // Add event listener to the new patient form
@@ -466,8 +478,8 @@
                     // Reset form
                     event.target.reset();
                     // Hide form and show patient monitoring page
-                    document.getElementById('page2').style.display = 'none';
                     document.getElementById('page1').style.display = 'block';
+                    document.getElementById('page2').style.display = 'none';
                 });
             
                 // Function to add a new patient
@@ -557,8 +569,8 @@
                         // Reset form
                         document.getElementById('newNurseForm').reset();
                         // Hide form and show patient monitoring page
-                        document.getElementById('page4').style.display = 'none';
                         document.getElementById('page1').style.display = 'block';
+                        document.getElementById('page4').style.display = 'none';
                         // Refresh the page to populate the new patient in the dropdown
                         location.reload();
             
@@ -602,8 +614,8 @@
                         // Reset form
                         document.getElementById('newNurseForm').reset();
                         // Hide form and show patient monitoring page
-                        document.getElementById('page6').style.display = 'none';
                         document.getElementById('page1').style.display = 'block';
+                        document.getElementById('page6').style.display = 'none';
                         // Refresh the page to populate the new patient in the dropdown
                         location.reload();
             
@@ -619,6 +631,9 @@
                     document.getElementById('page1').style.display = 'none';
                     document.getElementById('page2').style.display = 'none';
                     document.getElementById('page3').style.display = 'block';
+                    document.getElementById('page4').style.display = 'none';
+                    document.getElementById('page5').style.display = 'none';
+                    document.getElementById('page6').style.display = 'none';
                 }
             
                 // function to delete a patient by doing a DELETE request to the server
@@ -654,7 +669,10 @@
                 function deleteNurse() {
                     document.getElementById('page1').style.display = 'none';
                     document.getElementById('page2').style.display = 'none';
+                    document.getElementById('page3').style.display = 'none';
+                    document.getElementById('page4').style.display = 'none';
                     document.getElementById('page5').style.display = 'block';
+                    document.getElementById('page6').style.display = 'none';
                 }
             
                 // function to delete a nurse by doing a DELETE request to the server

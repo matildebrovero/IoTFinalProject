@@ -13,6 +13,7 @@
             "delete_patient": "patientID",
             "delete_nurse": "nurseID",
             "nurse": "nurse",
+            "modify_patients": "modifypatient",
             "add_nurse": "addNurse",
             "DB_adaptor": "DBadaptor"
         },
