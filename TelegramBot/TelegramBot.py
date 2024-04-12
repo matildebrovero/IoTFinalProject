@@ -54,22 +54,14 @@ class HospitalBot:
         self.clientID = clientID
         self.startedIDs = []
         self.nurseIDs = []
+        self.Names = []
 
         # create an instance of the MyMQTT class 
         self.client = MyMQTT(self.clientID, self.broker, self.port, self)
         self.client.start()
 
         MessageLoop(self.bot, {'chat': self.on_chat_message}).run_as_thread()
-        self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_nurseInfo']}").json()
-        print("\n\n\n")
-        print(self.nurseInfo)
-
-        # USED ONLY TO TEST THE BOT WITHOUT THE CATALOG
-        #self.nurseInfo = json.load(open("nurseInfo.json"))
         
-        # get the names of the nurses from the nurseInfo file
-        self.Names = [nurse["nurseName"] for nurse in self.nurseInfo]
-        print(self.Names)
 
     def on_chat_message(self, msg):      
         content_type, chat_type,self.chat_ID = telepot.glance(msg)
@@ -78,7 +70,16 @@ class HospitalBot:
 
         # check wich message has been received from the bot
         if message == "/start":
+            self.nurseInfo = requests.get(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['get_nurseInfo']}").json()
+            print("\n\n\n")
+            print(self.nurseInfo)
+
+            # USED ONLY TO TEST THE BOT WITHOUT THE CATALOG
+            #self.nurseInfo = json.load(open("nurseInfo.json"))
             
+            # get the names of the nurses from the nurseInfo file
+            self.Names = [nurse["nurseName"] for nurse in self.nurseInfo]
+            print(self.Names)
             # subscribe to the topic
             self.client.mySubscribe(self.topic)   
 
@@ -104,16 +105,15 @@ class HospitalBot:
                     nurse["chatID"] = self.chat_ID
                     print(nurse)
                     print(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['post_nurseInfo']}")
-                    # register the chatID of the nurse in the catalog using a POST request, in this way the nurse can receive updates about the patients, also, assign patients to the nurse
-                    nurse = requests.post(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['post_nurseInfo']}", json=nurse)
+                    # register the chatID of the nurse in the catalog using a PUT request, in this way the nurse can receive updates about the patients, also, assign patients to the nurse
+                    nurse = requests.put(f"{self.configuration['RegistrySystem']}/{self.configuration['information']['uri']['post_nurseInfo']}", json=nurse)
                     print("\n\n\nNURSE")
                     print(nurse.json())
                     nurse = nurse.json()
                     patients = nurse["patients"]
             # send a message to the chat with the nurseID
             self.bot.sendMessage(self.chat_ID, text=f"Your ID is {self.nurseID} and you are in charge of the following patients: {patients}")
-        elif message not in [self.Names, "/start", "/stop"]:
-            self.bot.sendMessage(self.chat_ID, text="Please insert a valid name")
+
         # stop the bot
         elif message == "/stop":
             for chatID in self.startedIDs:
@@ -127,6 +127,10 @@ class HospitalBot:
             self.bot.sendMessage(self.chat_ID, text="The bot has been turned off")
             if self.startedIDs == [] or self.nurseIDs == []:
                 self.client.stop()
+
+        elif message not in [self.Names, "/start", "/stop"]:
+            self.bot.sendMessage(self.chat_ID, text="Please insert a valid name")
+        
         else:
             self.bot.sendMessage(self.chat_ID, text="Command not supported")
 
@@ -250,7 +254,7 @@ if __name__ == "__main__":
         json.dump(conf, open("TB_configuration.json", "w"), indent = 4)
     else:
         print("\nError in adding the service to the catalog")
-
+    time.sleep(1)
     # GET the information about the MQTT broker from the Registry System using get requests
     MQTTinfo = json.loads(requests.get(f"{urlCatalog}/{conf['information']['uri']['broker_info']}").text)
 
@@ -286,10 +290,11 @@ if __name__ == "__main__":
             print("\n\nPUT REQUEST")
             config = requests.put(f"{urlCatalog}/{config_file['information']['uri']['add_service']}", json=config_file["information"])
             if config.status_code == 200:
-                config_file["information"] = config
+                config_file["information"] = config.json()
                 json.dump(config_file, open("TB_configuration.json", "w"), indent = 4)
                 # update the start time
                 start_time = current_time
+
             else:
                 print(f"\nError: {config.status_code} - {config.text}")
         time.sleep(10)
