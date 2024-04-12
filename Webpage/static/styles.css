@@ -45,10 +45,6 @@ label {
     background-color: #2f5980;
 }
 
-.btn:active {
-    background-color: #004D40;
-}
-
 .btndelete {
     background-color: #FF4956;
     color: #fff;
@@ -63,8 +59,23 @@ label {
     background-color: #FF0000;
 }
 
-.btndelete:active {
-    background-color: #800000;
+.btn_back {
+    background-color: #00BD98;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn_back:hover {
+    background-color: #004d3e;
+}
+
+
+.btn_back:active {
+    background-color: #013329;
 }
 
 input[type="text"],

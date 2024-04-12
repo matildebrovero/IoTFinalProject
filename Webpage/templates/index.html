@@ -69,7 +69,7 @@
         <div id="page2" style="display: none;">
 
             <!-- Add button to go back to the initial page -->
-            <button onclick="goBack()" class="btndelete">Go Back</button>
+            <button onclick="goBack()" class="btn_back">Home</button>
 
             <!-- Page 2: New Patient Form -->
             <h1>Add New Patient</h1>
@@ -124,7 +124,7 @@
         <div id="page3" style="display: none;">
 
             <!-- Add button to go back to the initial page -->
-            <button onclick="goBack()" class="btndelete">Go Back</button>
+            <button onclick="goBack()" class="btn_back">Home</button>
 
             <!-- Page 3: Delete Patient Form -->
             <h1>Delete Patient</h1>
@@ -144,7 +144,7 @@
         <div id="page4" style="display: none;">
 
             <!-- Add button to go back to the initial page -->
-            <button onclick="goBack()" class="btndelete">Go Back</button>
+            <button onclick="goBack()" class="btn_back">Home</button>
 
             <!-- Page 4: New Nurse Form -->
             <h1>Add New Nurse</h1>
@@ -173,7 +173,7 @@
         <div id="page5" style="display: none;">
 
             <!-- Add button to go back to the initial page -->
-            <button onclick="goBack()" class="btndelete">Go Back</button>
+            <button onclick="goBack()" class="btn_back">Home</button>
 
             <!-- Page 5: Delete Nurse Form -->
             <h1>Delete Nurse</h1>
@@ -193,7 +193,7 @@
         <div id="page6" style="display: none;">
 
             <!-- Add button to go back to the initial page -->
-            <button onclick="goBack()" class="btndelete">Go Back</button>
+            <button onclick="goBack()" class="btn_back">Home</button>
 
             <!-- Page 6: New Nurse Form -->
             <h1>Modify Nurse</h1>
@@ -292,9 +292,8 @@
                     //DEBUG
                     console.log("Populating nurses");
                     console.log(config.nursesID);
-
                     const select = document.getElementById("deletingNurse");
-                    config.nurseID.forEach(nurse => {
+                    config.nursesID.forEach(nurse => {
                         const option = document.createElement("option");
                         option.text = nurse;
                         option.value = nurse;
@@ -464,7 +463,6 @@
                     document.getElementById('page4').style.display = 'none';
                     document.getElementById('page5').style.display = 'none';
                     document.getElementById('page6').style.display = 'none';
-                    
                 }
                 
                 // Add event listener to the new patient form
