@@ -7,7 +7,7 @@ Here is the description of the system implemented in **v1.0.1**
     <img src="images/FinalProject.svg">
 </p>
 
-After pulling this version (**main** branch) the only thing needed is to execute the following command in the folder **IoTFinalProject*
+After pulling this version (**main** branch) the only thing needed is to execute the following command in the folder *IoTFinalProject*
 
 ```bash
 docker compose up -d
