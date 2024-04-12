@@ -97,6 +97,7 @@ services:
       - influxdb
       - registrysystem
       - dbreader
+    restart: always
 
   telegrambot:
     build: ./TelegramBot
@@ -106,6 +107,7 @@ services:
     links:
       - influxdb
       - registrysystem
+    restart: always
   
   webpage:
     build: ./Webpage
@@ -120,6 +122,7 @@ services:
       - influxdb
       - registrysystem
       - dbreader
+    restart: always
     
   
       
