@@ -7,6 +7,11 @@ Here is the description of the system implemented in **v1.0.1**
     <img src="images/FinalProject.svg">
 </p>
 
+To install all the packages needed in python you can simple run in *IoTFinalProject* folder the following line:
+```bash
+pip install requirements.txt
+```
+
 The proposed IoT platform provides a service to hospitals, clinics or nursing
 homes for continuous monitoring of patients. Data are provided from five sensors
 for each patient: an ECG sensor, a blood pressure monitor, a pulse oximeter, a
