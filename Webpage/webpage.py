@@ -9,12 +9,14 @@ import time
     Webpage - SmartHospital IoT platform. Version 1.0.1 
     This microservice is responsible for displaying the data from the sensors in the Smart Hospital.
     It also allows the user to add new patients and delete existing patients from the system.
+    It is also possible to add new nurses, modify the patient a nurse is taking care of and delete existing nurses from the system.
      
         Input:  
             - Data from the Database and the Registry System
         Output:
             - Visualization of the data in the Webpage
             - Adding and deleting patients from the Registry System
+            - Adding, modifying and deleting nurses from the Registry System
  
     -------------------------------------------------------------------------- 
     --------------         standard configuration          ------------------- 
@@ -34,6 +36,10 @@ import time
                 - "get_configurations": URI to get the configuration file from the Registry System
                 - "patient": URI to delete a patient from the Registry System  
                 - "delete_patient": params to delete a patient from the Registry System  
+                - "nurse": URI to delete a nurse from the Registry System
+                - "delete_nurse": params to delete a nurse from the Registry System
+                - "add_nurse": URI to add a nurse to the Registry System
+                - "modify_patients": URI to modify the patients of a nurse in the Registry System
                 - "DB_adaptor": URI to get the information about the DB adaptor from the Registry System
             - "port": Port of the service exposed to show the Webpage
             - "host": Host of the service = "localhost"
@@ -55,15 +61,14 @@ def update_config():
     print(urlCatalog)
     # read information from the configuration file and PUT the information to the catalog
     config = conf["information"]
-    
+
     print("\n\nPUT REQUEST")
     print(config)
-
     config = requests.put(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
     conf["information"] = config.json()
     # save the configuration file
     save_config(conf)
-    # Load the configuration file using a get request to
+    
 
 # Function to initialize the configuration file of the Webpage by doing a POST request to the registry system
 @app.before_first_request
@@ -76,10 +81,9 @@ def initialize():
     print(urlCatalog)
     # read information from the configuration file and POST the information to the catalog
     config = conf["information"]
-    
+
     print("\n\nPOST REQUEST")
     print(config)
-
     config = requests.post(f"{urlCatalog}/{conf['information']['uri']['add_service']}", json=config)
     conf["information"] = config.json()
     # save the configuration file
@@ -94,9 +98,8 @@ def index():
     print(conf)
     # load the registry system
     urlCatalog = conf["RegistrySystem"]
-    
     # Load the configuration file using a get request to 0.0.0.0:8080/configwebpage
-    # URI to ask to the registry system configuration file containing patients and data available 
+    # URI to ask to the registry system configuration file containing patients, nurses and data available 
     uri = f"{urlCatalog}/{conf['information']['uri']['get_configurations']}"
 
     print(f"\n\nRequesting configuration file from {uri}")
@@ -154,17 +157,84 @@ def getData():
 def add_patient():
     # Get the data from the form
     new_patient_data = request.form.to_dict()
+
     print("\n\nNew Patient Data:", new_patient_data)
-
+    # Load the configuration file of the Webpage to get the URI of the Registry System
     conf = read_config()
-
     # URI to post data in the catalog
-    uri = f"{conf['RegistrySystem']}/patient"
-
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['patient']}"
     print(f"\n\nAdding new patient to registry system to {uri}")
     try:
         # Save the new patient data in the catalog
         response = requests.post(uri, json=new_patient_data)
+        print(response)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        data = response.json()
+        print(data)
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        print(f"\n\nERROR {e}")
+        return jsonify({'error': str(e)})
+    
+# Function to add a new Nurse to the registry system (POST REQUEST) 
+@app.route('/addNurse', methods=['POST'])
+def add_nurse():
+    # Get the data from the form
+    new_nurse_data = request.form.to_dict()
+
+    name = new_nurse_data['firstName']
+    surname = new_nurse_data['lastName']
+    birthdate = new_nurse_data['birthdate']
+    #print(birthdate)
+    patients = []
+    for patient in new_nurse_data['patients']:
+        if patient != ',':
+            patients.append(patient)
+    new_nurse_data = {'nurseName': name + ' ' + surname, 'nurseBirthDate': birthdate, 'patients': patients}
+
+    print("\n\nNew Nurse Data:", new_nurse_data)
+
+    # Load the configuration file of the Webpage to get the URI of the Registry System
+    conf = read_config()
+    # URI to post data in the catalog
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['add_nurse']}"
+
+    print(f"\n\nAdding new nurse to registry system to {uri}")
+    try:
+        # Save the new nurse data in the catalog
+        response = requests.post(uri, json=new_nurse_data)
+        print(response)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        data = response.json()
+        print(data)
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        print(f"\n\nERROR {e}")
+        return jsonify({'error': str(e)})
+
+# Function to modify a nurse from the registry system (PUT REQUEST)
+@app.route('/modifyNurse', methods=['POST'])
+def modify_nurse():
+    # Get the data from the form
+    nurse_data = request.form.to_dict()
+    ID = nurse_data['nurseID']
+    patients = []
+    for patient in nurse_data['patients']:
+        if patient != ',':
+            patients.append(patient)
+    
+    nurse_data = {'nurseID': ID, 'patients': patients}
+    #print("\n\nModified nurse data:", nurse_data)
+    # Load the configuration file of the Webpage to get the URI of the Registry System
+    conf = read_config()
+    # URI to delete data in the catalog
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['nurse']}/{conf['information']['uri']['modify_patients']}"
+
+    print(f"\n\nUPDATING NURSE {nurse_data} by doing POST request to {uri}")
+
+    try:
+        # Delete the patient data in the catalog
+        response = requests.put(uri, json=nurse_data)
         print(response)
         response.raise_for_status()  # Raise an exception if the request was unsuccessful
         data = response.json()
@@ -198,6 +268,33 @@ def delete_patient():
     except requests.exceptions.RequestException as e:
         print(f"\n\nERROR {e}")
         return jsonify({'error': str(e)})
+    
+# Function to delete a nurse from the registry system (DELETE REQUEST)
+@app.route('/deleteNurse', methods=['POST'])
+def delete_nurse():
+    # Get the data from the form
+    nurse_id = request.form.to_dict()
+    nurse_id = nurse_id['selectednurse']
+    #print("nurse ID:", nurse_id)
+    conf = read_config()
+    # URI to delete data in the catalog
+    uri = f"{conf['RegistrySystem']}/{conf['information']['uri']['nurse']}?{conf['information']['uri']['delete_nurse']}={nurse_id}"
+
+    print(f"\n\nDELETING NURSE {nurse_id} by doing DELETE request to {uri}")
+
+    try:
+        # Delete the patient data in the catalog
+        response = requests.delete(uri)
+        print(response)
+        response.raise_for_status()  # Raise an exception if the request was unsuccessful
+        data = response.json()
+        print(data)
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        print(f"\n\nERROR {e}")
+        return jsonify({'error': str(e)})
+    
+
 
 if __name__ == '__main__':
     # Define the scheduler to update the configuration file every 5 minutes by doing a PUT request to the registry system

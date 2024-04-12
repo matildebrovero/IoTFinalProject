@@ -5,7 +5,7 @@ import time
 
 """ 
     RegistrySystem - SmartHospital IoT platform. Version 1.0.1 
-    This microservice exposes REST API to read and read and write information about the services, patients, nurses, and device connectors in the Smart Hospital.
+    This microservice exposes REST API to read and write information about the services, patients, nurses, and device connectors in the Smart Hospital.
     It keeps track of them and provides the information to the other services when requested.
     It is also responsible for deleting the services and device connectors that have not been updated for more than 5 minutes.
 
@@ -29,7 +29,7 @@ import time
  
     Its configuration file is integrated in the the catalog.json
  
-    """ 
+""" 
 
 class RegistrySystem(object):
     exposed=True 
@@ -40,6 +40,7 @@ class RegistrySystem(object):
         self.catalog = json.load(open("catalog.json"))
         self.configWebPage = {
             "patientsID": [],
+            "nurseID": [],
             "data": [],
             "deviceConnectors":[]
             }
@@ -66,12 +67,19 @@ class RegistrySystem(object):
                 print("\nReceived GET request for configwebpage.")
                 pIDs = []
                 dConnectors = []
+                nIDs = []
                 for patient in self.catalog["patientsList"]:
                     pIDs.append(patient["patientID"])
-                self.configWebPage["patientsID"] = pIDs
+
                 for dC in self.catalog["deviceConnectorList"]:
                     if dC["patientLinked"] == "no":
                         dConnectors.append("device" + str(dC["deviceConnectorID"]))
+
+                for n in self.catalog["nursesList"]:   #aggiunto questo
+                    nIDs.append(n["nurseID"])
+
+                self.configWebPage["patientsID"] = pIDs
+                self.configWebPage["nurseID"] = nIDs
                 self.configWebPage["deviceConnectors"] = dConnectors
                 self.configWebPage["data"] = self.catalog["dataList"]
                 return json.dumps(self.configWebPage, indent = 4)
@@ -163,33 +171,29 @@ class RegistrySystem(object):
                         if dC["deviceConnectorID"] == int(body["deviceConnector"].split("e")[2]):
                             dC["patientLinked"] = "yes"
                             print(dC)
+                    body["deviceConnector"] = int(body["deviceConnector"].split("e")[2])
+                    
                     print("\n\n\n")
                     print(self.catalog["patientsList"])
                     print("\n\n\n")
                     print(body)
                     print("\n\n\n")
-
                     with open("catalog.json", "w") as file:
                         json.dump(self.catalog, file, indent = 4)
                     print("Catalog updated with patient:", body)
                     return json.dumps(body, indent = 4)
                 
-                # "http://localhost:8080/nurse"
-                elif uri[0] == "nurse":
+                # "http://localhost:8080/addNurse"    
+                elif uri[0] == "addNurse":
                     print("\nReceived POST request for nurse.")
-                    # Assign every patient present in the lists to the nurse currently logged in the BOT so it can receive the alerts
-                    patients = []
-                    for p in self.catalog["patientsList"]:
-                        patients.append(str(p["patientID"]))
-                    body["patients"] = patients
-                    for nurse in self.catalog["nursesList"]:
-                        if nurse["nurseID"] == body["nurseID"]:
-                            nurse["patients"] = body["patients"]
-                            nurse["chatID"] = body["chatID"]
+                    ID = self.catalog["counter"]["nurseCounter"]
+                    self.catalog["counter"]["nurseCounter"] += 1
+                    body["nurseID"] = ID
+                    self.catalog["nursesList"].append(body)
                     with open("catalog.json", "w") as file:
                         json.dump(self.catalog, file, indent = 4)
                     print("Catalog updated with nurse:", body)
-                    return json.dumps(body, indent = 4)  
+                    return json.dumps(body, indent = 4)
                 else:
                     raise cherrypy.HTTPError(404, "Page doesn't exist") 
             else:
@@ -242,6 +246,46 @@ class RegistrySystem(object):
                             print("Catalog updated with Device connector:", body)
                             return json.dumps(body, indent = 4)
                     return "DeviceConnector not found"
+                
+                #"http://localhost:8080/nurse"
+                elif uri[0] == "nurse":
+                    if len(uri) == 1:
+                        print("\nReceived PUT request for nurse.")
+                        # Assign every patient present in the lists if there is no patient assigned yet
+                        if body["patients"] == []:
+                            patients = []
+                            for p in self.catalog["patientsList"]:
+                                patients.append(str(p["patientID"]))
+                            body["patients"] = patients
+                            for nurse in self.catalog["nursesList"]:
+                                if nurse["nurseID"] == int(body["nurseID"]):
+                                    nurse["patients"] = body["patients"]
+                                    nurse["chatID"] = body["chatID"]
+                            with open("catalog.json", "w") as file:
+                                json.dump(self.catalog, file, indent = 4)
+                            print("Catalog updated with nurse:", body)
+                            return json.dumps(body, indent = 4)
+                        else:
+                            print("Nurse already assigned to patients") 
+                            for nurse in self.catalog["nursesList"]:
+                                if nurse["nurseID"] == int(body["nurseID"]):
+                                    nurse["chatID"] = body["chatID"]
+                            with open("catalog.json", "w") as file:
+                                json.dump(self.catalog, file, indent = 4)
+                            print("Catalog updated with nurse:", body)
+                    elif len(uri) == 2:
+                        #"http://localhost:8080/nurse/modifypatient"
+                        if uri[1] == "modifypatient":
+                            print("\nReceived PUT request for nurse to modify patient.")
+                            for nurse in self.catalog["nursesList"]:
+                                if nurse["nurseID"] == int(body["nurseID"]):
+                                    nurse["patients"] = body["patients"]
+                            with open("catalog.json", "w") as file:
+                                json.dump(self.catalog, file, indent = 4)
+                            print("Catalog updated with nurse:", body)
+                            return json.dumps(body, indent = 4)
+                        else:
+                            raise cherrypy.HTTPError(404, "Page doesn't exist") 
                 else:
                     raise cherrypy.HTTPError(404, "Page doesn't exist") 
             else:
@@ -265,8 +309,7 @@ class RegistrySystem(object):
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
                         print("Catalog updated without patient:", patient)
-                    else:
-                        return "Patient not found"
+                   
                 for dc in self.catalog["deviceConnectorList"]:
                     if dc["deviceConnectorID"] == int(params["patientID"]):
                         self.catalog["deviceConnectorList"].remove(dc)
@@ -275,6 +318,18 @@ class RegistrySystem(object):
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
                         print("Catalog updated without Device connector:", dc)
+            if uri[0] == "nurse":   #aggiunto questo
+                print("Received DELETE request for nurse.")
+                for nurse in self.catalog["nursesList"]:
+                    print(int(params["nurseID"]))
+                    print(nurse["nurseID"])
+                    if nurse["nurseID"] == int(params["nurseID"]):
+                        # delete nurse from the list
+                        self.catalog["nursesList"].remove(nurse)
+                        with open("catalog.json", "w") as file:
+                            json.dump(self.catalog, file, indent = 4)
+                        print("Catalog updated without nurse:", nurse)
+                    
             else:
                 raise cherrypy.HTTPError(404, "Page doesn't exist") 
         else:

@@ -32,7 +32,7 @@ label {
 }
 
 .btn {
-    background-color: #007bff;
+    background-color: #034172;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -42,11 +42,40 @@ label {
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: #2f5980;
 }
 
-.btn:active {
-    background-color: #004080;
+.btndelete {
+    background-color: #FF4956;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btndelete:hover {
+    background-color: #FF0000;
+}
+
+.btn_back {
+    background-color: #00BD98;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn_back:hover {
+    background-color: #004d3e;
+}
+
+
+.btn_back:active {
+    background-color: #013329;
 }
 
 input[type="text"],

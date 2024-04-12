@@ -70,10 +70,51 @@
             "chatID": ""
         }
     ],
-    "serviceList": [],
+    "serviceList": [
+        {
+            "serviceID": 9,
+            "serviceName": "Webpage",
+            "availableServices": [
+                "REST"
+            ],
+            "uri": {
+                "add_service": "service",
+                "get_configurations": "configwebpage",
+                "patient": "patient",
+                "delete_patient": "patientID",
+                "delete_nurse": "nurseID",
+                "nurse": "nurse",
+                "add_nurse": "addNurse",
+                "DB_adaptor": "DBadaptor"
+            },
+            "host": "0.0.0.0",
+            "port": 8090,
+            "lastUpdate": "2024-04-10T13:12:05"
+        },
+        {
+            "serviceID": 10,
+            "serviceName": "Webpage",
+            "availableServices": [
+                "REST"
+            ],
+            "uri": {
+                "add_service": "service",
+                "get_configurations": "configwebpage",
+                "patient": "patient",
+                "delete_patient": "patientID",
+                "delete_nurse": "nurseID",
+                "nurse": "nurse",
+                "add_nurse": "addNurse",
+                "DB_adaptor": "DBadaptor"
+            },
+            "host": "0.0.0.0",
+            "port": 8090,
+            "lastUpdate": "2024-04-10T13:17:02"
+        }
+    ],
     "counter": {
         "deviceConnectorCounter": 0,
-        "serviceCounter": 0,
+        "serviceCounter": 11,
         "nurseCounter": 0
     }
 }
