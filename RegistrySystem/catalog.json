@@ -34,87 +34,12 @@
                 "1"
             ],
             "chatID": 704532910
-        },
-        {
-            "nurseID": 2,
-            "nurseName": "Elvin Holmberg",
-            "nurseBirthDate": "1996-12-15",
-            "patients": [
-                "2",
-                "1"
-            ],
-            "chatID": ""
-        },
-        {
-            "nurseID": 3,
-            "nurseName": "Sophie Campbell",
-            "nurseBirthDate": "1987-08-13",
-            "patients": [
-                "2",
-                "1"
-            ],
-            "chatID": 704532910
-        },
-        {
-            "nurseID": 4,
-            "nurseName": "Karina Samsonova",
-            "nurseBirthDate": "1995-10-19",
-            "patients": [],
-            "chatID": ""
-        },
-        {
-            "nurseID": 5,
-            "nurseName": "Anders Hilstad",
-            "nurseBirthDate": "1963-11-05",
-            "patients": [],
-            "chatID": ""
         }
     ],
-    "serviceList": [
-        {
-            "serviceID": 9,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "patient": "patient",
-                "delete_patient": "patientID",
-                "delete_nurse": "nurseID",
-                "nurse": "nurse",
-                "add_nurse": "addNurse",
-                "DB_adaptor": "DBadaptor"
-            },
-            "host": "0.0.0.0",
-            "port": 8090,
-            "lastUpdate": "2024-04-10T13:12:05"
-        },
-        {
-            "serviceID": 10,
-            "serviceName": "Webpage",
-            "availableServices": [
-                "REST"
-            ],
-            "uri": {
-                "add_service": "service",
-                "get_configurations": "configwebpage",
-                "patient": "patient",
-                "delete_patient": "patientID",
-                "delete_nurse": "nurseID",
-                "nurse": "nurse",
-                "add_nurse": "addNurse",
-                "DB_adaptor": "DBadaptor"
-            },
-            "host": "0.0.0.0",
-            "port": 8090,
-            "lastUpdate": "2024-04-10T13:17:02"
-        }
-    ],
+    "serviceList": [],
     "counter": {
         "deviceConnectorCounter": 0,
-        "serviceCounter": 11,
-        "nurseCounter": 0
+        "serviceCounter": 0,
+        "nurseCounter": 2
     }
 }

@@ -273,6 +273,7 @@ class RegistrySystem(object):
                             with open("catalog.json", "w") as file:
                                 json.dump(self.catalog, file, indent = 4)
                             print("Catalog updated with nurse:", body)
+                            return json.dumps(body, indent = 4)
                     elif len(uri) == 2:
                         #"http://localhost:8080/nurse/modifypatient"
                         if uri[1] == "modifypatient":
