@@ -1,5 +1,5 @@
 {
-    "RegistrySystem": "http://localhost:8080",
+    "RegistrySystem": "http://registrysystem:8080",
     "information": {
         "serviceID": 10,
         "serviceName": "Webpage",

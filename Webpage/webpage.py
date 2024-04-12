@@ -303,6 +303,6 @@ if __name__ == '__main__':
     scheduler.start()
     # Read the configuration file and run the Webpage
     config = read_config()
-    app.run(debug=True, port=config["information"]["port"])
+    app.run(debug=True, host=config["information"]["host"] ,port=config["information"]["port"])
 
     

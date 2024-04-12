@@ -15,14 +15,17 @@ services:
       - 8086:8086 
     volumes: 
       - myInfluxVolume:/var/lib/influxdb 
+
   registrysystem:
     build: ./RegistrySystem
     expose:
       - "8080"
     ports:
       - "8080:8080"
-  dbadaptor:
-    build: ./DBadaptor
+    restart: always
+  
+  dbreader:
+    build: ./DBreader
     expose:
       - "8081"
     ports:
@@ -33,6 +36,18 @@ services:
     links:
       - influxdb
       - registrysystem
+    restart: always
+
+  dbwriter:
+    build: ./DBwriter
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+    restart: always
+  
   ecganalysis:
     build: ./ECGAnalysis
     depends_on:
@@ -41,16 +56,57 @@ services:
     links:
       - influxdb
       - registrysystem
+    restart: always
+  
   deviceconnector:
     build: ./DeviceConnector
     depends_on:
       - influxdb
       - registrysystem
-      - ecganalysis
     links:
       - influxdb
       - registrysystem
-      - ecganalysis
+    restart: always
+
+  deviceconnector2:
+    build: ./DeviceConnector
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+    restart: always
+
+  deviceconnector3:
+    build: ./DeviceConnector
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+    restart: always
+  
+  patientstatus:
+    build: ./PatientStatus
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+      - dbreader
+
+  telegrambot:
+    build: ./TelegramBot
+    depends_on:
+      - influxdb
+      - registrysystem
+    links:
+      - influxdb
+      - registrysystem
+  
   webpage:
     build: ./Webpage
     expose:
@@ -63,24 +119,9 @@ services:
     links:
       - influxdb
       - registrysystem
-  patientstatus:
-    build: ./PatientStatus
-    depends_on:
-      - influxdb
-      - registrysystem
-    links:
-      - influxdb
-      - registrysystem
-  telegrambot:
-    build: ./TelegramBot
-    depends_on:
-      - influxdb
-      - registrysystem
-      - patientstatus
-    links:
-      - influxdb
-      - registrysystem
-      - patientstatus 
+      - dbreader
+    
+  
       
 volumes: 
   myInfluxVolume:
