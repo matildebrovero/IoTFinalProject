@@ -220,7 +220,8 @@ def modify_nurse():
     ID = nurse_data['nurseID']
     patients = []
     for patient in nurse_data['patients']:
-        patients.append(patient)
+        if patient != ',':
+            patients.append(patient)
     
     nurse_data = {'nurseID': ID, 'patients': patients}
     #print("\n\nModified nurse data:", nurse_data)

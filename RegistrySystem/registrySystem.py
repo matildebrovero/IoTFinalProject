@@ -249,24 +249,43 @@ class RegistrySystem(object):
                 
                 #"http://localhost:8080/nurse"
                 elif uri[0] == "nurse":
-                    #TODO: uri modifypatient
-                    print("\nReceived PUT request for nurse.")
-                    # Assign every patient present in the lists if there is no patient assigned yet
-                    if body["patients"] == []:
-                        patients = []
-                        for p in self.catalog["patientsList"]:
-                            patients.append(str(p["patientID"]))
-                        body["patients"] = patients
-                        for nurse in self.catalog["nursesList"]:
-                            if nurse["nurseID"] == body["nurseID"]:
-                                nurse["patients"] = body["patients"]
-                                nurse["chatID"] = body["chatID"]
-                        with open("catalog.json", "w") as file:
-                            json.dump(self.catalog, file, indent = 4)
-                        print("Catalog updated with nurse:", body)
-                        return json.dumps(body, indent = 4)
-                    else:
-                        print("Nurse already assigned to patients") #anche in questo caso devo però aggiungere chatID? 
+                    if len(uri) == 1:
+                        print("\nReceived PUT request for nurse.")
+                        # Assign every patient present in the lists if there is no patient assigned yet
+                        if body["patients"] == []:
+                            patients = []
+                            for p in self.catalog["patientsList"]:
+                                patients.append(str(p["patientID"]))
+                            body["patients"] = patients
+                            for nurse in self.catalog["nursesList"]:
+                                if nurse["nurseID"] == int(body["nurseID"]):
+                                    nurse["patients"] = body["patients"]
+                                    nurse["chatID"] = body["chatID"]
+                            with open("catalog.json", "w") as file:
+                                json.dump(self.catalog, file, indent = 4)
+                            print("Catalog updated with nurse:", body)
+                            return json.dumps(body, indent = 4)
+                        else:
+                            print("Nurse already assigned to patients") 
+                            for nurse in self.catalog["nursesList"]:
+                                if nurse["nurseID"] == int(body["nurseID"]):
+                                    nurse["chatID"] = body["chatID"]
+                            with open("catalog.json", "w") as file:
+                                json.dump(self.catalog, file, indent = 4)
+                            print("Catalog updated with nurse:", body)
+                    elif len(uri) == 2:
+                        #"http://localhost:8080/nurse/modifypatient"
+                        if uri[1] == "modifypatient":
+                            print("\nReceived PUT request for nurse to modify patient.")
+                            for nurse in self.catalog["nursesList"]:
+                                if nurse["nurseID"] == int(body["nurseID"]):
+                                    nurse["patients"] = body["patients"]
+                            with open("catalog.json", "w") as file:
+                                json.dump(self.catalog, file, indent = 4)
+                            print("Catalog updated with nurse:", body)
+                            return json.dumps(body, indent = 4)
+                        else:
+                            raise cherrypy.HTTPError(404, "Page doesn't exist") 
                 else:
                     raise cherrypy.HTTPError(404, "Page doesn't exist") 
             else:
@@ -290,8 +309,7 @@ class RegistrySystem(object):
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
                         print("Catalog updated without patient:", patient)
-                    else:
-                        return "Patient not found"
+                   
                 for dc in self.catalog["deviceConnectorList"]:
                     if dc["deviceConnectorID"] == int(params["patientID"]):
                         self.catalog["deviceConnectorList"].remove(dc)
@@ -303,14 +321,15 @@ class RegistrySystem(object):
             if uri[0] == "nurse":   #aggiunto questo
                 print("Received DELETE request for nurse.")
                 for nurse in self.catalog["nursesList"]:
+                    print(int(params["nurseID"]))
+                    print(nurse["nurseID"])
                     if nurse["nurseID"] == int(params["nurseID"]):
                         # delete nurse from the list
                         self.catalog["nursesList"].remove(nurse)
                         with open("catalog.json", "w") as file:
                             json.dump(self.catalog, file, indent = 4)
                         print("Catalog updated without nurse:", nurse)
-                    else:
-                        return "Nurse not found"
+                    
             else:
                 raise cherrypy.HTTPError(404, "Page doesn't exist") 
         else:

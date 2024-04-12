@@ -136,7 +136,7 @@
                     </select>
                 </div>
                 <br> <br>
-                <button type="submit" class="btn" onclick="DeletePatient()">Delete</button>
+                <button type="submit" class="btndelete" onclick="DeletePatient()">Delete</button>
             </form>
         </div>
 
@@ -185,7 +185,7 @@
                     </select>
                 </div>
                 <br> <br>
-                <button type="submit" class="btn" onclick="DeleteNurse()">Delete</button>
+                <button type="submit" class="btndelete" onclick="DeleteNurse()">Delete</button>
             </form>
         </div>
 
@@ -292,8 +292,9 @@
                     //DEBUG
                     console.log("Populating nurses");
                     console.log(config.nursesID);
+
                     const select = document.getElementById("deletingNurse");
-                    config.nursesID.forEach(nurse => {
+                    config.nurseID.forEach(nurse => {
                         const option = document.createElement("option");
                         option.text = nurse;
                         option.value = nurse;
@@ -463,6 +464,7 @@
                     document.getElementById('page4').style.display = 'none';
                     document.getElementById('page5').style.display = 'none';
                     document.getElementById('page6').style.display = 'none';
+                    
                 }
                 
                 // Add event listener to the new patient form
