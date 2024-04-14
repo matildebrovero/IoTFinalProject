@@ -12,6 +12,11 @@ To install all the packages needed in python you can simple run in *IoTFinalProj
 pip install requirements.txt
 ```
 
+To install InfluxDB from its docker image without running Influx on your PC you can simply run in *IoTFinalProject* folder the following line:
+```bash
+docker compose up -d
+```
+
 The proposed IoT platform provides a service to hospitals, clinics or nursing
 homes for continuous monitoring of patients. Data are provided from five sensors
 for each patient: an ECG sensor, a blood pressure monitor, a pulse oximeter, a
