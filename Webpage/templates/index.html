@@ -291,9 +291,9 @@
                 function deletingNurse() {
                     //DEBUG
                     console.log("Populating nurses");
-                    console.log(config.nursesID);
+                    console.log(config.nurseID);
                     const select = document.getElementById("deletingNurse");
-                    config.nursesID.forEach(nurse => {
+                    config.nurseID.forEach(nurse => {
                         const option = document.createElement("option");
                         option.text = nurse;
                         option.value = nurse;
