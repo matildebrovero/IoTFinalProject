@@ -13,7 +13,7 @@ After pulling this version (**main** branch) the only thing needed is to execute
 docker compose up -d
 ```
 
-In the branch **develop** you will find files to execute the services on your own pc.
+In the branch **develop** you will find files to execute the services on your own pc without using docker.
 
 The proposed IoT platform provides a service to hospitals, clinics or nursing
 homes for continuous monitoring of patients. Data are provided from five sensors
