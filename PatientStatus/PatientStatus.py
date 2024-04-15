@@ -120,8 +120,9 @@ class PatientStatus(object):
                 # get the data from the database
 
                 #### GLUCOSE ####
-                response_gluco = requests.get(f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}")
-                print(f"\nGLUCOMETER\nGet request on: {self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}") 
+                uri = f"{self.Database}{self.conf['information']['uri_DB']['gluco']}{pat}?{self.conf['information']['params_DB']}"
+                response_gluco = requests.get(uri)
+                print(f"\nGLUCOMETER\nGet request on: {uri}") 
                 # control on the response of the get request
                 if response_gluco.status_code == 200:
                     print(f"Get glucose: {response_gluco}")
@@ -222,6 +223,7 @@ class PatientStatus(object):
         bps_mean = np.mean(data["bps"]) 
         oxim_mean = np.mean(data["oxim"]) 
         HR_mean = np.mean(data["HR"])   
+        termo_mean = np.mean(data["termo"]) 
         RR = data["RR"] 
 
         # count the number of RR values that are too high or too low 
@@ -230,7 +232,7 @@ class PatientStatus(object):
             if RR[i] < 0.85 or RR[i] > 0.95:    
                 RR_count += 1 
  
-        termo_mean = np.mean(data["termo"]) 
+        
         condition = data["condition"] 
  
         # Definition of the status vector, every element represents a different parameter 
@@ -246,21 +248,21 @@ class PatientStatus(object):
         # Fuzzy rules 
         #### Glucose ####
         if "d" in condition: 
-            stat_vett[0] = max(0, 1 - (gluco_mean - 70) / 130)   
+            stat_vett[0] = max(0, 1 - abs(gluco_mean - 80) / 100)   
         else: 
-            stat_vett[0] = max(0, 1 - abs(gluco_mean - 105) / 35) 
+            stat_vett[0] = max(0, 1 - abs(gluco_mean - 70) / 100) 
  
         #### Blood Pressure ####
         if condition == "n" or "c" in condition: 
-            stat_vett[1] = max(0, (bps_mean - 100) / 40)  
+            stat_vett[1] = max(0,  1 - abs(bps_mean - 100) / 20)  
         else: 
-            stat_vett[1] = max(0, (bps_mean - 120) / 50) 
+            stat_vett[1] = max(0,  1 - abs(bps_mean - 120) / 20) 
 
         #### Oximeter ####
-        stat_vett[2] = max(0, (98 - oxim_mean) / 10)   
+        stat_vett[2] = max(0, 1 - abs(oxim_mean - 98) / 2)   
 
         #### Heart Rate ####
-        stat_vett[3] = max(0, (HR_mean - 80) / 20)   
+        stat_vett[3] = max(0,  1 - abs(HR_mean - 80) / 20)   
  
         #### RR ####
         stat_vett[4] = max(0, 1 - abs(RR_count / 20))   
@@ -269,11 +271,10 @@ class PatientStatus(object):
         stat_vett[5] = max(0, 1 - abs(termo_mean - 36) / 2)   
  
         # Definition oh the weights for the aggregation 
-        weights = np.array([1.5, 2.0, 2.5, 2.0, 1.5, 1.0])  # oxim, bps, ECG, RR are more important 
+        weights = np.array([1.5, 2.0, 2.5, 2.0, 1.5, 1.0])  # oximeter, bloodpressure, HR, RR are more important 
  
         # Aggregation of the information  
         weighted_aggregated_status = np.dot(stat_vett, weights) / np.sum(weights) 
- 
         # Definition of the status 
         if weighted_aggregated_status >= 0.7: 
             status = "very good" 
