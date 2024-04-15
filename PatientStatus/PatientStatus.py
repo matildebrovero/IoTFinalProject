@@ -13,9 +13,9 @@ import copy
             - Glucose 
             - Blood Pressure 
             - Oximeter 
-            - ECG 
+            - HR 
             - Temperature 
-            - Respiration Rate 
+            - RR
      
     Output: 
         - Status of the patient 
