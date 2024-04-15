@@ -41,11 +41,11 @@ def read_blood_pressure():
     # If altered_pressure=True, simulate altered blood pressure
     if altered_pressure:
         # Generate altered blood pressure values
-        systolic_pressure = random.randint(140, 180)  # High systolic
+        #systolic_pressure = random.randint(140, 180)  # High systolic
         diastolic_pressure = random.randint(90, 110)  # High diastolic
     else:
         # Generate normal blood pressure values
-        systolic_pressure = random.randint(90, 120)  # Normal systolic
+        #systolic_pressure = random.randint(90, 120)  # Normal systolic
         diastolic_pressure = random.randint(60, 80)  # Normal diastolic
     
     # Create a tuple with blood pressure values

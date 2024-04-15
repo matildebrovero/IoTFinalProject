@@ -1,0 +1,348 @@
+{
+    "projectOwner": "SPHINX",
+    "projectName": "SmartHospital IoT Sevice",
+    "broker": {
+        "IP": "mqtt.eclipseprojects.io",
+        "port": 1883,
+        "main_topic": "SmartHospital308/"
+    },
+    "RegistrySysteminfo": {
+        "host": "0.0.0.0",
+        "port": 8080
+    },
+    "dataList": [
+        "ECG",
+        "glucometer",
+        "termometer",
+        "bloodpressure",
+        "oximeter",
+        "RR",
+        "status",
+        "HR"
+    ],
+    "patientsList": [
+        {
+            "firstName": "John",
+            "lastName": "Doe",
+            "birthdate": "1990-01-01",
+            "residence": "New York",
+            "deviceConnector": "device1",
+            "conditions": "n",
+            "patientID": 1
+        },
+        {
+
+            "firstName": "John",
+            "lastName": "Smith",
+            "birthdate": "1995-05-20",
+            "residence": "New York",
+            "deviceConnector": "device2",
+            "conditions": "n",
+            "patientID": 2
+        }
+    ],
+    "deviceConnectorList": [
+        {
+            "deviceConnectorID": 2,
+            "serviceName": "DeviceConnector",
+            "measureType": [
+                "temperature",
+                "glucose",
+                "blood_pressure",
+                "heart_rate",
+                "oxygen_saturation",
+                "ECG"
+            ],
+            "patientLinked": "si",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "publish_topic": {
+                "base_topic": "Monitoring/patient",
+                "sensors": "/sensorsData",
+                "ecg": "/ecgData"
+            },
+            "uri": {
+                "add_deviceconn": "DeviceConnector",
+                "broker_info": "broker"
+            },
+            "resources": {
+                "sensors": [
+                    {
+                        "sensorName": "MLX90614",
+                        "sensorID": "s1",
+                        "pin": 1,
+                        "measurementType": [
+                            "Temperature"
+                        ],
+                        "units": [
+                            "\u00c2\u00b0C"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30102",
+                        "sensorID": "s2",
+                        "pin": 2,
+                        "measurementType": [
+                            "glucose"
+                        ],
+                        "units": [
+                            "mg/dL"
+                        ]
+                    },
+                    {
+                        "sensorName": "MPX5100DP",
+                        "sensorID": "s3",
+                        "pin": 3,
+                        "measurementType": [
+                            "blood_pressure"
+                        ],
+                        "units": [
+                            "mmHg"
+                        ]
+                    },
+                    {
+                        "sensorName": "PULSE_SENSOR",
+                        "sensorID": "s4",
+                        "pin": 4,
+                        "measurementType": [
+                            "pulse",
+                            "ECG"
+                        ],
+                        "units": [
+                            "bpm",
+                            "mV"
+                        ]
+                    },
+                    {
+                        "sensorName": "MAX30100",
+                        "sensorID": "s5",
+                        "pin": 5,
+                        "measurementType": [
+                            "oxygen_saturation"
+                        ],
+                        "units": [
+                            "%"
+                        ]
+                    }
+                ]
+            },
+            "lastUpdate": "2024-03-30T19:57:06"
+        }
+    ],
+    "nursesList": [
+        {
+            "nurseID": 1,
+            "nurseName": "Gini Bertens",
+            "nurseBirthDate": "1978-06-09",
+            "patients": [
+                "2",
+                "1"
+            ],
+            "chatID": 704532910
+        },
+        {
+            "nurseID": 2,
+            "nurseName": "Elvin Holmberg",
+            "nurseBirthDate": "1996-12-15",
+            "patients": [],
+            "chatID": ""
+        },
+        {
+            "nurseID": 3,
+            "nurseName": "Sophie Campbell",
+            "nurseBirthDate": "1987-08-13",
+            "patients": [
+                "2",
+                "1"
+            ],
+            "chatID": 704532910
+        },
+        {
+            "nurseID": 4,
+            "nurseName": "Karina Samsonova",
+            "nurseBirthDate": "1995-10-19",
+            "patients": [],
+            "chatID": ""
+        },
+        {
+            "nurseID": 5,
+            "nurseName": "Anders Hilstad",
+            "nurseBirthDate": "1963-11-05",
+            "patients": [],
+            "chatID": ""
+        }
+    ],
+    "serviceList": [
+        {
+            "serviceID": 9,
+            "serviceName": "Webpage",
+            "availableServices": [
+                "REST"
+            ],
+            "uri": {
+                "add_service": "service",
+                "get_configurations": "configwebpage",
+                "patient": "patient",
+                "delete_patient": "patientID",
+                "delete_nurse": "nurseID",
+                "nurse": "nurse",
+                "add_nurse": "addNurse",
+                "DB_adaptor": "DBadaptor"
+            },
+            "host": "0.0.0.0",
+            "port": 8090,
+            "lastUpdate": "2024-04-10T13:12:05"
+        },
+        {
+            "serviceID": 10,
+            "serviceName": "Webpage",
+            "availableServices": [
+                "REST"
+            ],
+            "uri": {
+                "add_service": "service",
+                "get_configurations": "configwebpage",
+                "patient": "patient",
+                "delete_patient": "patientID",
+                "delete_nurse": "nurseID",
+                "nurse": "nurse",
+                "add_nurse": "addNurse",
+                "DB_adaptor": "DBadaptor"
+            },
+            "host": "0.0.0.0",
+            "port": 8090,
+            "lastUpdate": "2024-04-10T13:17:02"
+        },
+        {
+            "serviceID": 119,
+            "serviceName": "DB_reader",
+            "availableServices": [
+                "REST"
+            ],
+            "serviceHost": "localhost",
+            "servicePort": 8081,
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-04-05T21:55:23"
+        },
+        {
+            "serviceID": 120,
+            "serviceName": "DB_writer",
+            "availableServices": [
+                "MQTT"
+            ],
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-04-06T14:56:24"
+        },
+        {
+            "serviceID": 110,
+            "serviceName": "DB_adaptor",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "serviceHost": "0.0.0.0",
+            "servicePort": 8081,
+            "subscribe_topic": [
+                "Monitoring/+/status",
+                "Monitoring/+/ECG",
+                "Monitoring/+/sensorsData",
+                "Monitoring/+/RR",
+                "Monitoring/+/HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "lastUpdate": "2024-04-02T19:01:10"
+        },
+        {
+            "serviceID": 63,
+            "serviceName": "ECG_Analysis",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "subscribe_topic": "Monitoring/+/ecgData",
+            "publish_topic": "Monitoring",
+            "analysis": [
+                "ECG",
+                "RR",
+                "HR"
+            ],
+            "uri": {
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "sampling_frequency": 100,
+            "target_frequency": 25,
+            "sample_duration": 5,
+            "lastUpdate": "2024-04-05T16:37:41"
+        },
+        {
+            "serviceID": 124,
+            "serviceName": "PatientStatus",
+            "serviceType": [
+                "MQTT",
+                "REST"
+            ],
+            "pubish_topic": {
+                "base_topic": "Monitoring/patient",
+                "status": "/status"
+            },
+            "uri_catalog": {
+                "service": "/service",
+                "DB": "/DBadaptor",
+                "broker": "/broker",
+                "patient": "/patientInfo/All"
+            },
+            "uri_DB": {
+                "gluco": "/glucometer/patient",
+                "bps": "/bloodpressure/patient",
+                "oxim": "/oximeter/patient",
+                "HR": "/HR/patient",
+                "temp": "/termometer/patient",
+                "RR": "/RR/patient"
+            },
+            "params_DB": "range=5",
+            "lastUpdate": "2024-04-08T10:37:38"
+        },
+        {
+            "serviceID": 52,
+            "serviceName": "TelegramBot",
+            "availableServices": [
+                "MQTT",
+                "REST"
+            ],
+            "uri": {
+                "get_nurseInfo": "NurseInfo/all",
+                "post_nurseInfo": "nurse",
+                "get_patientInfo": "patientInfo",
+                "single_patient": "patientID",
+                "add_service": "service",
+                "broker_info": "broker"
+            },
+            "subscribe_topic": "Monitoring/+/status",
+            "lastUpdate": "2024-04-05T11:20:58"
+        }
+    ],
+    "counter": {
+        "deviceConnectorCounter": 0,
+        "serviceCounter": 11,
+        "nurseCounter": 0
+    }
+}
