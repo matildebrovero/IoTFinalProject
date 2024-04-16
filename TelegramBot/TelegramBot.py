@@ -126,7 +126,7 @@ class HospitalBot:
             print(f"\nactive nurses: {self.nurseIDs}")
             self.bot.sendMessage(self.chat_ID, text="The bot has been turned off")
             if self.startedIDs == [] or self.nurseIDs == []:
-                self.client.stop()
+                self.client.unsubscribe()
 
         elif message not in [self.Names, "/start", "/stop"]:
             self.bot.sendMessage(self.chat_ID, text="Please insert a valid name")
