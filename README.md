@@ -22,6 +22,7 @@ homes for continuous monitoring of patients. Data are collected through a **devi
 - A pulse oximeter;
 - A glucometer;
 - A thermometer.
+  
 Collected data are processed, stored in a database and analyzed. The main feature of the service is to aggregate
 the different data in order to offer a comprehensive health assessment of patients. In case of critical status, notifications are sent to the healthcare providers.
 In addition to the notifications, healthcare providers can also access a web interface that show in detail the evolution of the
