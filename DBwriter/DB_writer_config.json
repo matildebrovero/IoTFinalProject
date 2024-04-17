@@ -29,7 +29,8 @@
         "serviceID": 120,
         "serviceName": "DB_writer",
         "availableServices": [
-            "MQTT"
+            "MQTT",
+            "REST"
         ],
         "subscribe_topic": [
             "Monitoring/+/status",

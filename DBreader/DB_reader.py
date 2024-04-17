@@ -81,19 +81,22 @@ class rest_API(object):
         # print(uri)
         # print(params)
         # print(availableSensor.json())
-        if uri[0] in availableSensor.json():
-            print(f"Reading {uri[0]} data from InfluxDB")
-            patientID = uri[1]
-            range = params["range"]
-            query = f"""from(bucket: "{bucket}")
-            |> range(start: -{range}m)
-            |> filter(fn: (r) => r._measurement == "{str(patientID)}")
-            |> filter(fn: (r) => r._field == "{uri[0]}")"""
-            print(query)
-            print(f"Reading {uri[0]} data for patient {patientID} from InfluxDB")
-            return json.dumps(InfluxDBread(query))
+        if len(uri) == 2:
+            if uri[0] in availableSensor.json():
+                print(f"Reading {uri[0]} data from InfluxDB")
+                patientID = uri[1]
+                range = params["range"]
+                query = f"""from(bucket: "{bucket}")
+                |> range(start: -{range}m)
+                |> filter(fn: (r) => r._measurement == "{str(patientID)}")
+                |> filter(fn: (r) => r._field == "{uri[0]}")"""
+                print(query)
+                print(f"Reading {uri[0]} data for patient {patientID} from InfluxDB")
+                return json.dumps(InfluxDBread(query))
+            else:
+                raise(cherrypy.HTTPError(404, "Resource not found. URI not valid"))
         else:
-            raise(cherrypy.HTTPError(404, "Resource not found"))
+            raise(cherrypy.HTTPError(500, "Internal server error. You have to insert an URI with the format /sensorID/patientID?range=minutes"))
     def POST(self, *uri, **params):
         pass
     def PUT(self, *uri, **params):

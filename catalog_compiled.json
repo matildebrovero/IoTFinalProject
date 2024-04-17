@@ -26,7 +26,7 @@
             "lastName": "Doe",
             "birthdate": "1990-01-01",
             "residence": "New York",
-            "deviceConnector": "device1",
+            "deviceConnector": 1,
             "conditions": "n",
             "patientID": 1
         },
@@ -36,7 +36,7 @@
             "lastName": "Smith",
             "birthdate": "1995-05-20",
             "residence": "New York",
-            "deviceConnector": "device2",
+            "deviceConnector": 2,
             "conditions": "n",
             "patientID": 2
         }
@@ -53,7 +53,7 @@
                 "oxygen_saturation",
                 "ECG"
             ],
-            "patientLinked": "si",
+            "patientLinked": "yes",
             "availableServices": [
                 "MQTT",
                 "REST"
@@ -233,7 +233,8 @@
             "serviceID": 120,
             "serviceName": "DB_writer",
             "availableServices": [
-                "MQTT"
+                "MQTT",
+                "REST"
             ],
             "subscribe_topic": [
                 "Monitoring/+/status",
@@ -247,28 +248,6 @@
                 "broker_info": "broker"
             },
             "lastUpdate": "2024-04-06T14:56:24"
-        },
-        {
-            "serviceID": 110,
-            "serviceName": "DB_adaptor",
-            "availableServices": [
-                "MQTT",
-                "REST"
-            ],
-            "serviceHost": "0.0.0.0",
-            "servicePort": 8081,
-            "subscribe_topic": [
-                "Monitoring/+/status",
-                "Monitoring/+/ECG",
-                "Monitoring/+/sensorsData",
-                "Monitoring/+/RR",
-                "Monitoring/+/HR"
-            ],
-            "uri": {
-                "add_service": "service",
-                "broker_info": "broker"
-            },
-            "lastUpdate": "2024-04-02T19:01:10"
         },
         {
             "serviceID": 63,
