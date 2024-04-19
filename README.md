@@ -45,4 +45,8 @@ The microservices present in are the following:
 * **Patient Status** access the data from the database and computes the current health status of the patient (possible one are "very good", "regular" and "bad"). The status is computed taking into account not only the data but also the patient's comorbidities using fuzzy logic;
 * **Telegram Bot** is a bot that the nurse must start to get an ALERT message when a patient is in a dangerous condition (status equal to "bad"). It can be found at https://t.me/smarthospital_examplebot;
 
+Link to the PROMO video: https://youtu.be/iH4H8EonDLw
+
+Link to the DEMO video: https://youtu.be/nJ6MUHTM7io
+
 Link to the proposal: https://drive.google.com/file/d/1I2hT3Znlvx2par_VTro0zsUHHKj5O8eV/view?usp=sharing
